@@ -46,7 +46,6 @@ func realTime(ticker string) string {
 	return body
 }
 
-// not sure if this is working
 func movers(index, direction, change string) string {
 	url := fmt.Sprintf(endpoint_movers,index)
 	req,_ := http.NewRequest("GET",url,nil)
