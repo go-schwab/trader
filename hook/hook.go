@@ -1,4 +1,5 @@
 package hook
+
 import (
 	"fmt"
 	"os"
