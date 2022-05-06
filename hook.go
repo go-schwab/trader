@@ -12,7 +12,7 @@ var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%
 var endpoint_option string = "https://api.tdameritrade.com/v1/marketdata/chains"
 var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
 var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s"//  		--> cusip
-var endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/movers"// - 		--> index
+var endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/movers"// 	 		--> index
 var endpoint_account string = "https://api.tdameritrade.com/v1/accounts/%s"//				--> accountID
 
 // handling takes a *http.Request object
@@ -110,15 +110,35 @@ func simpleOption(ticker,contractType,strikeCount,includeQuotes string) string {
 	return body
 }
 
-//func strategyOption() {}
-//func instrument() {}
-//func account() {}
+// getInstrument takes one parameter:
+// cusip = "037833100", etc.
+func getInstrument(cusip string) string {
+	url := fmt.Sprintf(endpoint_getinstrument,cusip)
+	req,_ := http.NewRequest("GET",url,nil)
+	body := handling(req)
 
-func main() {
-	//req := movers("$DJI","up","value")
-	//req := realTime("AAPL")
-	//req := priceHistory("AAPL","month","3","daily","1")
-	//req := simpleOption("AAPL","CALL","10","TRUE")
-	fmt.Println(req)
+	return body
 }
+
+// searchInstrument takes two parameters:
+// ticker = "AAPL", etc.
+// projection = the type of search to perform: from td-ameritrade's website:
+// symbol-search: Retrieve instrument data of a specific symbol or cusip 
+// symbol-regex: Retrieve instrument data for all symbols matching regex. Example: symbol=XYZ.* will return all symbols beginning with XYZ 
+// desc-search: Retrieve instrument data for instruments whose description contains the word supplied. Example: symbol=FakeCompany will return all instruments with FakeCompany in the description. 
+// desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C. 
+// fundamental: Returns fundamental data for a single instrument specified by exact symbol.'
+func searchInstrument(ticker string, projection string) string {
+	req,_ := http.NewRequest("GET",endpoint_searchinstrument,nil)
+	q := req.URL.Query()
+	q.Add("symbol",ticker)
+	q.Add("projection",projection)
+	req.URL.RawQuery = q.Encode()
+	body := handling(req)
+
+	return body
+}
+
+//func strategyOption() {}
+//func account() {}
 
