@@ -1,4 +1,4 @@
-package hook
+package main
 import (
 	"fmt"
 	"os"
