@@ -38,6 +38,8 @@ func handling(req *http.Request) string {
 	return string(body)
 }
 
+// realTime takes one parameter:
+// ticker = "AAPL", etc.
 func realTime(ticker string) string {
 	url := fmt.Sprintf(endpoint_realtime,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
@@ -46,7 +48,11 @@ func realTime(ticker string) string {
 	return body
 }
 
-func movers(index, direction, change string) string {
+// movers takes three parameters:
+// index = "$DJI", "$SPX.X", or "$COMPX"
+// direction = "up" or "down"
+// change = "percent" or "value"
+func movers(index,direction,change string) string {
 	url := fmt.Sprintf(endpoint_movers,index)
 	req,_ := http.NewRequest("GET",url,nil)
 	q := req.URL.Query()
@@ -58,8 +64,32 @@ func movers(index, direction, change string) string {
 	return body
 }
 
-func priceHistory() {
+// priceHistory takes 5 parameters:
+// ticker = "AAPL", etc.
+// periodType = "day", "month", "year", "ytd" - default is "day"
+// period = the number of periods to show
+// frequencyType = the type of frequency with which each candle is formed; valid fTypes by pType
+// "day": "minute"
+// "month": "daily", "weekly"
+// "year": "daily", "weekly", "monthly"
+// "ytd": "daily", "weekly"
+// frequency = the number of the frequencyType included in each candle; valid freqs by fType
+// "minute": 1,5,10,15,30
+// "daily": 1
+// "weekly": 1
+// "monthly": 1
+func priceHistory(ticker,periodType,period,frequencyType,frequency string) string {
+	url := fmt.Sprintf(endpoint_pricehistory,ticker)
+	req,_ := http.NewRequest("GET",url,nil)
+	q := req.URL.Query()
+	q.Add("periodType",periodType)
+	q.Add("period",period)
+	q.Add("frequencyType",frequencyType)
+	q.Add("frequency",frequency)
+	req.URL.RawQuery = q.Encode()
+	body := handling(req)
 
+	return body
 }
 
 //func option() {}
@@ -67,7 +97,7 @@ func priceHistory() {
 //func account() {}
 
 func main() {
-	req := movers("$DJI","up","percent")
+	req := priceHistory("AAPL","month","3","daily","1")
 	fmt.Println(req)
 }
 
