@@ -64,7 +64,7 @@ func movers(index,direction,change string) string {
 	return body
 }
 
-// priceHistory takes 5 parameters:
+// priceHistory takes five parameters:
 // ticker = "AAPL", etc.
 // periodType = "day", "month", "year", "ytd" - default is "day"
 // period = the number of periods to show
@@ -92,12 +92,33 @@ func priceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 	return body
 }
 
-//func option() {}
+// simpleOption takes four parameters:
+// ticker = "AAPL", etc.
+// contractType = "CALL", "PUT", "ALL"
+// strikeCount = number of strikes to return above and below the at-the-money price
+// includeQuotes = "TRUE", "FALSE"
+func simpleOption(ticker,contractType,strikeCount,includeQuotes string) string {
+	req,_ := http.NewRequest("GET",endpoint_option,nil)
+	q := req.URL.Query()
+	q.Add("symbol",ticker)
+	q.Add("contractType",contractType)
+	q.Add("strikeCount",strikeCount)
+	q.Add("includeQuotes",includeQuotes)
+	req.URL.RawQuery = q.Encode()
+	body := handling(req)
+
+	return body
+}
+
+//func strategyOption() {}
 //func instrument() {}
 //func account() {}
 
 func main() {
-	req := priceHistory("AAPL","month","3","daily","1")
+	//req := movers("$DJI","up","value")
+	//req := realTime("AAPL")
+	//req := priceHistory("AAPL","month","3","daily","1")
+	//req := simpleOption("AAPL","CALL","10","TRUE")
 	fmt.Println(req)
 }
 
