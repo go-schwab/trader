@@ -143,6 +143,3 @@ func searchInstrument(ticker string, projection string) string {
 //func strategyOption() {}
 //func account() {}
 
-func main() {
-	fmt.Println(realTime("AAPL"))
-}
