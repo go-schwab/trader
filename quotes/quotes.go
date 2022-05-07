@@ -1,12 +1,13 @@
-package quotes
+package main
 
 import (
 	"fmt"
 	"net/http"
 	"github.com/samjtro/go-tda/handler"
-	"github.com/go-gota/gota"
+	"github.com/go-gota/gota/dataframe"
 )
 
+// for use with realTime
 type QUOTE struct {
 	DATETIME	string
 	TICKER		string
@@ -17,7 +18,8 @@ type QUOTE struct {
 	VOLATILITY	int
 }
 
-type HISTORY struct {
+// for use with priceHistory 
+type FRAME struct {
 	DATETIME	string
 	OPEN		int
 	HIGH		int
@@ -28,7 +30,7 @@ type HISTORY struct {
 
 // realTime takes one parameter:
 // ticker = "AAPL", etc.
-func realTime(ticker string) *QUOTE {
+func realTime(ticker string) QUOTE {
 	url := fmt.Sprintf(endpoint_realtime,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
 	body := handler(req)
@@ -50,7 +52,7 @@ func realTime(ticker string) *QUOTE {
 // "daily": 1
 // "weekly": 1
 // "monthly": 1
-func priceHistory(ticker,periodType,period,frequencyType,frequency string) DataFrame {
+func priceHistory(ticker,periodType,period,frequencyType,frequency string) string {
 	url := fmt.Sprintf(endpoint_pricehistory,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
 	q := req.URL.Query()
@@ -61,7 +63,15 @@ func priceHistory(ticker,periodType,period,frequencyType,frequency string) DataF
 	req.URL.RawQuery = q.Encode()
 	body := handler(req)
 
-	df := dataframe.New(body)
-	return df
+	var df []FRAME
+	chars := []rune(body)
+	for i,x := range chars {
+		fmt.Println(x)
+	}
+
+	return body
 }
 
+func main() {
+	fmt.Println(realTime("AAPL","month","1","daily","1"))
+}

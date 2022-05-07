@@ -3,6 +3,7 @@ package movers
 import (
 	"fmt"
 	"net/http"
+	"github.com/samjtro/go-tda/handler"
 )
 
 // movers takes three parameters:

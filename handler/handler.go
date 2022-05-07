@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"os"
 	"bufio"
 	"net/http"
@@ -8,7 +9,7 @@ import (
 )
 
 func handler(req *http.Request) string {
-	file,_ := os.Open("../.APIKEY")
+	file,_ := os.Open(".APIKEY")
 	s := bufio.NewScanner(file)
 	var APIKEY string
 	
