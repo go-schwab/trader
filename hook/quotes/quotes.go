@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"github.com/samjtro/go-tda/util/handler"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // for use with realTime
@@ -35,7 +35,7 @@ var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%
 func realTime(ticker string) QUOTE {
 	url := fmt.Sprintf(endpoint_realtime,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
-	body := go-tda.util.handler(req)
+	body := utils.handler(req)
 	
 	return body
 }
@@ -63,7 +63,7 @@ func priceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 	q.Add("frequencyType",frequencyType)
 	q.Add("frequency",frequency)
 	req.URL.RawQuery = q.Encode()
-	body := go-tda.util.handler(req)
+	body := utils.handler(req)
 
 	//var df []FRAME
 	chars := []rune(body)

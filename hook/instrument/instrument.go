@@ -1,16 +1,20 @@
-package instruments
+package instrument
 
 package (
 	"fmt"
 	"net/http"
+	"github.com/samjtro/go-tda/utils"
 )
+
+var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
+var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s"//  		--> cusip
 
 // getInstrument takes one parameter:
 // cusip = "037833100", etc.
-func getInstrument(cusip string) string {
+func Get(cusip string) string {
 	url := fmt.Sprintf(endpoint_getinstrument,cusip)
 	req,_ := http.NewRequest("GET",url,nil)
-	body := handler(req)
+	body := utils.handler(req)
 
 	return body
 }
@@ -23,13 +27,13 @@ func getInstrument(cusip string) string {
 // desc-search: Retrieve instrument data for instruments whose description contains the word supplied. Example: symbol=FakeCompany will return all instruments with FakeCompany in the description. 
 // desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C. 
 // fundamental: Returns fundamental data for a single instrument specified by exact symbol.'
-func searchInstrument(ticker string, projection string) string {
+func Search(ticker string, projection string) string {
 	req,_ := http.NewRequest("GET",endpoint_searchinstrument,nil)
 	q := req.URL.Query()
 	q.Add("symbol",ticker)
 	q.Add("projection",projection)
 	req.URL.RawQuery = q.Encode()
-	body := handler(req)
+	body := utils.handler(req)
 
 	return body
 }

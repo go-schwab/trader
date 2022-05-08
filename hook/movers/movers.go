@@ -3,7 +3,7 @@ package movers
 import (
 	"fmt"
 	"net/http"
-	"github.com/samjtro/go-tda/util/handler"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // movers takes three parameters:
@@ -17,7 +17,7 @@ func movers(index,direction,change string) string {
 	q.Add("direction",direction)
 	q.Add("change",change)
 	req.URL.RawQuery = q.Encode()
-	body := util.handler(req)
+	body := utils.handler(req)
 
 	return body
 }
