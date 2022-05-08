@@ -32,7 +32,7 @@ var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%
 
 // realTime takes one parameter:
 // ticker = "AAPL", etc.
-func realTime(ticker string) QUOTE {
+func realTime(ticker string) string {
 	url := fmt.Sprintf(endpoint_realtime,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
 	body := utils.handler(req)
