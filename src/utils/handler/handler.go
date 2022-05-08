@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 )
 
-func handler(req *http.Request) string {
+func main(req *http.Request) string {
 	file,_ := os.Open(".APIKEY")
 	s := bufio.NewScanner(file)
 	var APIKEY string

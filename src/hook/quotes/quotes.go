@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"github.com/samjtro/go-tda/handler"
-	"github.com/go-gota/gota/dataframe"
 )
 
 // for use with realTime
@@ -28,12 +27,15 @@ type FRAME struct {
 	VOLUME		int
 }
 
+var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"// 	 	--> symbol
+var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory"// 	--> symbol
+
 // realTime takes one parameter:
 // ticker = "AAPL", etc.
 func realTime(ticker string) QUOTE {
 	url := fmt.Sprintf(endpoint_realtime,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
-	body := handler(req)
+	body := go-tda.handler(req)
 	
 	return body
 }
@@ -61,10 +63,11 @@ func priceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 	q.Add("frequencyType",frequencyType)
 	q.Add("frequency",frequency)
 	req.URL.RawQuery = q.Encode()
-	body := handler(req)
+	body := go-tda.handler(req)
 
-	var df []FRAME
+	//var df []FRAME
 	chars := []rune(body)
+
 	for i,x := range chars {
 		fmt.Println(x)
 	}
@@ -73,5 +76,5 @@ func priceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 }
 
 func main() {
-	fmt.Println(realTime("AAPL","month","1","daily","1"))
+	fmt.Println(priceHistory("AAPL","month","1","daily","1"))
 }
