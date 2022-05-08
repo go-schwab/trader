@@ -1,4 +1,4 @@
-package quotes
+package main
 
 import (
 	"fmt"
@@ -75,3 +75,4 @@ func priceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 	return body
 }
 
+func main() {fmt.Println(realTime("AAPL"))}
