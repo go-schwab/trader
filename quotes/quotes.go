@@ -32,10 +32,10 @@ var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%
 
 // realTime takes one parameter:
 // ticker = "AAPL", etc.
-func realTime(ticker string) string {
+func RealTime(ticker string) string {
 	url := fmt.Sprintf(endpoint_realtime,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
-	body := utils.handler(req)
+	body := utils.Handler(req)
 	
 	return body
 }
@@ -54,7 +54,7 @@ func realTime(ticker string) string {
 // "daily": 1
 // "weekly": 1
 // "monthly": 1
-func priceHistory(ticker,periodType,period,frequencyType,frequency string) string {
+func PriceHistory(ticker,periodType,period,frequencyType,frequency string) string {
 	url := fmt.Sprintf(endpoint_pricehistory,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
 	q := req.URL.Query()
@@ -63,7 +63,7 @@ func priceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 	q.Add("frequencyType",frequencyType)
 	q.Add("frequency",frequency)
 	req.URL.RawQuery = q.Encode()
-	body := utils.handler(req)
+	body := utils.Handler(req)
 
 	//var df []FRAME
 	chars := []rune(body)

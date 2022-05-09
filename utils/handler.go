@@ -9,7 +9,7 @@ import (
 
 // handler is the general purpose request function for the td-ameritrade api
 // all functions will be routed through this handler function, which does all of the API calling work
-func handler(req *http.Request) string {
+func Handler(req *http.Request) string {
 	file,_ := os.Open(".APIKEY")
 	s := bufio.NewScanner(file)
 	var APIKEY string
