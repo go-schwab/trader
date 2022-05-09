@@ -7,8 +7,12 @@ import (
 	"io/ioutil"
 )
 
-// handler is the general purpose request function for the td-ameritrade api
+// Handler is the general purpose request function for the td-ameritrade api
 // all functions will be routed through this handler function, which does all of the API calling work
+// it performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function
+// it returns the body of the GET request's return
+// it takes one parameter:
+// req = a request of type *http.Request
 func Handler(req *http.Request) string {
 	file,_ := os.Open(".APIKEY")
 	s := bufio.NewScanner(file)

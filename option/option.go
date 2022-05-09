@@ -13,7 +13,8 @@ type CHAIN struct {
 	STRIKE		int
 }
 
-// Single takes four parameters:
+// Single returns a string; containing a SINGLE option chain of your desired strike, type, etc., 
+// it takes four parameters:
 // ticker = "AAPL", etc.
 // contractType = "CALL", "PUT", "ALL"
 // strikeCount = number of strikes to return above and below the at-the-money price

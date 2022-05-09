@@ -6,7 +6,8 @@ import (
 	"github.com/samjtro/go-tda/utils"
 )
 
-// movers takes three parameters:
+// Get returns a string; containing information on the desired index's movers per your desired direction and change type(percent or value), 
+// it takes three parameters:
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"

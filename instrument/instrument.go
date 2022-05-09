@@ -9,7 +9,8 @@ package (
 var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
 var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s"//  		--> cusip
 
-// getInstrument takes one parameter:
+// Get returns a string; with information regarding the desired CUSIP,
+// it takes one parameter:
 // cusip = "037833100", etc.
 func Get(cusip string) string {
 	url := fmt.Sprintf(endpoint_getinstrument,cusip)
@@ -19,7 +20,8 @@ func Get(cusip string) string {
 	return body
 }
 
-// searchInstrument takes two parameters:
+// Search uses more detailed parameters to return a string; containing more detailed information of various types on your desired ticker,
+// it takes two parameters:
 // ticker = "AAPL", etc.
 // projection = the type of search to perform: from td-ameritrade's website:
 // symbol-search: Retrieve instrument data of a specific symbol or cusip 

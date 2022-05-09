@@ -20,7 +20,7 @@ this is a go implementation of a td-ameritrade API hook. the goal of this projec
 2. go to your app (once it has been approved), and get the api key under the "Consumer Key" section
 3. create a file called `.APIKEY` and store your api key you generated in that file (with NO extra lines)
 4. use the `go get github.com/samjtro/go-tda/<package_name>` command to import whatever package you'd like to use
-- `quotes`: contains RealTime and PriceHistory; used for getting either a RealTime quote of a ticker, or a long-term PriceHistory dataframe of a stock from tda (most common use-case)
+- `data`: contains RealTime and PriceHistory; used for getting either a RealTime quote of a ticker, or a long-term PriceHistory dataframe of a stock from tda (most common use-case)
 - `movers`: contains Get; returns a list of movers for the day by index & direction
 - `option`: contains Single & a number of other more advanced strategy spread functions; returns an option chain for your desired ticker, strike, etc.
 - `instrument`: contains Search & Get; returns information on a desired ticker or CUSIP

@@ -1,4 +1,4 @@
-package quotes
+package data
 
 import (
 	"fmt"
@@ -30,7 +30,8 @@ type FRAME struct {
 var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"// 	 	--> symbol
 var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory"// 	--> symbol
 
-// realTime takes one parameter:
+// RealTime returns a string; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more), 
+// it takes one parameter:
 // ticker = "AAPL", etc.
 func RealTime(ticker string) string {
 	url := fmt.Sprintf(endpoint_realtime,ticker)
@@ -40,7 +41,8 @@ func RealTime(ticker string) string {
 	return body
 }
 
-// priceHistory takes five parameters:
+// PriceHistory returns a string; containing a series of candles with price volume & datetime info per candlestick,
+// it takes five parameters:
 // ticker = "AAPL", etc.
 // periodType = "day", "month", "year", "ytd" - default is "day"
 // period = the number of periods to show
