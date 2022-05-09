@@ -4,11 +4,11 @@ view this project at [pkg.go.dev](https://pkg.go.dev/github.com/samjtro/go-tda)
 
 ## why tda?
 
-td-ameritrade has the latest available market data, and the most in depth. if you want the best indicators, you use tda.
+td-ameritrade has the latest & most in-depth available market data. if you want the best indicators, you use tda. as well, tda has the easiest available option chain data. there is almost no other platform that allows you to fetch option chains with as much precision as tda.
 
 ## what is this project?
 
-this is a go implementation of a td-ameritrade API hook. the goal of this project is to incentivize others to build algorithmic trading models.
+this is a go implementation of a td-ameritrade API hook. the goal of this project is to incentivize others to build algorithmic trading models on top of these packages.
 
 ## how can i use this project?
 
@@ -30,4 +30,6 @@ read the documentation for proper function usage, most are straight forward (as 
 
 ## what can i do with this project
 
-like previously mentioned, the goal is for you to use this in a wide variety of capacities. see the license, however, it is permissive and there are guidelines for reproduction & proper crediting.
+like previously mentioned, the goal is for you to use this in a wide variety of capacities. do what you wish with this project, but...
+
+see the license; it is permissive, there are guidelines for proper reproduction & crediting :)
