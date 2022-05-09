@@ -13,7 +13,7 @@ type CHAIN struct {
 	STRIKE		int
 }
 
-// simpleOption takes four parameters:
+// Single takes four parameters:
 // ticker = "AAPL", etc.
 // contractType = "CALL", "PUT", "ALL"
 // strikeCount = number of strikes to return above and below the at-the-money price
@@ -27,7 +27,7 @@ type CHAIN struct {
 // SBK = strikes below market
 // SNK = strikes near market
 // ALL* = default, all strikes
-func simple(ticker,contractType,strikeCount,includeQuotes,strike,strikeRange string) string {
+func Single(ticker,contractType,strikeCount,includeQuotes,strike,strikeRange string) string {
 	req,_ := http.NewRequest("GET",endpoint_option,nil)
 	q := req.URL.Query()
 	q.Add("symbol",ticker)
@@ -37,9 +37,19 @@ func simple(ticker,contractType,strikeCount,includeQuotes,strike,strikeRange str
 	q.add("strike",strike)
 	q.add("range",strikeRange)
 	req.URL.RawQuery = q.Encode()
-	body := utils.handler(req)
+	body := utils.Handler(req)
 
 	return body
 }
 
-//func strategy() string {}
+// func Analytical() string {}
+// func Covered() string {}
+// func Vertical() string {}
+// func Calendar() string {}
+// func Strangle() string {}
+// func Straddle() string {}
+// func Butterfly() string {}
+// func Condor() string {}
+// func Diagonal() string {}
+// func Collar() string {}
+// func Roll() string {}

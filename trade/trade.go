@@ -5,6 +5,4 @@ import (
 	"net/http"
 )
 
-func placeOrder(accountID,bearerToken string) string {
-	
-}
+func PlaceOrder(accountID,bearerToken string) string {}

@@ -14,7 +14,7 @@ var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments
 func Get(cusip string) string {
 	url := fmt.Sprintf(endpoint_getinstrument,cusip)
 	req,_ := http.NewRequest("GET",url,nil)
-	body := utils.handler(req)
+	body := utils.Handler(req)
 
 	return body
 }
@@ -33,7 +33,7 @@ func Search(ticker string, projection string) string {
 	q.Add("symbol",ticker)
 	q.Add("projection",projection)
 	req.URL.RawQuery = q.Encode()
-	body := utils.handler(req)
+	body := utils.Handler(req)
 
 	return body
 }
