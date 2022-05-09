@@ -66,11 +66,7 @@ func PriceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 	body := utils.Handler(req)
 
 	//var df []FRAME
-	chars := []rune(body)
-
-	for i,x := range chars {
-		fmt.Println(x)
-	}
+	//chars := []rune(body)
 
 	return body
 }
