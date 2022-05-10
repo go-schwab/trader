@@ -1,10 +1,14 @@
 package instrument
 
-package (
+import (
 	"fmt"
 	"net/http"
 	"github.com/samjtro/go-tda/utils"
 )
+
+type INSTRUMENT struct {
+	CUSIP		string
+}
 
 var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
 var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s"//  		--> cusip
