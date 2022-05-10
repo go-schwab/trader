@@ -28,7 +28,7 @@ this is a go implementation of a td-ameritrade API hook. the goal of this projec
 - `movers`: contains `Get`; returns a list of movers for the day by index & direction
 - `option`: contains `Single` & a number of other more advanced strategy spread functions; returns an option chain for your desired ticker, strike, etc.
 - `instrument`: contains `Search` & `Get`; returns information on a desired ticker or CUSIP
-- `trade` & `account` are both unusable as of right now, the rest are obviously very WIP  
+- `account` are will contain account monitoring and trading functions but is not functional as of right now, the rest of the packages are still obviously very WIP  
 
 5. use whatever package you wish in whatever file you wish; if you are using package control yourself, the .APIKEY file must be in each directory (alternatively, you may obviously pull a new branch and use the "../.APIKEY" path rather than the ".APIKEY" path in the handler.go file)  
 
