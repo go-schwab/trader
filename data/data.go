@@ -2,43 +2,110 @@ package data
 
 import (
 	"fmt"
+	"time"
+	"strings"
 	"net/http"
-	"github.com/samjtro/go-tda/utils"
+	. "github.com/samjtro/go-tda/utils"
 )
 
-// for use with realTime
+// custom struct for use with RealTime
+// contains a number of important real time & historical financial indicators
 type QUOTE struct {
 	DATETIME	string
 	TICKER		string
-	BID		int
-	ASK		int
-	MARK		int
-	VOLUME		int
-	VOLATILITY	int
+	MARK		string
+	VOLUME		string
+	VOLATILITY	string
+	BID		string
+	ASK		string
+	LAST		string
+	OPEN		string
+	CLOSE		string
+	HI		string
+	LO		string
+	//FiftyTwoWkHI	string
+	//FiftyTwoWkLO	string
+	PE		string
 }
 
-// for use with priceHistory 
+// for use with PriceHistory 
 type FRAME struct {
 	DATETIME	string
-	OPEN		int
-	HIGH		int
-	LOW		int
-	CLOSE		int
-	VOLUME		int
+	OPEN		string
+	HIGH		string
+	LOW		string
+	CLOSE		string
+	VOLUME		string
 }
 
 var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"// 	 	--> symbol
 var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory"// 	--> symbol
 
-// RealTime returns a string; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more), 
+func trimFirstLastChar(s string) string {
+	str := s[:len(s)-1]
+	return str[1:len(str)]
+}
+
+// RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more), 
 // it takes one parameter:
 // ticker = "AAPL", etc.
-func RealTime(ticker string) string {
+func RealTime(ticker string) QUOTE {
+	dt := Now(time.Now())
 	url := fmt.Sprintf(endpoint_realtime,ticker)
 	req,_ := http.NewRequest("GET",url,nil)
-	body := utils.Handler(req)
-	
-	return body
+	body := Handler(req)
+
+	var bid,ask,last,open,hi,lo,closeP,mark,volume,volatility,pe string
+
+	split := strings.Split(body,"\"")
+	for i,x := range split {
+		if(x == "bidPrice") { bid = split[i+1]
+		} else if(x == "askPrice") { ask = split[i+1]
+		} else if(x == "lastPrice") { last = split[i+1]
+		} else if(x == "openPrice") { open = split[i+1]
+		} else if(x == "highPrice") { hi = split[i+1] 
+		} else if(x == "lowPrice") { lo = split[i+1] 
+		} else if(x == "closePrice") { closeP = split[i+1] 
+		} else if(x == "mark") { mark = split[i+1] 
+		} else if(x == "totalVolume") { volume = split[i+1] 
+		} else if(x == "volatility") { volatility = split[i+1] 
+		//} else if(x == "FTWkHigh") { FTwhi = split[i+1]
+		//} else if(x == "FTWkLow") { FTwlo = split[i+1]
+		} else if(x == "peRatio") { pe = split[i+1]
+		}
+	}
+
+	bid = trimFirstLastChar(bid)
+	ask = trimFirstLastChar(ask)
+	last = trimFirstLastChar(last)
+	open = trimFirstLastChar(open)
+	hi = trimFirstLastChar(hi)
+	lo = trimFirstLastChar(lo)
+	closeP = trimFirstLastChar(closeP)
+	mark = trimFirstLastChar(mark)
+	volume = trimFirstLastChar(volume)
+	volatility = trimFirstLastChar(volatility)
+	//FTwhi = trimFirstLastChar(FTwhi)
+	//FTwlo = trimFirstLastChar(FTwlo)
+	pe = trimFirstLastChar(pe)	
+
+	return QUOTE{
+		DATETIME: 	dt,
+		TICKER:   	ticker,
+		MARK:		mark,
+		VOLUME:		volume,
+		VOLATILITY:	volatility,
+		BID:	  	bid,
+		ASK:	  	ask,
+		LAST:     	last,
+		OPEN:	  	open,
+		CLOSE:		closeP,
+		HI:	  	hi,
+		LO:	  	lo,
+		//FiftyTwoWkHI:	FTwhi,
+		//FiftyTwoWkLO:	FTwlo,
+		PE:		pe,
+	}
 }
 
 // PriceHistory returns a string; containing a series of candles with price volume & datetime info per candlestick,
@@ -65,11 +132,8 @@ func PriceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 	q.Add("frequencyType",frequencyType)
 	q.Add("frequency",frequency)
 	req.URL.RawQuery = q.Encode()
-	body := utils.Handler(req)
-
-	//var df []FRAME
-	//chars := []rune(body)
+	body := Handler(req)
+	// var df = []FRAME
 
 	return body
 }
-
