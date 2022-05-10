@@ -3,7 +3,7 @@ package movers
 import (
 	"fmt"
 	"net/http"
-	"github.com/samjtro/go-tda/utils"
+	. "github.com/samjtro/go-tda/utils"
 )
 
 // Get returns a string; containing information on the desired index's movers per your desired direction and change type(percent or value), 
@@ -18,7 +18,7 @@ func Get(index,direction,change string) string {
 	q.Add("direction",direction)
 	q.Add("change",change)
 	req.URL.RawQuery = q.Encode()
-	body := utils.Handler(req)
+	body := Handler(req)
 
 	return body
 }

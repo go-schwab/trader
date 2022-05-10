@@ -3,7 +3,7 @@ package option
 import (
 	"fmt"
 	"net/http"
-	"github.com/samtjro/go-tda/utils"
+	. "github.com/samtjro/go-tda/utils"
 )
 
 type CHAIN struct {
@@ -38,7 +38,7 @@ func Single(ticker,contractType,strikeCount,includeQuotes,strike,strikeRange str
 	q.add("strike",strike)
 	q.add("range",strikeRange)
 	req.URL.RawQuery = q.Encode()
-	body := utils.Handler(req)
+	body := Handler(req)
 
 	return body
 }

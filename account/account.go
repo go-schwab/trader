@@ -3,6 +3,7 @@ package account
 import (
 	"fmt"
 	"net/http"
+	. "github.com/samjtro/go-tda/utils"
 )
 
 type MARGIN struct {

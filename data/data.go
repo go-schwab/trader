@@ -41,11 +41,6 @@ type FRAME struct {
 var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"// 	 	--> symbol
 var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory"// 	--> symbol
 
-func trimFirstLastChar(s string) string {
-	str := s[:len(s)-1]
-	return str[1:len(str)]
-}
-
 // RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more), 
 // it takes one parameter:
 // ticker = "AAPL", etc.
@@ -75,19 +70,19 @@ func RealTime(ticker string) QUOTE {
 		}
 	}
 
-	bid = trimFirstLastChar(bid)
-	ask = trimFirstLastChar(ask)
-	last = trimFirstLastChar(last)
-	open = trimFirstLastChar(open)
-	hi = trimFirstLastChar(hi)
-	lo = trimFirstLastChar(lo)
-	closeP = trimFirstLastChar(closeP)
-	mark = trimFirstLastChar(mark)
-	volume = trimFirstLastChar(volume)
-	volatility = trimFirstLastChar(volatility)
-	//FTwhi = trimFirstLastChar(FTwhi)
-	//FTwlo = trimFirstLastChar(FTwlo)
-	pe = trimFirstLastChar(pe)	
+	bid = TrimFL(bid)
+	ask = TrimFL(ask)
+	last = TrimFL(last)
+	open = TrimFL(open)
+	hi = TrimFL(hi)
+	lo = TrimFL(lo)
+	closeP = TrimFL(closeP)
+	mark = TrimFL(mark)
+	volume = TrimFL(volume)
+	volatility = TrimFL(volatility)
+	//FTwhi = TrimFL(FTwhi)
+	//FTwlo = TrimFL(FTwlo)
+	pe = TrimFL(pe)	
 
 	return QUOTE{
 		DATETIME: 	dt,
@@ -137,3 +132,4 @@ func PriceHistory(ticker,periodType,period,frequencyType,frequency string) strin
 
 	return body
 }
+
