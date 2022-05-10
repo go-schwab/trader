@@ -6,6 +6,8 @@ import (
 	. "github.com/samtjro/go-tda/utils"
 )
 
+var endpoint_option string = "https://api.tdameritrade.com/v1/marketdata/chains"
+
 type CHAIN struct {
 	SYMBOL		string
 	STATUS		string

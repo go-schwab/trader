@@ -1,4 +1,4 @@
-package trade
+package account
 
 import (
 	"fmt"
