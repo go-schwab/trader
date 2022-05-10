@@ -200,6 +200,7 @@ func Fundamental(ticker string) FUNDAMENTAL {
 	vol1 = TrimFL(vol1)
 	vol10 = TrimFL(vol10)
 	vol3 = TrimFL(vol3)
+	vol3 = TrimL(vol3)
 
 	return FUNDAMENTAL{
 		TICKER:			ticker,
