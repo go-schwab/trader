@@ -7,6 +7,7 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
+// for use with the Get function
 type SIMPLE struct {
 	CUSIP		string
 	TICKER		string
@@ -15,12 +16,13 @@ type SIMPLE struct {
 	TYPE		string
 }
 
+// for use with the Fundamental function
 type FUNDAMENTAL struct {
 	TICKER			string
-	/*CUSIP			string
+	CUSIP			string
 	DESCRIPTION		string
 	EXCHANGE		string
-	TYPE			string*/
+	TYPE			string
 	HI52			string
 	LO52			string
 	DIV_YIELD		string
@@ -30,7 +32,7 @@ type FUNDAMENTAL struct {
 	PB_RATIO		string
 	PR_RATIO		string
 	PCF_RATIO		string
-	/*GROSS_MARGIN_TTM	string
+	GROSS_MARGIN_TTM	string
 	GROSS_MARGIN_MRQ	string
 	NET_PROFIT_MARGIN_TTM	string
 	NET_PROFIT_MARGIN_MRQ	string
@@ -57,7 +59,7 @@ type FUNDAMENTAL struct {
 	BETA			string
 	VOL_1DAY		string
 	VOL_10DAY		string
-	VOL_3MON		string*/
+	VOL_3MON		string
 }
 
 var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
@@ -103,15 +105,8 @@ func Get(ticker string) SIMPLE {
 	}
 }
 
-// Search uses more detailed parameters to return a string; containing more detailed information of various types on your desired ticker,
-// it takes two parameters:
-// ticker = "AAPL", etc.
-// projection = the type of search to perform: from td-ameritrade's website:
-// symbol-search: Retrieve instrument data of a specific symbol or cusip 
-// symbol-regex: Retrieve instrument data for all symbols matching regex. Example: symbol=XYZ.* will return all symbols beginning with XYZ 
-// desc-search: Retrieve instrument data for instruments whose description contains the word supplied. Example: symbol=FakeCompany will return all instruments with FakeCompany in the description. 
-// desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C. 
-// fundamental: Returns fundamental data for a single instrument specified by exact symbol.'
+// returns a FUNDAMENTAL struct; containing lots of information regarding both price and underlying information and history
+// Returns fundamental data for a single instrument specified by ticker
 func Fundamental(ticker string) FUNDAMENTAL {
 	req,_ := http.NewRequest("GET",endpoint_searchinstrument,nil)
 	q := req.URL.Query()
@@ -120,45 +115,138 @@ func Fundamental(ticker string) FUNDAMENTAL {
 	req.URL.RawQuery = q.Encode()
 	body := Handler(req)
 
-	//var cusip,desc,exchange,Type,hi52,lo52,div_yield,div_amount,pe_ratio,peg_ratio,pb_ratio,pr_ratio,pcf_ratio,gross_margin_ttm,gross_margin_mrq,net_profit_margin_ttm,net_profit_margin_mrq,operating_margin_ttm,operating_margin_mrq,return_on_equity,return_on_assets,return_on_investment,quick_ratio,current_ratio,interest_coverage,total_debt_to_capital,total_debt_to_equity,eps_ttm,eps_change_percent_ttm,eps_change_per_yr,eps_change_yr,rev_change_yr,rev_change_ttm,rev_change_in,shares_outstanding,market_cap_float,market_cap,book_value_per_share,beta,vol_1day,vol_10day,vol_3mon string
-
-	var hi52,lo52,div_amount,div_yield,pe,peg,pb,pr,pcf string
+	var cusip,desc,exchange,Type,hi52,lo52,divAmount,divYield,pe,peg,pb,pr,pcf,gmTTM,gmMRQ,npmTTM,npmMRQ,omTTM,omMRQ,roe,roa,roi,qRatio,cRatio,interestCoverage,debtCapital,debtEquity,epsTTM,epsPercentTTM,epsChangeYR,revChangeYR,revChangeTTM,revChangeIn,sharesOutstanding,marketCapFloat,marketCap,bookVPS,beta,vol1,vol10,vol3 string
 
 	split := strings.Split(body,"\"")
 	for i,x := range split {
-		if(x == "high52") { hi52 = split[i+1]
+		if(x == "cusip") { cusip = split[i+2]
+		} else if(x == "description") { desc = split[i+2]
+		} else if(x == "exchange") { exchange = split[i+2]
+		} else if(x == "assetType") { Type = split[i+2]
+		} else if(x == "high52") { hi52 = split[i+1]
 		} else if(x == "low52") { lo52 = split[i+1]
-		} else if(x == "dividendAmount") { div_amount = split[i+1]
-		} else if(x == "dividendYield") { div_yield = split[i+1] 
+		} else if(x == "dividendAmount") { divAmount = split[i+1]
+		} else if(x == "dividendYield") { divYield = split[i+1] 
 		} else if(x == "peRatio") { pe = split[i+1]
 		} else if(x == "pegRatio") { peg = split[i+1]
 		} else if(x == "pbRatio") { pb = split[i+1]
 		} else if(x == "prRatio") { pr = split[i+1]
 		} else if(x == "pcfRatio") { pcf = split[i+1]
+		} else if(x == "grossMarginTTM") { gmTTM = split[i+1]
+		} else if(x == "grossMarginMRQ") { gmMRQ = split[i+1]
+		} else if(x == "netProfitMarginTTM") { npmTTM = split[i+1]
+		} else if(x == "netProfitMarginMRQ") { npmMRQ = split[i+1]
+		} else if(x == "operatingMarginTTM") { omTTM = split[i+1]
+		} else if(x == "operatingMarginMRQ") { omMRQ = split[i+1]
+		} else if(x == "returnOnEquity") { roe = split[i+1]
+		} else if(x == "returnOnAssets") { roa = split[i+1]
+		} else if(x == "returnOnInvestment") { roi = split[i+1]
+		} else if(x == "quickRatio") { qRatio = split[i+1]
+		} else if(x == "currentRatio") { cRatio = split[i+1]
+		} else if(x == "interestCoverage") { interestCoverage = split[i+1]
+		} else if(x == "totalDebtToCapital") { debtCapital = split[i+1]
+		} else if(x == "totalDebtToEquity") { debtEquity = split[i+1]
+		} else if(x == "epsTTM") { epsTTM = split[i+1]
+		} else if(x == "epsChangePercentTTM") { epsPercentTTM = split[i+1]
+		} else if(x == "epsChangeYear") { epsChangeYR = split[i+1]
+		} else if(x == "revChangeYear") { revChangeYR = split[i+1]
+		} else if(x == "revChangeTTM") { revChangeTTM = split[i+1]
+		} else if(x == "revChangeIn") { revChangeIn = split[i+1]
+		} else if(x == "sharesOutstanding") { sharesOutstanding = split[i+1]
+		} else if(x == "marketCapFloat") { marketCapFloat = split[i+1]
+		} else if(x == "marketCap") { marketCap = split[i+1]
+		} else if(x == "bookValuePerShare") { bookVPS = split[i+1]
+		} else if(x == "beta") { beta = split[i+1]
+		} else if(x == "vol1DayAvg") { vol1 = split[i+1]
+		} else if(x == "vol10DayAvg") { vol10 = split[i+1]
+		} else if(x == "vol3MonthAvg") { vol3 = split[i+1]
 		}
 	}
 
 	hi52 = TrimFL(hi52)
 	lo52 = TrimFL(lo52)
-	div_yield = TrimFL(div_yield)
-	div_amount = TrimFL(div_amount)
+	divYield = TrimFL(divYield)
+	divAmount = TrimFL(divAmount)
 	pe = TrimFL(pe)
 	peg = TrimFL(peg)
 	pb = TrimFL(pb)
 	pr = TrimFL(pr)
 	pcf = TrimFL(pcf)
+	gmTTM = TrimFL(gmTTM)
+	gmMRQ = TrimFL(gmMRQ)
+	npmTTM = TrimFL(npmTTM)
+	npmMRQ = TrimFL(npmMRQ)
+	omTTM = TrimFL(omTTM)
+	omMRQ = TrimFL(omMRQ)
+	roe = TrimFL(roe)
+	roa = TrimFL(roa)
+	roi = TrimFL(roi)
+	qRatio = TrimFL(qRatio)
+	cRatio = TrimFL(cRatio)
+	interestCoverage = TrimFL(interestCoverage)
+	debtCapital = TrimFL(debtCapital)
+	debtEquity = TrimFL(debtEquity)
+	epsTTM = TrimFL(epsTTM)
+	epsPercentTTM = TrimFL(epsPercentTTM)
+	epsChangeYR = TrimFL(epsChangeYR)
+	revChangeYR = TrimFL(revChangeYR)
+	revChangeTTM = TrimFL(revChangeTTM)
+	revChangeIn = TrimFL(revChangeIn)
+	sharesOutstanding = TrimFL(sharesOutstanding)
+	marketCapFloat = TrimFL(marketCapFloat)
+	marketCap = TrimFL(marketCap)
+	bookVPS = TrimFL(bookVPS)
+	beta = TrimFL(beta)
+	vol1 = TrimFL(vol1)
+	vol10 = TrimFL(vol10)
+	vol3 = TrimFL(vol3)
 
 	return FUNDAMENTAL{
-		TICKER:		ticker,
-		HI52:		hi52,
-		LO52:		lo52,
-		DIV_YIELD:	div_yield,
-		DIV_AMOUNT:	div_amount,
-		PE_RATIO:	pe,
-		PEG_RATIO:	peg,
-		PB_RATIO:	pb,
-		PR_RATIO:	pr,
-		PCF_RATIO:	pcf,
+		TICKER:			ticker,
+		CUSIP:			cusip,
+		DESCRIPTION:		desc,
+		EXCHANGE:		exchange,
+		TYPE:			Type,
+		HI52:			hi52,
+		LO52:			lo52,
+		DIV_YIELD:		divYield,
+		DIV_AMOUNT:		divAmount,
+		PE_RATIO:		pe,
+		PEG_RATIO:		peg,
+		PB_RATIO:		pb,
+		PR_RATIO:		pr,
+		PCF_RATIO:		pcf,
+		GROSS_MARGIN_TTM:	gmTTM,
+		GROSS_MARGIN_MRQ:	gmMRQ,
+		NET_PROFIT_MARGIN_TTM:  npmTTM,
+		NET_PROFIT_MARGIN_MRQ:  npmMRQ,
+		OPERATING_MARGIN_TTM:   omTTM,
+		OPERATING_MARGIN_MRQ:   omMRQ,
+		RETURN_ON_EQUITY:	roe,
+		RETURN_ON_ASSETS:	roa,
+		RETURN_ON_INVESTMENT:	roi,
+		QUICK_RATIO:		qRatio,
+		CURRENT_RATIO:		cRatio,
+		INTEREST_COVERAGE:	interestCoverage,
+		TOTAL_DEBT_TO_CAPITAL:	debtCapital,
+		TOTAL_DEBT_TO_EQUITY:	debtEquity,
+		EPS_TTM:		epsTTM,
+		EPS_CHANGE_PERCENT_TTM:	epsPercentTTM,
+		EPS_CHANGE_YR:		epsChangeYR,
+		REV_CHANGE_YR:		revChangeYR,
+		REV_CHANGE_TTM:		revChangeTTM,
+		REV_CHANGE_IN:		revChangeIn,
+		SHARES_OUTSTANDING:	sharesOutstanding,
+		MARKET_CAP_FLOAT:	marketCapFloat,
+		MARKET_CAP:		marketCap,
+		BOOK_VALUE_PER_SHARE:	bookVPS,
+		BETA:			beta,
+		VOL_1DAY:		vol1,
+		VOL_10DAY:		vol10,
+		VOL_3MON:		vol3,
 	}
 }
+
+
+// desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C.
 

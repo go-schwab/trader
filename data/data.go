@@ -8,8 +8,7 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// custom struct for use with RealTime
-// contains a number of important real time & historical financial indicators
+// for use with RealTime
 type QUOTE struct {
 	DATETIME	string
 	TICKER		string
@@ -23,9 +22,9 @@ type QUOTE struct {
 	CLOSE		string
 	HI		string
 	LO		string
-	//FiftyTwoWkHI	string
-	//FiftyTwoWkLO	string
-	PE		string
+	HI52		string
+	LO52		string
+	PE_RATIO	string
 }
 
 // for use with PriceHistory 
@@ -50,7 +49,7 @@ func RealTime(ticker string) QUOTE {
 	req,_ := http.NewRequest("GET",url,nil)
 	body := Handler(req)
 
-	var bid,ask,last,open,hi,lo,closeP,mark,volume,volatility,pe string
+	var bid,ask,last,open,hi,lo,closeP,mark,volume,volatility,hi52,lo52,pe string
 
 	split := strings.Split(body,"\"")
 	for i,x := range split {
@@ -64,8 +63,8 @@ func RealTime(ticker string) QUOTE {
 		} else if(x == "mark") { mark = split[i+1] 
 		} else if(x == "totalVolume") { volume = split[i+1] 
 		} else if(x == "volatility") { volatility = split[i+1] 
-		//} else if(x == "FTWkHigh") { FTwhi = split[i+1]
-		//} else if(x == "FTWkLow") { FTwlo = split[i+1]
+		} else if(x == "52WkHigh") { hi52 = split[i+1]
+		} else if(x == "52WkLow") { lo52 = split[i+1]
 		} else if(x == "peRatio") { pe = split[i+1]
 		}
 	}
@@ -80,8 +79,8 @@ func RealTime(ticker string) QUOTE {
 	mark = TrimFL(mark)
 	volume = TrimFL(volume)
 	volatility = TrimFL(volatility)
-	//FTwhi = TrimFL(FTwhi)
-	//FTwlo = TrimFL(FTwlo)
+	hi52 = TrimFL(hi52)
+	lo52 = TrimFL(lo52)
 	pe = TrimFL(pe)	
 
 	return QUOTE{
@@ -97,9 +96,9 @@ func RealTime(ticker string) QUOTE {
 		CLOSE:		closeP,
 		HI:	  	hi,
 		LO:	  	lo,
-		//FiftyTwoWkHI:	FTwhi,
-		//FiftyTwoWkLO:	FTwlo,
-		PE:		pe,
+		HI52:		hi52,
+		LO52:		lo52,
+		PE_RATIO:	pe,
 	}
 }
 
