@@ -6,7 +6,7 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-type MARGIN struct {
+/*type MARGIN struct {
 	Type			string
 	accountId		string
 	roundTrips		string
@@ -28,8 +28,11 @@ type CASH struct {
 	initialBalances 	[]map(string,int)
 	currentBalances 	[]map(string,int)
 	projectedBalances	[]map(string,int)
-}
+}*/
 
-func Get(string fields) string {}
+// Get returns a string; containing account information,
+// it takes one param:
+// fields = this command will only return balances, but you can add positions or orders, or both (formatted positions,orders)
+// func Get(fields string) string {}
 
 
