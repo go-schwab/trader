@@ -32,7 +32,7 @@ package details:
 - `data`: contains `RealTime` and `PriceHistory`; used for getting either a RealTime quote of a ticker, or a long-term PriceHistory dataframe of a stock from tda (most common use-case)
 - `movers`: contains `Get`; returns a list of movers for the day by index & direction
 - `option`: contains `Single` & a number of other more advanced strategy spread functions; returns an option chain for your desired ticker, strike, etc.
-- `instrument`: contains `Search` & `Get`; returns information on a desired ticker or CUSIP
+- `instrument`: contains `Fundamental` & `Get`; returns information on a desired ticker or CUSIP
 - `account` are will contain account monitoring and trading functions but is not functional as of right now, the rest of the packages are still obviously very WIP   
 
 read the documentation for proper function usage, most are straight forward (as described above) but some require some pretty specific input to get working correctly. if you still have a question, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@protonmail.com
