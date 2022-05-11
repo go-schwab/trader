@@ -30,14 +30,13 @@ type CHAIN struct {
 // SBK = strikes below market
 // SNK = strikes near market
 // ALL* = default, all strikes
-func Single(ticker,contractType,strikeCount,includeQuotes,strike,strikeRange string) string {
+func Single(ticker,contractType,strikeCount,includeQuotes,strikeRange string) string {
 	req,_ := http.NewRequest("GET",endpoint_option,nil)
 	q := req.URL.Query()
 	q.Add("symbol",ticker)
 	q.Add("contractType",contractType)
 	q.Add("strikeCount",strikeCount)
 	q.Add("includeQuotes",includeQuotes)
-	q.add("strike",strike)
 	q.add("range",strikeRange)
 	req.URL.RawQuery = q.Encode()
 	body := Handler(req)

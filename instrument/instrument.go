@@ -163,8 +163,6 @@ func Fundamental(ticker string) FUNDAMENTAL {
 		}
 	}
 
-	vol3 = TrimFL(vol3)
-
 	return FUNDAMENTAL{
 		TICKER:			ticker,
 		CUSIP:			cusip,
@@ -207,7 +205,7 @@ func Fundamental(ticker string) FUNDAMENTAL {
 		BETA:			TrimFL(beta),
 		VOL_1DAY:		TrimFL(vol1),
 		VOL_10DAY:		TrimFL(vol10),
-		VOL_3MON:		TrimL(vol3),
+		VOL_3MON:		TrimFL(TrimL(vol3)),
 	}
 }
 

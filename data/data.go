@@ -69,36 +69,22 @@ func RealTime(ticker string) QUOTE {
 		}
 	}
 
-	bid = TrimFL(bid)
-	ask = TrimFL(ask)
-	last = TrimFL(last)
-	open = TrimFL(open)
-	hi = TrimFL(hi)
-	lo = TrimFL(lo)
-	closeP = TrimFL(closeP)
-	mark = TrimFL(mark)
-	volume = TrimFL(volume)
-	volatility = TrimFL(volatility)
-	hi52 = TrimFL(hi52)
-	lo52 = TrimFL(lo52)
-	pe = TrimFL(pe)	
-
 	return QUOTE{
 		DATETIME: 	dt,
 		TICKER:   	ticker,
-		MARK:		mark,
-		VOLUME:		volume,
-		VOLATILITY:	volatility,
-		BID:	  	bid,
-		ASK:	  	ask,
-		LAST:     	last,
-		OPEN:	  	open,
-		CLOSE:		closeP,
-		HI:	  	hi,
-		LO:	  	lo,
-		HI52:		hi52,
-		LO52:		lo52,
-		PE_RATIO:	pe,
+		MARK:		TrimFL(mark),
+		VOLUME:		TrimFL(volume),
+		VOLATILITY:	TrimFL(volatility),
+		BID:	  	TrimFL(bid),
+		ASK:	  	TrimFL(ask),
+		LAST:     	TrimFL(last),
+		OPEN:	  	TrimFL(open),
+		CLOSE:		TrimFL(closeP),
+		HI:	  	TrimFL(hi),
+		LO:	  	TrimFL(lo),
+		HI52:		TrimFL(hi52),
+		LO52:		TrimFL(lo52),
+		PE_RATIO:	TrimFL(pe),
 	}
 }
 
