@@ -88,7 +88,7 @@ func RealTime(ticker string) QUOTE {
 	}
 }
 
-// PriceHistory returns a string; containing a series of candles with price volume & datetime info per candlestick,
+// PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick,
 // it takes five parameters:
 // ticker = "AAPL", etc.
 // periodType = "day", "month", "year", "ytd" - default is "day"

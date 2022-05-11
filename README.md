@@ -1,7 +1,7 @@
 # go-tda
 
 view this project at [pkg.go.dev](https://pkg.go.dev/github.com/samjtro/go-tda)  
-LATEST WORKING VERSION: v0.5.1
+LATEST WORKING VERSION: v0.5.2
 
 ## why tda?
 

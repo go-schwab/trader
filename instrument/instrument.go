@@ -65,7 +65,7 @@ type FUNDAMENTAL struct {
 var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
 var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s"//  		--> cusip
 
-// Get returns a string; with simple fundamental information regarding the desired ticker,
+// Get returns a SIMPLE; with simple fundamental information regarding the desired ticker,
 // it takes one parameter:
 // cusip = "037833100", etc.
 func Get(ticker string) SIMPLE {
@@ -105,7 +105,7 @@ func Get(ticker string) SIMPLE {
 	}
 }
 
-// returns a FUNDAMENTAL struct; containing lots of information regarding both price and underlying information and history
+// returns a FUNDAMENTAL; containing information regarding both price and underlying information and history
 // Returns fundamental data for a single instrument specified by ticker
 func Fundamental(ticker string) FUNDAMENTAL {
 	req,_ := http.NewRequest("GET",endpoint_searchinstrument,nil)
