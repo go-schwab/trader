@@ -1,7 +1,6 @@
 package option
 
 import (
-	"fmt"
 	"strings"
 	"net/http"
 	. "github.com/samjtro/go-tda/utils"
