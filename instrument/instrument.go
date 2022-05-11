@@ -1,4 +1,4 @@
-package instrument
+package instrument 
 
 import (
 	"fmt"
@@ -163,44 +163,7 @@ func Fundamental(ticker string) FUNDAMENTAL {
 		}
 	}
 
-	hi52 = TrimFL(hi52)
-	lo52 = TrimFL(lo52)
-	divYield = TrimFL(divYield)
-	divAmount = TrimFL(divAmount)
-	pe = TrimFL(pe)
-	peg = TrimFL(peg)
-	pb = TrimFL(pb)
-	pr = TrimFL(pr)
-	pcf = TrimFL(pcf)
-	gmTTM = TrimFL(gmTTM)
-	gmMRQ = TrimFL(gmMRQ)
-	npmTTM = TrimFL(npmTTM)
-	npmMRQ = TrimFL(npmMRQ)
-	omTTM = TrimFL(omTTM)
-	omMRQ = TrimFL(omMRQ)
-	roe = TrimFL(roe)
-	roa = TrimFL(roa)
-	roi = TrimFL(roi)
-	qRatio = TrimFL(qRatio)
-	cRatio = TrimFL(cRatio)
-	interestCoverage = TrimFL(interestCoverage)
-	debtCapital = TrimFL(debtCapital)
-	debtEquity = TrimFL(debtEquity)
-	epsTTM = TrimFL(epsTTM)
-	epsPercentTTM = TrimFL(epsPercentTTM)
-	epsChangeYR = TrimFL(epsChangeYR)
-	revChangeYR = TrimFL(revChangeYR)
-	revChangeTTM = TrimFL(revChangeTTM)
-	revChangeIn = TrimFL(revChangeIn)
-	sharesOutstanding = TrimFL(sharesOutstanding)
-	marketCapFloat = TrimFL(marketCapFloat)
-	marketCap = TrimFL(marketCap)
-	bookVPS = TrimFL(bookVPS)
-	beta = TrimFL(beta)
-	vol1 = TrimFL(vol1)
-	vol10 = TrimFL(vol10)
 	vol3 = TrimFL(vol3)
-	vol3 = TrimL(vol3)
 
 	return FUNDAMENTAL{
 		TICKER:			ticker,
@@ -208,46 +171,45 @@ func Fundamental(ticker string) FUNDAMENTAL {
 		DESCRIPTION:		desc,
 		EXCHANGE:		exchange,
 		TYPE:			Type,
-		HI52:			hi52,
-		LO52:			lo52,
-		DIV_YIELD:		divYield,
-		DIV_AMOUNT:		divAmount,
-		PE_RATIO:		pe,
-		PEG_RATIO:		peg,
-		PB_RATIO:		pb,
-		PR_RATIO:		pr,
-		PCF_RATIO:		pcf,
-		GROSS_MARGIN_TTM:	gmTTM,
-		GROSS_MARGIN_MRQ:	gmMRQ,
-		NET_PROFIT_MARGIN_TTM:  npmTTM,
-		NET_PROFIT_MARGIN_MRQ:  npmMRQ,
-		OPERATING_MARGIN_TTM:   omTTM,
-		OPERATING_MARGIN_MRQ:   omMRQ,
-		RETURN_ON_EQUITY:	roe,
-		RETURN_ON_ASSETS:	roa,
-		RETURN_ON_INVESTMENT:	roi,
-		QUICK_RATIO:		qRatio,
-		CURRENT_RATIO:		cRatio,
-		INTEREST_COVERAGE:	interestCoverage,
-		TOTAL_DEBT_TO_CAPITAL:	debtCapital,
-		TOTAL_DEBT_TO_EQUITY:	debtEquity,
-		EPS_TTM:		epsTTM,
-		EPS_CHANGE_PERCENT_TTM:	epsPercentTTM,
-		EPS_CHANGE_YR:		epsChangeYR,
-		REV_CHANGE_YR:		revChangeYR,
-		REV_CHANGE_TTM:		revChangeTTM,
-		REV_CHANGE_IN:		revChangeIn,
-		SHARES_OUTSTANDING:	sharesOutstanding,
-		MARKET_CAP_FLOAT:	marketCapFloat,
-		MARKET_CAP:		marketCap,
-		BOOK_VALUE_PER_SHARE:	bookVPS,
-		BETA:			beta,
-		VOL_1DAY:		vol1,
-		VOL_10DAY:		vol10,
-		VOL_3MON:		vol3,
+		HI52:			TrimFL(hi52),
+		LO52:			TrimFL(lo52),
+		DIV_YIELD:		TrimFL(divYield),
+		DIV_AMOUNT:		TrimFL(divAmount),
+		PE_RATIO:		TrimFL(pe),
+		PEG_RATIO:		TrimFL(peg),
+		PB_RATIO:		TrimFL(pb),
+		PR_RATIO:		TrimFL(pr),
+		PCF_RATIO:		TrimFL(pcf),
+		GROSS_MARGIN_TTM:	TrimFL(gmTTM),
+		GROSS_MARGIN_MRQ:	TrimFL(gmMRQ),
+		NET_PROFIT_MARGIN_TTM:  TrimFL(npmTTM),
+		NET_PROFIT_MARGIN_MRQ:  TrimFL(npmMRQ),
+		OPERATING_MARGIN_TTM:   TrimFL(omTTM),
+		OPERATING_MARGIN_MRQ:   TrimFL(omMRQ),
+		RETURN_ON_EQUITY:	TrimFL(roe),
+		RETURN_ON_ASSETS:	TrimFL(roa),
+		RETURN_ON_INVESTMENT:	TrimFL(roi),
+		QUICK_RATIO:		TrimFL(qRatio),
+		CURRENT_RATIO:		TrimFL(cRatio),
+		INTEREST_COVERAGE:	TrimFL(interestCoverage),
+		TOTAL_DEBT_TO_CAPITAL:	TrimFL(debtCapital),
+		TOTAL_DEBT_TO_EQUITY:	TrimFL(debtEquity),
+		EPS_TTM:		TrimFL(epsTTM),
+		EPS_CHANGE_PERCENT_TTM:	TrimFL(epsPercentTTM),
+		EPS_CHANGE_YR:		TrimFL(epsChangeYR),
+		REV_CHANGE_YR:		TrimFL(revChangeYR),
+		REV_CHANGE_TTM:		TrimFL(revChangeTTM),
+		REV_CHANGE_IN:		TrimFL(revChangeIn),
+		SHARES_OUTSTANDING:	TrimFL(sharesOutstanding),
+		MARKET_CAP_FLOAT:	TrimFL(marketCapFloat),
+		MARKET_CAP:		TrimFL(marketCap),
+		BOOK_VALUE_PER_SHARE:	TrimFL(bookVPS),
+		BETA:			TrimFL(beta),
+		VOL_1DAY:		TrimFL(vol1),
+		VOL_10DAY:		TrimFL(vol10),
+		VOL_3MON:		TrimL(vol3),
 	}
 }
-
 
 // desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C.
 

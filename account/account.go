@@ -30,6 +30,6 @@ type CASH struct {
 	projectedBalances	[]map(string,int)
 }
 
-//func Get(string fields) string {}
+func Get(string fields) string {}
 
 
