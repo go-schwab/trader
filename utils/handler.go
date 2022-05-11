@@ -7,6 +7,12 @@ import (
 	"io/ioutil"
 )
 
+// create helper functions for file name search, for .APIKEY, in the project directory
+// it will return a string, which is the path to the .APIKEY file in the directory
+// Handler will then subsequently utilize that path for the api key element,
+// thus removing the neccesity of copying around the .APIKEY file for every implementation
+// func keySeach() string {} 
+
 // Handler is the general purpose request function for the td-ameritrade api
 // all functions will be routed through this handler function, which does all of the API calling work
 // it performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function
