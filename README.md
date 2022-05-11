@@ -23,14 +23,17 @@ this is a go implementation of a td-ameritrade API hook. the goal of this projec
 
 3. create a file called `.APIKEY` and store your api key you generated in that file (with NO extra lines)  
 
-4. use the `go get github.com/samjtro/go-tda/<package_name>` command to import whatever package you'd like to use
+4. use the `go get github.com/samjtro/go-tda` command to import 
+
+5. use whatever package you wish in whatever file you wish; if you are using package control yourself, the .APIKEY file must be in each directory (alternatively, you may obviously pull a new branch and use the "../.APIKEY" path rather than the ".APIKEY" path in the handler.go file)   
+
+package details:  
+
 - `data`: contains `RealTime` and `PriceHistory`; used for getting either a RealTime quote of a ticker, or a long-term PriceHistory dataframe of a stock from tda (most common use-case)
 - `movers`: contains `Get`; returns a list of movers for the day by index & direction
 - `option`: contains `Single` & a number of other more advanced strategy spread functions; returns an option chain for your desired ticker, strike, etc.
 - `instrument`: contains `Search` & `Get`; returns information on a desired ticker or CUSIP
-- `account` are will contain account monitoring and trading functions but is not functional as of right now, the rest of the packages are still obviously very WIP  
-
-5. use whatever package you wish in whatever file you wish; if you are using package control yourself, the .APIKEY file must be in each directory (alternatively, you may obviously pull a new branch and use the "../.APIKEY" path rather than the ".APIKEY" path in the handler.go file)  
+- `account` are will contain account monitoring and trading functions but is not functional as of right now, the rest of the packages are still obviously very WIP   
 
 read the documentation for proper function usage, most are straight forward (as described above) but some require some pretty specific input to get working correctly. if you still have a question, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@protonmail.com
 
