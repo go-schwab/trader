@@ -163,12 +163,41 @@ func Analytical(ticker,contractType,strikeRange,strikeCount,toDate,volatility,un
 
 	return body
 }
-// func Covered() string {}
+
+// Covered returns a string; containing covered option calls
+func Covered(ticker,contractType,strikeRange,strikeCount,toDate string) string {
+	req,_ := http.NewRequest("GET",endpoint_option,nil)
+	q := req.URL.Query()
+	q.Add("strategy","COVERED")
+	q.Add("symbol",ticker)
+	q.Add("contractType",contractType)
+	q.Add("range",strikeRange)
+	q.Add("strikeCount",strikeCount)
+	q.Add("toDate",toDate)
+	body := Handler(req)
+
+	return body
+}
+
+// Butterfly returns a string; containing Butterfly spread option calls
+func Butterfly(ticker,contractType,strikeRange,strikeCount,toDate string) string {
+	req,_ := http.NewRequest("GET",endpoint_option,nil)
+	q := req.URL.Query()
+	q.Add("strategy","BUTTERFLY")
+	q.Add("symbol",ticker)
+	q.Add("contractType",contractType)
+	q.Add("range",strikeRange)
+	q.Add("strikeCount",strikeCount)
+	q.Add("toDate",toDate)
+	body := Handler(req)
+
+	return body
+}
+
 // func Vertical() string {}
 // func Calendar() string {}
 // func Strangle() string {}
 // func Straddle() string {}
-// func Butterfly() string {}
 // func Condor() string {}
 // func Diagonal() string {}
 // func Collar() string {}

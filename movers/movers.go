@@ -7,7 +7,7 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-type MOVERS struct {
+type MOVER struct {
 	TICKER		string
 	DESCRIPTION	string
 	LAST		string
@@ -23,7 +23,7 @@ var endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/move
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"
-func Get(index,direction,change string) []MOVERS {
+func Get(index,direction,change string) []MOVER {
 	url := fmt.Sprintf(endpoint_movers,index)
 	req,_ := http.NewRequest("GET",url,nil)
 	q := req.URL.Query()
@@ -32,7 +32,7 @@ func Get(index,direction,change string) []MOVERS {
 	req.URL.RawQuery = q.Encode()
 	body := Handler(req)
 
-	var movers []MOVERS
+	var movers []MOVER
 	var chang,desc,dir,last,ticker,volume string
 
 	split := strings.Split(body,"}")
@@ -48,7 +48,7 @@ func Get(index,direction,change string) []MOVERS {
 			}
 		}
 
-		mov := MOVERS{
+		mov := MOVER{
 			TICKER:		ticker,
 			DESCRIPTION:	desc,
 			LAST:		TrimFL(last),
