@@ -16,7 +16,7 @@ type MOVERS struct {
 	VOLUME		string
 }
  
-var endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/movers"// 	 		--> index
+var endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/movers"// index
 
 // Get returns a string; containing information on the desired index's movers per your desired direction and change type(percent or value), 
 // it takes three parameters:

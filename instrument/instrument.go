@@ -63,7 +63,7 @@ type FUNDAMENTAL struct {
 }
 
 var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
-var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s"//  		--> cusip
+var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s"// cusip
 
 // Get returns a SIMPLE; with simple fundamental information regarding the desired ticker,
 // it takes one parameter:

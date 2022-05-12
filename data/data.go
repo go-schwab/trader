@@ -37,8 +37,8 @@ type FRAME struct {
 	LO		string
 }
 
-var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"// 	 	--> symbol
-var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory"// 	--> symbol
+var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"// symbol
+var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory"// symbol
 
 // RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more), 
 // it takes one parameter:
