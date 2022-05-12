@@ -37,6 +37,17 @@ package details:
 
 read the documentation for proper function usage, most are straight forward (as described above) but some require some pretty specific input to get working correctly. if you still have a question, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@protonmail.com
 
+## roadmap to v1.0.0
+
+by 06-01-2022:
+
+[ ] implement custom structs for each major package
+- data,option,movers,instrument,account
+
+[ ] implement trading functionality for account package
+
+[ ] finish up Analytical, Covered & Butterfly spread implementations
+
 ## what can i do with this project?
 
 like previously mentioned, the goal is for you to use this in a wide variety of capacities. do what you wish with this project, but...  
