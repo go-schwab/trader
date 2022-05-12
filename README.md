@@ -23,15 +23,15 @@ this is a go implementation of a td-ameritrade API hook. the goal of this projec
 
 3. create a file called `.APIKEY` and store your api key you generated in that file (with NO extra lines)  
 
-4. use the `go get github.com/samjtro/go-tda` command to import 
+4. `go get github.com/samjtro/go-tda` 
 
-5. use whatever package you wish in whatever file you wish; if you are using package control yourself, the .APIKEY file must be in each directory (alternatively, you may obviously pull a new branch and use the "../.APIKEY" path rather than the ".APIKEY" path in the handler.go file)   
+5. move the .APIKEY file into the dir you call from (alternatively, you may obviously pull a new branch and use the "../.APIKEY" path rather than the ".APIKEY" path in the handler.go file)   
 
 package details:  
 
 - `data`: contains `RealTime` and `PriceHistory`; used for getting either a RealTime quote of a ticker, or a long-term PriceHistory dataframe of a stock from tda (most common use-case)
 - `movers`: contains `Get`; returns a list of movers for the day by index & direction
-- `option`: contains `Single`, `Analytical`, `Covered` & `Butterfly`; returns an option chain
+- `option`: contains `Single`, `Analytical`, `Covered` & `Butterfly`; `Single` returns a Single contract Option Chains, the rest return strategy chains
 - `instrument`: contains `Fundamental` & `Get`; returns information on a desired ticker or CUSIP
 - `account` are will contain account monitoring and trading functions but is not functional as of right now, the rest of the packages are still obviously very WIP   
 
