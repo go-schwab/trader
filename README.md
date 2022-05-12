@@ -1,6 +1,6 @@
 # go-tda
+[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)
 
-view this project at [pkg.go.dev](https://pkg.go.dev/github.com/samjtro/go-tda)  
 LATEST WORKING VERSION: v0.5.5
 
 ## why tda?
@@ -31,7 +31,7 @@ package details:
 
 - `data`: contains `RealTime` and `PriceHistory`; used for getting either a RealTime quote of a ticker, or a long-term PriceHistory dataframe of a stock from tda (most common use-case)
 - `movers`: contains `Get`; returns a list of movers for the day by index & direction
-- `option`: contains `Single` & a number of other more advanced strategy spread functions; returns an option chain for your desired ticker, strike, etc.
+- `option`: contains `Single`, `Analytical`, `Covered` & `Butterfly`; returns an option chain
 - `instrument`: contains `Fundamental` & `Get`; returns information on a desired ticker or CUSIP
 - `account` are will contain account monitoring and trading functions but is not functional as of right now, the rest of the packages are still obviously very WIP   
 
