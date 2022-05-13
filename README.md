@@ -52,4 +52,4 @@ by 06-01-2022:
 
 like previously mentioned, the goal is for you to use this in a wide variety of capacities. do what you wish with this project, but...  
 
-see the license; it is permissive, there are guidelines for proper reproduction & crediting :)
+see the license; it is permissive, there are guidelines for proper reproduction & crediting :) 
