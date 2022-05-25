@@ -76,8 +76,6 @@ func Get(ticker string) SIMPLE {
 	req2.URL.RawQuery = q2.Encode()
 	body2 := Handler(req2)
 
-	var cusip string
-
 	split2 := strings.Split(body2,"\"")
 	for i,x := range split2 {
 		if(x == "cusip") { cusip = split2[i+2] }
@@ -87,7 +85,7 @@ func Get(ticker string) SIMPLE {
 	req,_ := http.NewRequest("GET",url,nil)
 	body := Handler(req)
 
-	var desc,exchange,Type string
+	var cusip,desc,exchange,Type string
 
 	split := strings.Split(body,"\"")
 	for i,x := range split {
