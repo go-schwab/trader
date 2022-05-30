@@ -1,4 +1,4 @@
-package account
+package main
 
 import (
 	"fmt"
@@ -6,112 +6,128 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
+func main() { 
+	Stock("","","","","")
+}
+
 var endpoint_place = "https://api.tdameritrade.com/v1/accounts/%s/orders"
 var endpoint_replace = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 var endpoint_cancel = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 var endpoint_get = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 
-func GetOrder(accountID,bearerToken string) string {
+func Get(accountID,bearerToken string) string {
 	url := fmt.Sprintf(endpoint_get)
 	req,_ := http.NewRequest(endpoint_replace,accountID,orderID)
 	req.Authorization = bearerToken
 }
 
-func StockOrder(accountID,bearerToken,orderType,session,duration,strategy,orderLeg,instruction,quantity,symbol,assetType string) string {
+func Stock(accountID,bearerToken,instruction,ticker,quantity string) string {
 	url := fmt.Sprintf(endpoint_place,accountID)
-	req,_ := http.NewRequest("POST",url,nil)
-	req.Authorization = bearerToken
-
 	str := fmt.Sprintf("
 {
-  \"orderType\": %s,
-  \"session\": %s,
-  \"duration\": %s,
-  \"orderStrategyType\": %s,
+  \"orderType\": \"MARKET\",
+  \"session\": \"NORMAL\",
+  \"duration\": \"DAY\",
+  \"orderStrategyType\": \"SINGLE\",
   \"orderLegCollection\": [
     {
       \"instruction\": %s,
       \"quantity\": %s,
       \"instrument\": {
         \"symbol\": %s,
-        \"assetType\": %s
+        \"assetType\": \"EQUITY\"
       }
     }
   ]
-}",orderType,session,duration,strategy,orderLeg,instruction,quantity,instrument,symbol,assetType)
+}",instruction,quantity,instrument,ticker)
 
-	return str
+	req,_ := http.NewRequest("POST",url,bytes.NewBuffer(str))
+	req.Header.Set("Authorization",bearerToken)
+	req.Header.Set("Content-Type","application/json; charset=UTF-8")
+	body := Handler(req)
+
+	return body
+
 }
 
 func ConditionalOrder(accountID,bearerToken string) string {
 	url := fmt.Sprintf(endpoint_place,accountID)
-	req,_ := http.NewRequest("POST",url,nil)
-	req.Authorization = bearerToken
-
 	str := fmt.Sprintf("
 {
   \"orderType\": \"LIMIT\",
   \"session\": \"NORMAL\",
-  \"price\": \"34.97\",
+  \"price\": \"%s\",
   \"duration\": \"DAY\",
   \"orderStrategyType\": \"TRIGGER\",
   \"orderLegCollection\": [
     {
-      \"instruction\": \"BUY\",
-      \"quantity\": 10,
+      \"instruction\": \"%s\",
+      \"quantity\": %s,
       \"instrument\": {
-        \"symbol\": \"XYZ\",
+        \"symbol\": \"%s\",
         \"assetType\": \"EQUITY\"
       }
     }
   ],
   \"childOrderStrategies\": [
     {
-      \"orderType": "LIMIT\",
-      \"session": "NORMAL\",
-      \"price": "42.03\",
-      \"duration": "DAY\",
+      \"orderType\": \"LIMIT\",
+      \"session\": \"NORMAL\",
+      \"price\": \"%s\",
+      \"duration\": \"DAY\",
       \"orderStrategyType\": \"SINGLE\",
       \"orderLegCollection\": [
         {
-          \"instruction\": \"SELL\",
-          \"quantity\": 10,
+          \"instruction\": \"%s\",
+          \"quantity\": %s,
           \"instrument\": {
-            \"symbol\": \"XYZ\",
+            \"symbol\": \"%s\",
             \"assetType\": \"EQUITY\"
           }
         }
       ]
     }
   ]
-}")
+}",price,instruction,quantity,ticker,price2,instruction2,quantity2,ticker2)
+
+	req,_ := http.NewRequest("POST",url,bytes.NewBuffer(str))
+	req.Header.Set("Authorization",bearerToken)
+	req.Header.Set("Content-Type","application/json; charset=UTF-8")
+	body := Handler(req)
+
+	return body
+
 }
 
 func SingleOption(accountID,bearerToken string) string {
-	url := fmt.Sprintf(endpoint_single)
-	req,_ := http.NewRequest("POST",url,nil)
-	req.Authorization = bearerToken
-
-
+	url := fmt.Sprintf(endpoint_place,accountID)
 	str := fmt.Sprintf(" 
 {
   \"complexOrderStrategyType\": \"NONE\",
   \"orderType\": \"LIMIT\",
   \"session\": \"NORMAL\",
-  \"price\": \"6.45\",
+  \"price\": \"%s\",
   \"duration\": \"DAY\",
   \"orderStrategyType\": \"SINGLE\",
   \"orderLegCollection\": [
     {
       \"instruction\": \"BUY_TO_OPEN\",
-      \"quantity\": 10,
+      \"quantity\": %s,
       \"instrument\": {
-        \"symbol\": \"XYZ_032015C49\",
+        \"symbol\": \"%s\",
         \"assetType\": \"OPTION\"
     	}
     }
   ]
 }")
+
+	req,_ := http.NewRequest("POST",url,bytes.NewBuffer(str))
+	req.Header.Set("Authorization",bearerToken)
+	req.Header.Set("Content-Type","application/json; charset=UTF-8")
+	body := Handler(req)
+
+	return body
+
 }
 
 func VerticalSpread(accountID,bearerToken string) string {
