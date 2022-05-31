@@ -1,7 +1,7 @@
 # go-tda
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda) 
  
-LATEST WORKING VERSION: v0.6.0
+LATEST STABLE VERSION: v0.6.0
 
 ## why tda?
 
@@ -17,7 +17,7 @@ this is a go implementation of a td-ameritrade API hook. the goal of this projec
 - optionally, if you'd like to trade using the `trade` package, you will have to register for a td-ameritrade brokerage account
 - this is NOT neccesary, as you can use the data from tda to trade on any platform you wish  
 
-1. create an app on td ameritrade developer at [this link](https://developer.tdameritrade.com/user/me/apps), or by going to the My Apps tab while logged in  
+1. create an app on td ameritrade developer at [https://developer.tdameritrade.com/user/me/apps](https://developer.tdameritrade.com/user/me/apps), or by going to the My Apps tab while logged in  
 
 2. go to your app (once it has been approved), and get the api key under the "Consumer Key" section  
 
@@ -31,18 +31,15 @@ package details:
 
 - `data`: contains `RealTime` and `PriceHistory`; used for getting either a RealTime quote of a ticker, or a long-term PriceHistory dataframe of a stock from tda (most common use-case)
 - `movers`: contains `Get`; returns a list of movers for the day by index & direction
-- `option`: contains `Single`, `Analytical`, `Covered` & `Butterfly`; `Single` returns a Single contract Option Chains, the rest return strategy chains
+- `option`: contains `Single`; returns Option Chains of your desired parameters
 - `instrument`: contains `Fundamental` & `Get`; returns information on a desired ticker or CUSIP
-- `account` are will contain account monitoring and trading functions but is not functional as of right now, the rest of the packages are still obviously very WIP   
+- `account` will contain account monitoring and trading functions but is not functional as of right now   
 
 read the documentation for proper function usage, most are straight forward (as described above) but some require some pretty specific input to get working correctly. if you still have a question, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@protonmail.com
 
 ## roadmap to v1.0.0
 
-by 06-01-2022:
-
-[ ] implement custom structs for each major package
-- data,option,movers,instrument,account
+by 07-01-2022:
 
 [ ] implement trading functionality for account package
 
