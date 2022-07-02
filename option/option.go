@@ -1,8 +1,9 @@
 package option
 
 import (
-	"strings"
 	"net/http"
+	"strings"
+
 	. "github.com/samjtro/go-tda/utils"
 )
 
@@ -16,35 +17,35 @@ var endpoint_option string = "https://api.tdameritrade.com/v1/marketdata/chains"
 //type UNDERLYING struct {}
 
 type CONTRACT struct {
-	TYPE			string
-	SYMBOL			string
-	STRIKE			string
-	EXCHANGE		string
-	EXPIRATION		string
-	DAYS2EXPIRATION	        string
-	BID			string
-	ASK			string
-	LAST			string
-	MARK			string
-	BIDASK_SIZE		string
-	VOLATILITY		string
-	DELTA			string
-	GAMMA			string
-	THETA			string
-	VEGA			string
-	RHO			string
-	OPEN_INTEREST		string
-	TIME_VALUE		string
-	THEORETICAL_VALUE 	string
-	THEORETICAL_VOLATILITY  string
-	PERCENT_CHANGE		string
-	MARK_CHANGE		string
-	MARK_PERCENT_CHANGE	string
-	INTRINSIC_VALUE		string
-	IN_THE_MONEY		string //bool
+	TYPE                   string
+	SYMBOL                 string
+	STRIKE                 string
+	EXCHANGE               string
+	EXPIRATION             string
+	DAYS2EXPIRATION        string
+	BID                    string
+	ASK                    string
+	LAST                   string
+	MARK                   string
+	BIDASK_SIZE            string
+	VOLATILITY             string
+	DELTA                  string
+	GAMMA                  string
+	THETA                  string
+	VEGA                   string
+	RHO                    string
+	OPEN_INTEREST          string
+	TIME_VALUE             string
+	THEORETICAL_VALUE      string
+	THEORETICAL_VOLATILITY string
+	PERCENT_CHANGE         string
+	MARK_CHANGE            string
+	MARK_PERCENT_CHANGE    string
+	INTRINSIC_VALUE        string
+	IN_THE_MONEY           string //bool
 }
 
-// Single returns a []CONTRACT; containing a SINGLE option chain of your desired strike, type, etc., 
+// Single returns a []CONTRACT; containing a SINGLE option chain of your desired strike, type, etc.,
 // it takes four parameters:
 // ticker = "AAPL", etc.
 // contractType = "CALL", "PUT", "ALL"
@@ -59,105 +60,131 @@ type CONTRACT struct {
 // strikeCount = The number of strikes to return above and below the at-the-money price
 // toDate = Only return expirations before this date. Valid ISO-8601 formats are: yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ssz.
 // lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01")
-// this returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the 
+// this returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the
 // status of the contract ("ALL"), expiring before 2022-07-01
-func Single(ticker,contractType,strikeRange,strikeCount,toDate string) []CONTRACT {
-	req,_ := http.NewRequest("GET",endpoint_option,nil)
+func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CONTRACT {
+	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
-	q.Add("symbol",ticker)
-	q.Add("contractType",contractType)
-	q.Add("range",strikeRange)
-	q.Add("strikeCount",strikeCount)
-	q.Add("toDate",toDate)
+	q.Add("symbol", ticker)
+	q.Add("contractType", contractType)
+	q.Add("range", strikeRange)
+	q.Add("strikeCount", strikeCount)
+	q.Add("toDate", toDate)
 	req.URL.RawQuery = q.Encode()
 	body := Handler(req)
 
 	var chain []CONTRACT
-	var Type,symbol,exchange,strikePrice,exp,d2e,bid,ask,last,mark,bidAskSize,volatility,delta,gamma,theta,vega,rho,openInterest,timeValue,theoreticalValue,theoreticalVolatility,percentChange,markChange,markPercentChange,intrinsicValue,inTheMoney string
+	var Type, symbol, exchange, strikePrice, exp, d2e, bid, ask, last, mark, bidAskSize, volatility, delta, gamma, theta, vega, rho, openInterest, timeValue, theoreticalValue, theoreticalVolatility, percentChange, markChange, markPercentChange, intrinsicValue, inTheMoney string
 
-	split := strings.Split(body,"}],")
-	for _,x := range split {
-		split2 := strings.Split(x,"\"")
-		for i,x := range split2 {
-			if(x == "putCall") { Type = split2[i+2]
-			} else if(x == "symbol") { symbol = split2[i+2] 
-			} else if(x == "exchangeName") { exchange = split2[i+2]
-			} else if(x == "strikePrice") { strikePrice = split2[i+1]
-			} else if(x == "expirationDate") { exp = split2[i+1]
-			} else if(x == "daysToExpiration") { d2e = split2[i+1]		
-			} else if(x == "bid") { bid = split2[i+1]
-			} else if(x == "ask") { ask = split2[i+1]
-			} else if(x == "last") { last = split2[i+1]
-			} else if(x == "mark") { mark = split2[i+1]
-			} else if(x == "bidAskSize") { bidAskSize = split2[i+2]
-			} else if(x == "volatility") { volatility = split2[i+1]
-			} else if(x == "delta") { delta = split2[i+1]
-			} else if(x == "gamma") { gamma = split2[i+1]
-			} else if(x == "theta") { theta = split2[i+1]
-			} else if(x == "vega") { vega = split2[i+1]
-			} else if(x == "rho") { rho = split2[i+1]
-			} else if(x == "openInterest") { openInterest = split2[i+1]
-			} else if(x == "timeValue") { timeValue = split2[i+1]
-			} else if(x == "theoreticalOptionValue") { theoreticalValue = split2[i+1]
-			} else if(x == "theoreticalVolatility") { theoreticalVolatility = split2[i+1]
-			} else if(x == "percentChange") { percentChange = split2[i+1]
-			} else if(x == "markChange") { markChange = split2[i+1]
-			} else if(x == "markPercentChange") { markPercentChange = split2[i+1]
-			} else if(x == "intrinsicValue") { intrinsicValue = split2[i+1]
-			} else if(x == "inTheMoney") { inTheMoney = split2[i+1]
+	split := strings.Split(body, "}],")
+	for _, x := range split {
+		split2 := strings.Split(x, "\"")
+		for i, x := range split2 {
+			if x == "putCall" {
+				Type = split2[i+2]
+			} else if x == "symbol" {
+				symbol = split2[i+2]
+			} else if x == "exchangeName" {
+				exchange = split2[i+2]
+			} else if x == "strikePrice" {
+				strikePrice = split2[i+1]
+			} else if x == "expirationDate" {
+				exp = split2[i+1]
+			} else if x == "daysToExpiration" {
+				d2e = split2[i+1]
+			} else if x == "bid" {
+				bid = split2[i+1]
+			} else if x == "ask" {
+				ask = split2[i+1]
+			} else if x == "last" {
+				last = split2[i+1]
+			} else if x == "mark" {
+				mark = split2[i+1]
+			} else if x == "bidAskSize" {
+				bidAskSize = split2[i+2]
+			} else if x == "volatility" {
+				volatility = split2[i+1]
+			} else if x == "delta" {
+				delta = split2[i+1]
+			} else if x == "gamma" {
+				gamma = split2[i+1]
+			} else if x == "theta" {
+				theta = split2[i+1]
+			} else if x == "vega" {
+				vega = split2[i+1]
+			} else if x == "rho" {
+				rho = split2[i+1]
+			} else if x == "openInterest" {
+				openInterest = split2[i+1]
+			} else if x == "timeValue" {
+				timeValue = split2[i+1]
+			} else if x == "theoreticalOptionValue" {
+				theoreticalValue = split2[i+1]
+			} else if x == "theoreticalVolatility" {
+				theoreticalVolatility = split2[i+1]
+			} else if x == "percentChange" {
+				percentChange = split2[i+1]
+			} else if x == "markChange" {
+				markChange = split2[i+1]
+			} else if x == "markPercentChange" {
+				markPercentChange = split2[i+1]
+			} else if x == "intrinsicValue" {
+				intrinsicValue = split2[i+1]
+			} else if x == "inTheMoney" {
+				inTheMoney = split2[i+1]
 			}
 		}
-		
+
 		contract := CONTRACT{
-			TYPE:			Type,
-			SYMBOL:			symbol,
-			STRIKE:			TrimFL(strikePrice),
-			EXCHANGE:		exchange,
-			EXPIRATION:		TrimFL(exp),
-			DAYS2EXPIRATION:	TrimFL(d2e),
-			BID:			TrimFL(bid),
-			ASK:			TrimFL(ask),
-			LAST:			TrimFL(last),
-			MARK:			TrimFL(mark),
-			BIDASK_SIZE:		bidAskSize,
-			VOLATILITY:		TrimFL(volatility),
-			DELTA:			TrimFL(delta),
-			GAMMA:			TrimFL(gamma),
-			THETA:			TrimFL(theta),
-			VEGA:			TrimFL(vega),
-			RHO:			TrimFL(rho),
-			OPEN_INTEREST:		TrimFL(openInterest),
-			TIME_VALUE:		TrimFL(timeValue),
-			THEORETICAL_VALUE:	TrimFL(theoreticalValue),
-			THEORETICAL_VOLATILITY:	TrimFL(theoreticalVolatility),
-			PERCENT_CHANGE:		TrimFL(percentChange),
-			MARK_CHANGE:		TrimFL(markChange),
-			MARK_PERCENT_CHANGE:	TrimFL(markPercentChange),
-			INTRINSIC_VALUE:	TrimFL(intrinsicValue),
-			IN_THE_MONEY:		TrimFL(inTheMoney),
+			TYPE:                   Type,
+			SYMBOL:                 symbol,
+			STRIKE:                 TrimFL(strikePrice),
+			EXCHANGE:               exchange,
+			EXPIRATION:             TrimFL(exp),
+			DAYS2EXPIRATION:        TrimFL(d2e),
+			BID:                    TrimFL(bid),
+			ASK:                    TrimFL(ask),
+			LAST:                   TrimFL(last),
+			MARK:                   TrimFL(mark),
+			BIDASK_SIZE:            bidAskSize,
+			VOLATILITY:             TrimFL(volatility),
+			DELTA:                  TrimFL(delta),
+			GAMMA:                  TrimFL(gamma),
+			THETA:                  TrimFL(theta),
+			VEGA:                   TrimFL(vega),
+			RHO:                    TrimFL(rho),
+			OPEN_INTEREST:          TrimFL(openInterest),
+			TIME_VALUE:             TrimFL(timeValue),
+			THEORETICAL_VALUE:      TrimFL(theoreticalValue),
+			THEORETICAL_VOLATILITY: TrimFL(theoreticalVolatility),
+			PERCENT_CHANGE:         TrimFL(percentChange),
+			MARK_CHANGE:            TrimFL(markChange),
+			MARK_PERCENT_CHANGE:    TrimFL(markPercentChange),
+			INTRINSIC_VALUE:        TrimFL(intrinsicValue),
+			IN_THE_MONEY:           TrimFL(inTheMoney),
 		}
 
-		chain = append(chain,contract)
+		chain = append(chain, contract)
 	}
 
 	return chain
 }
 
-// ANALYTICAL returns a string; allows you to control additional parameters for theoretical value calculations; 
+// ANALYTICAL returns a string; allows you to control additional parameters for theoretical value calculations;
 // it takes nine parameters
-func Analytical(ticker,contractType,strikeRange,strikeCount,toDate,volatility,underlyingPrice,interestRate,daysToExpiration string) string {
-	req,_ := http.NewRequest("GET",endpoint_option,nil)
+func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatility, underlyingPrice, interestRate, daysToExpiration string) string {
+	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
-	q.Add("strategy","ANALYTICAL")
-	q.Add("symbol",ticker)
-	q.Add("contractType",contractType)
-	q.Add("range",strikeRange)
-	q.Add("strikeCount",strikeCount)
-	q.Add("toDate",toDate)
-	q.Add("volatility",volatility)
-	q.Add("underlyingPrice",underlyingPrice)
-	q.Add("interestRate",interestRate)
-	q.Add("daysToExpiration",underlyingPrice)
+	q.Add("strategy", "ANALYTICAL")
+	q.Add("symbol", ticker)
+	q.Add("contractType", contractType)
+	q.Add("range", strikeRange)
+	q.Add("strikeCount", strikeCount)
+	q.Add("toDate", toDate)
+	q.Add("volatility", volatility)
+	q.Add("underlyingPrice", underlyingPrice)
+	q.Add("interestRate", interestRate)
+	q.Add("daysToExpiration", underlyingPrice)
 	req.URL.RawQuery = q.Encode()
 	body := Handler(req)
 
@@ -165,30 +192,30 @@ func Analytical(ticker,contractType,strikeRange,strikeCount,toDate,volatility,un
 }
 
 // Covered returns a string; containing covered option calls
-func Covered(ticker,contractType,strikeRange,strikeCount,toDate string) string {
-	req,_ := http.NewRequest("GET",endpoint_option,nil)
+func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) string {
+	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
-	q.Add("strategy","COVERED")
-	q.Add("symbol",ticker)
-	q.Add("contractType",contractType)
-	q.Add("range",strikeRange)
-	q.Add("strikeCount",strikeCount)
-	q.Add("toDate",toDate)
+	q.Add("strategy", "COVERED")
+	q.Add("symbol", ticker)
+	q.Add("contractType", contractType)
+	q.Add("range", strikeRange)
+	q.Add("strikeCount", strikeCount)
+	q.Add("toDate", toDate)
 	body := Handler(req)
 
 	return body
 }
 
 // Butterfly returns a string; containing Butterfly spread option calls
-func Butterfly(ticker,contractType,strikeRange,strikeCount,toDate string) string {
-	req,_ := http.NewRequest("GET",endpoint_option,nil)
+func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) string {
+	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
-	q.Add("strategy","BUTTERFLY")
-	q.Add("symbol",ticker)
-	q.Add("contractType",contractType)
-	q.Add("range",strikeRange)
-	q.Add("strikeCount",strikeCount)
-	q.Add("toDate",toDate)
+	q.Add("strategy", "BUTTERFLY")
+	q.Add("symbol", ticker)
+	q.Add("contractType", contractType)
+	q.Add("range", strikeRange)
+	q.Add("strikeCount", strikeCount)
+	q.Add("toDate", toDate)
 	body := Handler(req)
 
 	return body

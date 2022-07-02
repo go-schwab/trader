@@ -1,4 +1,4 @@
-package main
+package account
 
 import (
 	"fmt"
@@ -24,22 +24,22 @@ func Get(accountID,bearerToken string) string {
 func Stock(accountID,bearerToken,instruction,ticker,quantity string) string {
 	url := fmt.Sprintf(endpoint_place,accountID)
 	str := fmt.Sprintf("
-{
-  \"orderType\": \"MARKET\",
-  \"session\": \"NORMAL\",
-  \"duration\": \"DAY\",
-  \"orderStrategyType\": \"SINGLE\",
-  \"orderLegCollection\": [
-    {
-      \"instruction\": %s,
-      \"quantity\": %s,
-      \"instrument\": {
-        \"symbol\": %s,
-        \"assetType\": \"EQUITY\"
+  {
+    \"orderType\": \"MARKET\",
+    \"session\": \"NORMAL\",
+    \"duration\": \"DAY\",
+    \"orderStrategyType\": \"SINGLE\",
+    \"orderLegCollection\": [
+      {
+        \"instruction\": %s,
+        \"quantity\": %s,
+        \"instrument\": {
+          \"symbol\": %s,
+          \"assetType\": \"EQUITY\"
+        }
       }
-    }
-  ]
-}",instruction,quantity,instrument,ticker)
+    ]
+  }",instruction,quantity,instrument,ticker)
 
 	req,_ := http.NewRequest("POST",url,bytes.NewBuffer(str))
 	req.Header.Set("Authorization",bearerToken)
