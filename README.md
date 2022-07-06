@@ -17,9 +17,10 @@
 - create a file called `.APIKEY` and store your api key you generated in that file (with NO extra lines) 
 - move that file to the parent directory of the project 
 
-4. `go get github.com/samjtro/go-tda`
+3. `go get github.com/samjtro/go-tda`
 
-5. `import 'github.com/samjtro/go-tda'`
+- you're now ready to go! import the library by package ( `github.com/samjtro/go-tda/data` for the data package, for instance )
+- if you have any questions, check the [go reference](https://pkg.go.dev/github.com/samjtro/go-tda), which is also at the top of the page
 
 ### package details
 
