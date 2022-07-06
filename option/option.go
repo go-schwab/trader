@@ -86,57 +86,58 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CON
 		split2 := strings.Split(x, "\"")
 
 		for i, x := range split2 {
-			if x == "putCall" {
+			switch x {
+			case "putCall":
 				Type = split2[i+2]
-			} else if x == "symbol" {
+			case "symbol":
 				symbol = split2[i+2]
-			} else if x == "exchangeName" {
+			case "exchangeName":
 				exchange = split2[i+2]
-			} else if x == "strikePrice" {
+			case "strikePrice":
 				strikePrice = split2[i+1]
-			} else if x == "expirationDate" {
+			case "expirationDate":
 				exp = split2[i+1]
-			} else if x == "daysToExpiration" {
+			case "daysToExpiration":
 				d2e = split2[i+1]
-			} else if x == "bid" {
+			case "bid":
 				bid = split2[i+1]
-			} else if x == "ask" {
+			case "ask":
 				ask = split2[i+1]
-			} else if x == "last" {
+			case "last":
 				last = split2[i+1]
-			} else if x == "mark" {
+			case "mark":
 				mark = split2[i+1]
-			} else if x == "bidAskSize" {
+			case "bidAskSize":
 				bidAskSize = split2[i+2]
-			} else if x == "volatility" {
+			case "volatility":
 				volatility = split2[i+1]
-			} else if x == "delta" {
+			case "delta":
 				delta = split2[i+1]
-			} else if x == "gamma" {
+			case "gamma":
 				gamma = split2[i+1]
-			} else if x == "theta" {
+			case "theta":
 				theta = split2[i+1]
-			} else if x == "vega" {
+			case "vega":
 				vega = split2[i+1]
-			} else if x == "rho" {
+			case "rho":
 				rho = split2[i+1]
-			} else if x == "openInterest" {
+			case "openInterest":
 				openInterest = split2[i+1]
-			} else if x == "timeValue" {
+			case "timeValue":
 				timeValue = split2[i+1]
-			} else if x == "theoreticalOptionValue" {
+			case "theoreticalOptionValue":
 				theoreticalValue = split2[i+1]
-			} else if x == "theoreticalVolatility" {
+			case "theoreticalVolatility":
 				theoreticalVolatility = split2[i+1]
-			} else if x == "percentChange" {
+			case "percentChange":
 				percentChange = split2[i+1]
-			} else if x == "markChange" {
+			case "markChange":
 				markChange = split2[i+1]
-			} else if x == "markPercentChange" {
+			case "markPercentChange":
 				markPercentChange = split2[i+1]
-			} else if x == "intrinsicValue" {
+			case "intrinsicValue":
 				intrinsicValue = split2[i+1]
-			} else if x == "inTheMoney" {
+			case "inTheMoney":
 				inTheMoney = split2[i+1]
 			}
 		}
