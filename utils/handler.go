@@ -3,7 +3,6 @@ package utils
 import (
 	"bufio"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -13,12 +12,12 @@ import (
 // it will return a string, which is the path to the .APIKEY file in the directory
 // Handler will then subsequently utilize that path for the api key element,
 // thus removing the neccesity of copying around the .APIKEY file for every implementation
-func keySearch() string {
+func keySearch() (string, error) {
 	path, err := os.Getwd()
 	var newPath string
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	if path[0] == 'C' { // for Windows systems
@@ -39,7 +38,7 @@ func keySearch() string {
 		newPath += ".APIKEY"
 	}
 
-	return newPath
+	return newPath, nil
 }
 
 // Handler is the general purpose request function for the td-ameritrade api
@@ -49,7 +48,13 @@ func keySearch() string {
 // it takes one parameter:
 // req = a request of type *http.Request
 func Handler(req *http.Request) (string, error) {
-	file, err := os.Open(keySearch())
+	keyPath, err := keySearch()
+
+	if err != nil {
+		return "", err
+	}
+
+	file, err := os.Open(keyPath)
 
 	if err != nil {
 		return "", err
