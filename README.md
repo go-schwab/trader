@@ -1,7 +1,7 @@
 # go-tda
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda) 
  
-LATEST STABLE VERSION: v0.6.0
+LATEST STABLE VERSION: v0.6.3
 
 ## why tda?
 
