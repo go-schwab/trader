@@ -8,18 +8,17 @@ LATEST STABLE VERSION: v0.6.4
 ### quick start
 
 0. go to [developer.tdameritrade.com](https://developer.tdameritrade.com/) and register for an account
-- optionally, if you'd like to trade using the `trade` package, you will have to register for a td-ameritrade brokerage account
-- this is NOT neccesary, as you can use the data from tda to trade on any platform you wish  
+- optionally, if you'd like to trade using the `trade` package, you will have to register for a td-ameritrade brokerage account - this is NOT neccesary, as you can use the data from tda to trade on any platform you wish  
 
 1. create an app on td ameritrade developer at [https://developer.tdameritrade.com/user/me/apps](https://developer.tdameritrade.com/user/me/apps), or by going to the My Apps tab while logged in  
 
 2. go to your app (once it has been approved), and get the api key under the "Consumer Key" section  
+- create a file called `.APIKEY` and store your api key you generated in that file (with NO extra lines) 
+- move that file to the parent directory of the project 
 
-3. create a file called `.APIKEY` and store your api key you generated in that file (with NO extra lines)  
+4. `go get github.com/samjtro/go-tda`
 
-4. `go get github.com/samjtro/go-tda` 
-
-5. move the .APIKEY file into the dir you call from (alternatively, you may obviously pull a new branch and use the "../.APIKEY" path rather than the ".APIKEY" path in the handler.go file)   
+5. `import 'github.com/samjtro/go-tda'`
 
 ### package details
 
