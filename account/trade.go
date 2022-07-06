@@ -3,28 +3,40 @@ package account
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net/http"
 
 	. "github.com/samjtro/go-tda/utils"
 )
-
-func main() {
-	Stock("", "", "", "", "")
-}
 
 var endpoint_place = "https://api.tdameritrade.com/v1/accounts/%s/orders"
 var endpoint_replace = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 var endpoint_cancel = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 var endpoint_get = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 
-func Trade(accountID, bearerToken string) string {
-	url := fmt.Sprintf(endpoint_get)
-	req, _ := http.NewRequest(endpoint_replace, accountID)
-	req.Authorization = bearerToken
+func Place(accountID, order string) string {
+	bearer, err := GetBearerToken(accountID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	req, _ := http.NewRequest("POST", fmt.Sprintf(endpoint_place, accountID), bytes.NewReader([]byte(order)))
+	req.Header.Set("Authorization", bearer)
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
+	body, err := Handler(req)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return body
 }
 
-func Stock(accountID, bearerToken, instruction, ticker, quantity string) (string, error) {
-	url := fmt.Sprintf(endpoint_place, accountID)
+// func Replace(accountID, bearerToken, orderID string) (string, error) {}
+// func Get(accountID, bearerToken, orderID string) (string, error) {}
+// func Cancel(accountID, bearerToken, orderID string) (string, error) {}
+
+func Stock(accountID, instruction, ticker, quantity string) string {
 	str := fmt.Sprintf(`
   {
     \"orderType\": \"MARKET\",
@@ -43,21 +55,10 @@ func Stock(accountID, bearerToken, instruction, ticker, quantity string) (string
     ]
   }`, instruction, quantity, ticker)
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(str))
-	req.Header.Set("Authorization", bearerToken)
-	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	body, err := Handler(req)
-
-	if err != nil {
-		return "", err
-	}
-
-	return body, nil
-
+	return Place(accountID, str)
 }
 
-func ConditionalOrder(accountID, bearerToken string) (string, error) {
-	url := fmt.Sprintf(endpoint_place, accountID)
+func ConditionalOrder(accountID, price, instruction, quantity, ticker, price2, instruction2, quantity2, ticker2 string) string {
 	str := fmt.Sprintf(`
 {
   \"orderType\": \"LIMIT\",
@@ -96,21 +97,10 @@ func ConditionalOrder(accountID, bearerToken string) (string, error) {
   ]
 }`, price, instruction, quantity, ticker, price2, instruction2, quantity2, ticker2)
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(str))
-	req.Header.Set("Authorization", bearerToken)
-	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	body, err := Handler(req)
-
-	if err != nil {
-		return "", err
-	}
-
-	return body, nil
-
+	return Place(accountID, str)
 }
 
-func SingleOption(accountID, bearerToken string) (string, error) {
-	url := fmt.Sprintf(endpoint_place, accountID)
+func SingleOption(accountID, price, quantity, ticker string) string {
 	str := fmt.Sprintf(`
 {
   \"complexOrderStrategyType\": \"NONE\",
@@ -129,19 +119,9 @@ func SingleOption(accountID, bearerToken string) (string, error) {
     	}
     }
   ]
-}`)
+}`, price, quantity, ticker)
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(str))
-	req.Header.Set("Authorization", bearerToken)
-	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	body, err := Handler(req)
-
-	if err != nil {
-		return "", err
-	}
-
-	return body, nil
-
+	return Place(accountID, str)
 }
 
 func VerticalSpread(accountID, bearerToken string) string {
@@ -171,6 +151,7 @@ func VerticalSpread(accountID, bearerToken string) string {
     }
   ]
 }`)
+
 	return str
 }
 

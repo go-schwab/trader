@@ -12,11 +12,11 @@ import (
 var endpoint = "https://api.tdameritrade.com/v1/oauth2/token"
 
 // GetBearerToken returns a string; containing the Bearer Token for your account
-func GetBearerToken(client_id, redirect_url string) (string, error) {
+func GetBearerToken(accountID string) (string, error) {
 	req, _ := http.NewRequest("GET", endpoint, nil)
 	q := req.URL.Query()
 	q.Add("grant_type", "authorization_code")
-	q.Add("client_id", client_id)
+	q.Add("client_id", accountID)
 	req.URL.RawQuery = q.Encode()
 	resp, err := Handler(req)
 
