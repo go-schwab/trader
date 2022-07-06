@@ -44,11 +44,17 @@ var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%
 // RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more),
 // it takes one parameter:
 // ticker = "AAPL", etc.
-func RealTime(ticker string) QUOTE {
+func RealTime(ticker string) (QUOTE, error) {
 	dt := Now(time.Now())
 	url := fmt.Sprintf(endpoint_realtime, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
-	body := Handler(req)
+	body, err := Handler(req)
+
+	fakeQuote := QUOTE{}
+
+	if err != nil {
+		return fakeQuote, err
+	}
 
 	var bid, ask, last, open, hi, lo, closeP, mark, volume, volatility, hi52, lo52, pe string
 
@@ -99,7 +105,7 @@ func RealTime(ticker string) QUOTE {
 		HI52:       TrimFL(hi52),
 		LO52:       TrimFL(lo52),
 		PE_RATIO:   TrimFL(pe),
-	}
+	}, nil
 }
 
 // PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick,
@@ -117,7 +123,7 @@ func RealTime(ticker string) QUOTE {
 // "daily": 1
 // "weekly": 1
 // "monthly": 1
-func PriceHistory(ticker, periodType, period, frequencyType, frequency string) []FRAME {
+func PriceHistory(ticker, periodType, period, frequencyType, frequency string) ([]FRAME, error) {
 	url := fmt.Sprintf(endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
@@ -126,7 +132,15 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 	q.Add("frequencyType", frequencyType)
 	q.Add("frequency", frequency)
 	req.URL.RawQuery = q.Encode()
-	body := Handler(req)
+	body, err := Handler(req)
+
+	fakeFrame := FRAME{}
+	var fakeArray []FRAME
+	fakeArray = append(fakeArray, fakeFrame)
+
+	if err != nil {
+		return fakeArray, err
+	}
 
 	var df []FRAME
 	var open, hi, lo, Close, volume, datetime string
@@ -163,5 +177,5 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 		df = append(df, f)
 	}
 
-	return df
+	return df, nil
 }

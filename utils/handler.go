@@ -19,10 +19,13 @@ import (
 // it returns the body of the GET request's return
 // it takes one parameter:
 // req = a request of type *http.Request
-func Handler(req *http.Request) string {
+func Handler(req *http.Request) (string, error) {
 	file, _ := os.Open(".APIKEY")
-	s := bufio.NewScanner(file)
 	var APIKEY string
+
+	defer file.Close()
+
+	s := bufio.NewScanner(file)
 
 	for s.Scan() {
 		APIKEY += s.Text()
@@ -33,10 +36,15 @@ func Handler(req *http.Request) string {
 	req.URL.RawQuery = q.Encode()
 
 	client := http.Client{}
-	resp, _ := client.Do(req)
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return "", err
+	}
+
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	resp.Body.Close()
 
-	return string(body)
+	return string(body), nil
 }

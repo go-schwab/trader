@@ -24,14 +24,22 @@ var endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/move
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"
-func Get(index, direction, change string) []MOVER {
+func Get(index, direction, change string) ([]MOVER, error) {
 	url := fmt.Sprintf(endpoint_movers, index)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
 	q.Add("direction", direction)
 	q.Add("change", change)
 	req.URL.RawQuery = q.Encode()
-	body := Handler(req)
+	body, err := Handler(req)
+
+	fakeMover := MOVER{}
+	var fakeArray []MOVER
+	fakeArray = append(fakeArray, fakeMover)
+
+	if err != nil {
+		return fakeArray, err
+	}
 
 	var movers []MOVER
 	var chang, desc, dir, last, ticker, volume string
@@ -67,5 +75,5 @@ func Get(index, direction, change string) []MOVER {
 		movers = append(movers, mov)
 	}
 
-	return movers
+	return movers, nil
 }

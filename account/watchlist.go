@@ -10,13 +10,17 @@ import (
 
 var endpoint_watchlist = "https://api.tdameritrade.com/v1/accounts/%s/watchlists"
 
-func CreateWatchlist(accountID, Bearer string) string {
+func CreateWatchlist(accountID, Bearer string) (string, error) {
 	url := fmt.Sprintf(endpoint_watchlist, accountID)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", Bearer)
-	body := Handler(req)
+	body, err := Handler(req)
 
-	return body
+	if err != nil {
+		return "", err
+	}
+
+	return body, nil
 }
 
 // func DeleteWatchlist() {}

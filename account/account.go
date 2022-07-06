@@ -38,13 +38,17 @@ var endpoint_account string = "https://api.tdameritrade.com/v1/accounts/%s" // a
 // accountID = your accountID
 // fields = this command will only return balances, but you can add positions or orders, or both - "positions,orders"
 // Bearer = Bearer token for your account, generated from https://developer.tdameritrade.com/authentication/apis/post/token-0
-func Get(accountID, fields, Bearer string) string {
+func Get(accountID, fields, Bearer string) (string, error) {
 	url := fmt.Sprintf(endpoint_account, accountID)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", Bearer)
 	q := req.URL.Query()
 	req.URL.RawQuery = q.Encode()
-	body := Handler(req)
+	body, err := Handler(req)
 
-	return body
+	if err != nil {
+		return "", err
+	}
+
+	return body, nil
 }

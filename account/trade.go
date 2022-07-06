@@ -1,13 +1,15 @@
 package account
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
+
 	. "github.com/samjtro/go-tda/utils"
 )
 
-func main() { 
-	Stock("","","","","")
+func main() {
+	Stock("", "", "", "", "")
 }
 
 var endpoint_place = "https://api.tdameritrade.com/v1/accounts/%s/orders"
@@ -15,15 +17,15 @@ var endpoint_replace = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 var endpoint_cancel = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 var endpoint_get = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 
-func Get(accountID,bearerToken string) string {
+func Trade(accountID, bearerToken string) string {
 	url := fmt.Sprintf(endpoint_get)
-	req,_ := http.NewRequest(endpoint_replace,accountID,orderID)
+	req, _ := http.NewRequest(endpoint_replace, accountID)
 	req.Authorization = bearerToken
 }
 
-func Stock(accountID,bearerToken,instruction,ticker,quantity string) string {
-	url := fmt.Sprintf(endpoint_place,accountID)
-	str := fmt.Sprintf("
+func Stock(accountID, bearerToken, instruction, ticker, quantity string) (string, error) {
+	url := fmt.Sprintf(endpoint_place, accountID)
+	str := fmt.Sprintf(`
   {
     \"orderType\": \"MARKET\",
     \"session\": \"NORMAL\",
@@ -39,20 +41,24 @@ func Stock(accountID,bearerToken,instruction,ticker,quantity string) string {
         }
       }
     ]
-  }",instruction,quantity,instrument,ticker)
+  }`, instruction, quantity, ticker)
 
-	req,_ := http.NewRequest("POST",url,bytes.NewBuffer(str))
-	req.Header.Set("Authorization",bearerToken)
-	req.Header.Set("Content-Type","application/json; charset=UTF-8")
-	body := Handler(req)
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(str))
+	req.Header.Set("Authorization", bearerToken)
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
+	body, err := Handler(req)
 
-	return body
+	if err != nil {
+		return "", err
+	}
+
+	return body, nil
 
 }
 
-func ConditionalOrder(accountID,bearerToken string) string {
-	url := fmt.Sprintf(endpoint_place,accountID)
-	str := fmt.Sprintf("
+func ConditionalOrder(accountID, bearerToken string) (string, error) {
+	url := fmt.Sprintf(endpoint_place, accountID)
+	str := fmt.Sprintf(`
 {
   \"orderType\": \"LIMIT\",
   \"session\": \"NORMAL\",
@@ -88,20 +94,24 @@ func ConditionalOrder(accountID,bearerToken string) string {
       ]
     }
   ]
-}",price,instruction,quantity,ticker,price2,instruction2,quantity2,ticker2)
+}`, price, instruction, quantity, ticker, price2, instruction2, quantity2, ticker2)
 
-	req,_ := http.NewRequest("POST",url,bytes.NewBuffer(str))
-	req.Header.Set("Authorization",bearerToken)
-	req.Header.Set("Content-Type","application/json; charset=UTF-8")
-	body := Handler(req)
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(str))
+	req.Header.Set("Authorization", bearerToken)
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
+	body, err := Handler(req)
 
-	return body
+	if err != nil {
+		return "", err
+	}
+
+	return body, nil
 
 }
 
-func SingleOption(accountID,bearerToken string) string {
-	url := fmt.Sprintf(endpoint_place,accountID)
-	str := fmt.Sprintf(" 
+func SingleOption(accountID, bearerToken string) (string, error) {
+	url := fmt.Sprintf(endpoint_place, accountID)
+	str := fmt.Sprintf(`
 {
   \"complexOrderStrategyType\": \"NONE\",
   \"orderType\": \"LIMIT\",
@@ -119,19 +129,23 @@ func SingleOption(accountID,bearerToken string) string {
     	}
     }
   ]
-}")
+}`)
 
-	req,_ := http.NewRequest("POST",url,bytes.NewBuffer(str))
-	req.Header.Set("Authorization",bearerToken)
-	req.Header.Set("Content-Type","application/json; charset=UTF-8")
-	body := Handler(req)
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(str))
+	req.Header.Set("Authorization", bearerToken)
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
+	body, err := Handler(req)
 
-	return body
+	if err != nil {
+		return "", err
+	}
+
+	return body, nil
 
 }
 
-func VerticalSpread(accountID,bearerToken string) string {
-	str := fmt.Sprintf("
+func VerticalSpread(accountID, bearerToken string) string {
+	str := fmt.Sprintf(`
 {
   \"orderType\": \"NET_DEBIT\",
   \"session\": \"NORMAL\",
@@ -156,11 +170,12 @@ func VerticalSpread(accountID,bearerToken string) string {
       }
     }
   ]
-}")
+}`)
+	return str
 }
 
-func CustomSpread(accountID,bearerToken string) string {
-	str := fmt.Sprintf("
+func CustomSpread(accountID, bearerToken string) string {
+	str := fmt.Sprintf(`
 {
  \"orderStrategyType\": \"SINGLE\",
   \"orderType\": \"MARKET\",
@@ -185,6 +200,7 @@ func CustomSpread(accountID,bearerToken string) string {
   \"complexOrderStrategyType\": \"CUSTOM\",
   \"duration\": \"DAY\",
   \"session\": \"NORMAL\"
-}")
-}
+}`)
 
+	return str
+}
