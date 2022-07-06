@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -123,7 +124,7 @@ func RealTime(ticker string) (QUOTE, error) {
 // "daily": 1
 // "weekly": 1
 // "monthly": 1
-func PriceHistory(ticker, periodType, period, frequencyType, frequency string) ([]FRAME, error) {
+func PriceHistory(ticker, periodType, period, frequencyType, frequency string) []FRAME {
 	url := fmt.Sprintf(endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
@@ -134,12 +135,8 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) (
 	req.URL.RawQuery = q.Encode()
 	body, err := Handler(req)
 
-	fakeFrame := FRAME{}
-	var fakeArray []FRAME
-	fakeArray = append(fakeArray, fakeFrame)
-
 	if err != nil {
-		return fakeArray, err
+		log.Fatal(err)
 	}
 
 	var df []FRAME
@@ -147,6 +144,7 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) (
 
 	split := strings.Split(body, "{")
 	split = split[2:len(split)]
+
 	for _, x := range split {
 		split2 := strings.Split(x, "\"")
 		for i, x2 := range split2 {
@@ -177,5 +175,5 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) (
 		df = append(df, f)
 	}
 
-	return df, nil
+	return df
 }

@@ -1,6 +1,7 @@
 package option
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -62,7 +63,7 @@ type CONTRACT struct {
 // lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01")
 // this returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the
 // status of the contract ("ALL"), expiring before 2022-07-01
-func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CONTRACT, error) {
+func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CONTRACT {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
@@ -73,20 +74,17 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 	req.URL.RawQuery = q.Encode()
 	body, err := Handler(req)
 
-	fakeContract := CONTRACT{}
-	var fakeArray []CONTRACT
-	fakeArray = append(fakeArray, fakeContract)
-
 	if err != nil {
-		return fakeArray, err
+		log.Fatal(err)
 	}
 
 	var chain []CONTRACT
 	var Type, symbol, exchange, strikePrice, exp, d2e, bid, ask, last, mark, bidAskSize, volatility, delta, gamma, theta, vega, rho, openInterest, timeValue, theoreticalValue, theoreticalVolatility, percentChange, markChange, markPercentChange, intrinsicValue, inTheMoney string
-
 	split := strings.Split(body, "}],")
+
 	for _, x := range split {
 		split2 := strings.Split(x, "\"")
+
 		for i, x := range split2 {
 			if x == "putCall" {
 				Type = split2[i+2]
@@ -175,12 +173,12 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 		chain = append(chain, contract)
 	}
 
-	return chain, nil
+	return chain
 }
 
 // ANALYTICAL returns a string; allows you to control additional parameters for theoretical value calculations;
 // it takes nine parameters
-func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatility, underlyingPrice, interestRate, daysToExpiration string) (string, error) {
+func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatility, underlyingPrice, interestRate, daysToExpiration string) string {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "ANALYTICAL")
@@ -197,14 +195,14 @@ func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatili
 	body, err := Handler(req)
 
 	if err != nil {
-		return "", err
+		log.Fatal(err)
 	}
 
-	return body, nil
+	return body
 }
 
 // Covered returns a string; containing covered option calls
-func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
+func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) string {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "COVERED")
@@ -216,14 +214,14 @@ func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (str
 	body, err := Handler(req)
 
 	if err != nil {
-		return "", err
+		log.Fatal(err)
 	}
 
-	return body, nil
+	return body
 }
 
 // Butterfly returns a string; containing Butterfly spread option calls
-func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
+func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) string {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "BUTTERFLY")
@@ -235,10 +233,10 @@ func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (s
 	body, err := Handler(req)
 
 	if err != nil {
-		return "", err
+		log.Fatal(err)
 	}
 
-	return body, nil
+	return body
 }
 
 // func Vertical() string {}

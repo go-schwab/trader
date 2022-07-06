@@ -2,6 +2,8 @@ package account
 
 import (
 	"fmt"
+	"log"
+
 	//"strings"
 	"net/http"
 
@@ -10,17 +12,17 @@ import (
 
 var endpoint_watchlist = "https://api.tdameritrade.com/v1/accounts/%s/watchlists"
 
-func CreateWatchlist(accountID, Bearer string) (string, error) {
+func CreateWatchlist(accountID, Bearer string) string {
 	url := fmt.Sprintf(endpoint_watchlist, accountID)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", Bearer)
 	body, err := Handler(req)
 
 	if err != nil {
-		return "", err
+		log.Fatal(err)
 	}
 
-	return body, nil
+	return body
 }
 
 // func DeleteWatchlist() {}

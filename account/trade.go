@@ -20,6 +20,7 @@ func Place(accountID, order string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	req, _ := http.NewRequest("POST", fmt.Sprintf(endpoint_place, accountID), bytes.NewReader([]byte(order)))
 	req.Header.Set("Authorization", bearer)
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")

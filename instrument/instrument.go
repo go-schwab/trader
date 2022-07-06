@@ -2,6 +2,7 @@ package instrument
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -69,7 +70,7 @@ var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments
 // Get returns a SIMPLE; with simple fundamental information regarding the desired ticker,
 // it takes one parameter:
 // cusip = "037833100", etc.
-func Get(ticker string) (SIMPLE, error) {
+func Get(ticker string) SIMPLE {
 	req2, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
 	q2 := req2.URL.Query()
 	q2.Add("symbol", ticker)
@@ -77,10 +78,8 @@ func Get(ticker string) (SIMPLE, error) {
 	req2.URL.RawQuery = q2.Encode()
 	body2, err := Handler(req2)
 
-	fakeContract := SIMPLE{}
-
 	if err != nil {
-		return fakeContract, err
+		log.Fatal(err)
 	}
 
 	var cusip string
@@ -97,7 +96,7 @@ func Get(ticker string) (SIMPLE, error) {
 	body, err := Handler(req)
 
 	if err != nil {
-		return fakeContract, err
+		log.Fatal(err)
 	}
 
 	var desc, exchange, Type string
@@ -119,12 +118,12 @@ func Get(ticker string) (SIMPLE, error) {
 		DESCRIPTION: desc,
 		EXCHANGE:    exchange,
 		TYPE:        Type,
-	}, nil
+	}
 }
 
 // returns a FUNDAMENTAL; containing information regarding both price and underlying information and history
 // Returns fundamental data for a single instrument specified by ticker
-func Fundamental(ticker string) (FUNDAMENTAL, error) {
+func Fundamental(ticker string) FUNDAMENTAL {
 	req, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
@@ -132,15 +131,13 @@ func Fundamental(ticker string) (FUNDAMENTAL, error) {
 	req.URL.RawQuery = q.Encode()
 	body, err := Handler(req)
 
-	fakeContract := FUNDAMENTAL{}
-
 	if err != nil {
-		return fakeContract, err
+		log.Fatal(err)
 	}
 
 	var cusip, desc, exchange, Type, hi52, lo52, divAmount, divYield, pe, peg, pb, pr, pcf, gmTTM, gmMRQ, npmTTM, npmMRQ, omTTM, omMRQ, roe, roa, roi, qRatio, cRatio, interestCoverage, debtCapital, debtEquity, epsTTM, epsPercentTTM, epsChangeYR, revChangeYR, revChangeTTM, revChangeIn, sharesOutstanding, marketCapFloat, marketCap, bookVPS, beta, vol1, vol10, vol3 string
-
 	split := strings.Split(body, "\"")
+
 	for i, x := range split {
 		if x == "cusip" {
 			cusip = split[i+2]
@@ -270,7 +267,7 @@ func Fundamental(ticker string) (FUNDAMENTAL, error) {
 		VOL_1DAY:               TrimFL(vol1),
 		VOL_10DAY:              TrimFL(vol10),
 		VOL_3MON:               TrimFL(TrimL(vol3)),
-	}, nil
+	}
 }
 
 // desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C.

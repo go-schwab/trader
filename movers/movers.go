@@ -2,6 +2,7 @@ package movers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -24,7 +25,7 @@ var endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/move
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"
-func Get(index, direction, change string) ([]MOVER, error) {
+func Get(index, direction, change string) []MOVER {
 	url := fmt.Sprintf(endpoint_movers, index)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
@@ -33,18 +34,14 @@ func Get(index, direction, change string) ([]MOVER, error) {
 	req.URL.RawQuery = q.Encode()
 	body, err := Handler(req)
 
-	fakeMover := MOVER{}
-	var fakeArray []MOVER
-	fakeArray = append(fakeArray, fakeMover)
-
 	if err != nil {
-		return fakeArray, err
+		log.Fatal(err)
 	}
 
 	var movers []MOVER
 	var chang, desc, dir, last, ticker, volume string
-
 	split := strings.Split(body, "}")
+
 	for _, x := range split {
 		split2 := strings.Split(x, "\"")
 		for i, x := range split2 {
@@ -75,5 +72,5 @@ func Get(index, direction, change string) ([]MOVER, error) {
 		movers = append(movers, mov)
 	}
 
-	return movers, nil
+	return movers
 }
