@@ -9,15 +9,6 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// for use with the Get function
-type SIMPLE struct {
-	CUSIP       string
-	TICKER      string
-	DESCRIPTION string
-	EXCHANGE    string
-	TYPE        string
-}
-
 // Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker,
 // it takes one parameter:
 // cusip = "037833100", etc.

@@ -10,25 +10,6 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// for use with RealTime
-type QUOTE struct {
-	DATETIME   string
-	TICKER     string
-	MARK       string
-	VOLUME     string
-	VOLATILITY string
-	BID        string
-	ASK        string
-	LAST       string
-	OPEN       string
-	CLOSE      string
-	HI         string
-	LO         string
-	HI52       string
-	LO52       string
-	PE_RATIO   string
-}
-
 // RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more),
 // it takes one parameter:
 // ticker = "AAPL", etc.

@@ -9,16 +9,6 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// for use with PriceHistory
-type FRAME struct {
-	DATETIME string
-	VOLUME   string
-	OPEN     string
-	CLOSE    string
-	HI       string
-	LO       string
-}
-
 // PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick,
 // it takes five parameters:
 // ticker = "AAPL", etc.
