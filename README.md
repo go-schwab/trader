@@ -40,11 +40,12 @@ this is a go implementation of a td-ameritrade API hook. the goal of this projec
 
 ## roadmap to v1.0.0
 
-by 08-01-2022:
+in order to have a fully functional project, we must implement:
 
-[ ] implement trading functionality for account package
-
-[ ] finish up Analytical, Covered & Butterfly spread implementations
+[ ] full trading functionality for account package
+[ ] Analytical, Covered & Butterfly option spreads
+[x] custom structs for every package for easy navigation
+[x] "pandas dataframe-esque" struct for data package
 
 ## what can i do with this project?
 

@@ -26,8 +26,6 @@ func keySearch() (string, error) {
 		for i := 0; i < len(splitPath)-1; i++ {
 			newPath += splitPath[i] + "\\"
 		}
-
-		newPath += ".APIKEY"
 	} else { // for linux/bsd systems
 		splitPath := strings.Split(path, "/")
 
@@ -35,8 +33,9 @@ func keySearch() (string, error) {
 			newPath += splitPath[i] + "/"
 		}
 
-		newPath += ".APIKEY"
 	}
+
+	newPath += ".APIKEY"
 
 	return newPath, nil
 }
