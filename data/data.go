@@ -59,31 +59,32 @@ func RealTime(ticker string) QUOTE {
 
 	split := strings.Split(body, "\"")
 	for i, x := range split {
-		if x == "bidPrice" {
+		switch x {
+		case "bidPrice":
 			bid = split[i+1]
-		} else if x == "askPrice" {
+		case "askPrice":
 			ask = split[i+1]
-		} else if x == "lastPrice" {
+		case "lastPrice":
 			last = split[i+1]
-		} else if x == "openPrice" {
+		case "openPrice":
 			open = split[i+1]
-		} else if x == "highPrice" {
+		case "highPrice":
 			hi = split[i+1]
-		} else if x == "lowPrice" {
+		case "lowPrice":
 			lo = split[i+1]
-		} else if x == "closePrice" {
+		case "closePrice":
 			closeP = split[i+1]
-		} else if x == "mark" {
+		case "mark":
 			mark = split[i+1]
-		} else if x == "totalVolume" {
+		case "totalVolume":
 			volume = split[i+1]
-		} else if x == "volatility" {
+		case "volatility":
 			volatility = split[i+1]
-		} else if x == "52WkHigh" {
+		case "52WkHigh":
 			hi52 = split[i+1]
-		} else if x == "52WkLow" {
+		case "52WkLow":
 			lo52 = split[i+1]
-		} else if x == "peRatio" {
+		case "peRatio":
 			pe = split[i+1]
 		}
 	}

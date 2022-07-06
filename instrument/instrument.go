@@ -139,87 +139,88 @@ func Fundamental(ticker string) FUNDAMENTAL {
 	split := strings.Split(body, "\"")
 
 	for i, x := range split {
-		if x == "cusip" {
+		switch x {
+		case "cusip":
 			cusip = split[i+2]
-		} else if x == "description" {
+		case "description":
 			desc = split[i+2]
-		} else if x == "exchange" {
+		case "exchange":
 			exchange = split[i+2]
-		} else if x == "assetType" {
+		case "assetType":
 			Type = split[i+2]
-		} else if x == "high52" {
+		case "high52":
 			hi52 = split[i+1]
-		} else if x == "low52" {
+		case "low52":
 			lo52 = split[i+1]
-		} else if x == "dividendAmount" {
+		case "dividendAmount":
 			divAmount = split[i+1]
-		} else if x == "dividendYield" {
+		case "dividendYield":
 			divYield = split[i+1]
-		} else if x == "peRatio" {
+		case "peRatio":
 			pe = split[i+1]
-		} else if x == "pegRatio" {
+		case "pegRatio":
 			peg = split[i+1]
-		} else if x == "pbRatio" {
+		case "pbRatio":
 			pb = split[i+1]
-		} else if x == "prRatio" {
+		case "prRatio":
 			pr = split[i+1]
-		} else if x == "pcfRatio" {
+		case "pcfRatio":
 			pcf = split[i+1]
-		} else if x == "grossMarginTTM" {
+		case "grossMarginTTM":
 			gmTTM = split[i+1]
-		} else if x == "grossMarginMRQ" {
+		case "grossMarginMRQ":
 			gmMRQ = split[i+1]
-		} else if x == "netProfitMarginTTM" {
+		case "netProfitMarginTTM":
 			npmTTM = split[i+1]
-		} else if x == "netProfitMarginMRQ" {
+		case "netProfitMarginMRQ":
 			npmMRQ = split[i+1]
-		} else if x == "operatingMarginTTM" {
+		case "operatingMarginTTM":
 			omTTM = split[i+1]
-		} else if x == "operatingMarginMRQ" {
+		case "operatingMarginMRQ":
 			omMRQ = split[i+1]
-		} else if x == "returnOnEquity" {
+		case "returnOnEquity":
 			roe = split[i+1]
-		} else if x == "returnOnAssets" {
+		case "returnOnAssets":
 			roa = split[i+1]
-		} else if x == "returnOnInvestment" {
+		case "returnOnInvestment":
 			roi = split[i+1]
-		} else if x == "quickRatio" {
+		case "quickRatio":
 			qRatio = split[i+1]
-		} else if x == "currentRatio" {
+		case "currentRatio":
 			cRatio = split[i+1]
-		} else if x == "interestCoverage" {
+		case "interestCoverage":
 			interestCoverage = split[i+1]
-		} else if x == "totalDebtToCapital" {
+		case "totalDebtToCapital":
 			debtCapital = split[i+1]
-		} else if x == "totalDebtToEquity" {
+		case "totalDebtToEquity":
 			debtEquity = split[i+1]
-		} else if x == "epsTTM" {
+		case "epsTTM":
 			epsTTM = split[i+1]
-		} else if x == "epsChangePercentTTM" {
+		case "epsChangePercentTTM":
 			epsPercentTTM = split[i+1]
-		} else if x == "epsChangeYear" {
+		case "epsChangeYear":
 			epsChangeYR = split[i+1]
-		} else if x == "revChangeYear" {
+		case "revChangeYear":
 			revChangeYR = split[i+1]
-		} else if x == "revChangeTTM" {
+		case "revChangeTTM":
 			revChangeTTM = split[i+1]
-		} else if x == "revChangeIn" {
+		case "revChangeIn":
 			revChangeIn = split[i+1]
-		} else if x == "sharesOutstanding" {
+		case "sharesOutstanding":
 			sharesOutstanding = split[i+1]
-		} else if x == "marketCapFloat" {
+		case "marketCapFloat":
 			marketCapFloat = split[i+1]
-		} else if x == "marketCap" {
+		case "marketCap":
 			marketCap = split[i+1]
-		} else if x == "bookValuePerShare" {
+		case "bookValuePerShare":
 			bookVPS = split[i+1]
-		} else if x == "beta" {
+		case "beta":
 			beta = split[i+1]
-		} else if x == "vol1DayAvg" {
+		case "vol1DayAvg":
 			vol1 = split[i+1]
-		} else if x == "vol10DayAvg" {
+		case "vol10DayAvg":
 			vol10 = split[i+1]
-		} else if x == "vol3MonthAvg" {
+		case "vol3MonthAvg":
 			vol3 = split[i+1]
 		}
 	}
