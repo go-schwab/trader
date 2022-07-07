@@ -24,8 +24,8 @@ func RealTime(ticker string) QUOTE {
 	}
 
 	var bid, ask, last, open, hi, lo, closeP, mark, volume, volatility, hi52, lo52, pe string
-
 	split := strings.Split(body, "\"")
+
 	for i, x := range split {
 		switch x {
 		case "bidPrice":

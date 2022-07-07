@@ -41,24 +41,25 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 
 	var df []FRAME
 	var open, hi, lo, Close, volume, datetime string
-
 	split := strings.Split(body, "{")
 	split = split[2:len(split)]
 
 	for _, x := range split {
 		split2 := strings.Split(x, "\"")
+
 		for i, x2 := range split2 {
-			if x2 == "open" {
+			switch x2 {
+			case "open":
 				open = split2[i+1]
-			} else if x2 == "high" {
+			case "high":
 				hi = split2[i+1]
-			} else if x2 == "low" {
+			case "low":
 				lo = split2[i+1]
-			} else if x2 == "close" {
+			case "close":
 				Close = split2[i+1]
-			} else if x2 == "volume" {
+			case "volume":
 				volume = split2[i+1]
-			} else if x2 == "datetime" {
+			case "datetime":
 				datetime = split2[i+1]
 			}
 		}

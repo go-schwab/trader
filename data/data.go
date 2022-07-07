@@ -3,7 +3,7 @@ package data
 var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"           // symbol
 var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory" // symbol
 
-// for use with RealTime
+// RealTime's native struct; returns various indicators related to the asset
 type QUOTE struct {
 	DATETIME   string
 	TICKER     string
@@ -22,7 +22,8 @@ type QUOTE struct {
 	PE_RATIO   string
 }
 
-// for use with PriceHistory
+// this is a Go implementation of the pandas DataFrame
+// slices of FRAMEs form DataFrames, which can then be used in analysis
 type FRAME struct {
 	DATETIME string
 	VOLUME   string

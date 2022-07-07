@@ -25,8 +25,8 @@ func Simple(ticker string) SIMPLE {
 	}
 
 	var cusip string
-
 	split2 := strings.Split(body2, "\"")
+
 	for i, x := range split2 {
 		if x == "cusip" {
 			cusip = split2[i+2]
@@ -42,8 +42,8 @@ func Simple(ticker string) SIMPLE {
 	}
 
 	var desc, exchange, Type string
-
 	split := strings.Split(body, "\"")
+
 	for i, x := range split {
 		if x == "description" {
 			desc = split[i+2]

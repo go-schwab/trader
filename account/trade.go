@@ -14,6 +14,7 @@ var endpoint_replace = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 var endpoint_cancel = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 var endpoint_get = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 
+// function to Place an order with TD-Ameritrade
 func Place(accountID, order string) string {
 	bearer, err := GetBearerToken(accountID)
 

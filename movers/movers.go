@@ -44,6 +44,7 @@ func Get(index, direction, change string) []MOVER {
 
 	for _, x := range split {
 		split2 := strings.Split(x, "\"")
+
 		for i, x := range split2 {
 			if x == "change" {
 				chang = split2[i+1]
