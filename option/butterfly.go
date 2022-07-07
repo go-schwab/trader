@@ -7,7 +7,8 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// Butterfly returns a string; containing Butterfly spread option calls
+// Butterfly returns a string; containing Butterfly spread option calls.
+// Not functional ATM.
 func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) string {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()

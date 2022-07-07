@@ -11,7 +11,7 @@ import (
 // Single returns a []CONTRACT; containing a SINGLE option chain of your desired strike, type, etc.,
 // it takes four parameters:
 // ticker = "AAPL", etc.
-// contractType = "CALL", "PUT", "ALL"
+// contractType = "CALL", "PUT", "ALL";
 // strikeRange = returns option chains for a given range:
 // ITM = in da money
 // NTM = near da money
@@ -19,12 +19,11 @@ import (
 // SAK = strikes above market
 // SBK = strikes below market
 // SNK = strikes near market
-// ALL* = default, all strikes
-// strikeCount = The number of strikes to return above and below the at-the-money price
+// ALL* = default, all strikes;
+// strikeCount = The number of strikes to return above and below the at-the-money price;
 // toDate = Only return expirations before this date. Valid ISO-8601 formats are: yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ssz.
-// lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01")
-// this returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the
-// status of the contract ("ALL"), expiring before 2022-07-01
+// Lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01").
+// This returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the status of the contract ("ALL"), expiring before 2022-07-01
 func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CONTRACT {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()

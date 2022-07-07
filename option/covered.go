@@ -7,7 +7,8 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// Covered returns a string; containing covered option calls
+// Covered returns a string; containing covered option calls.
+// Not functional ATM.
 func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) string {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()

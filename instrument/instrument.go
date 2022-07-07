@@ -3,7 +3,7 @@ package instrument
 var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
 var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s" // cusip
 
-// for use with the Simple function
+// Returns simple information regarding the assets
 type SIMPLE struct {
 	CUSIP       string
 	TICKER      string
@@ -12,7 +12,7 @@ type SIMPLE struct {
 	TYPE        string
 }
 
-// for use with the Fundamental function
+// Returns all fundamentals of the given asset
 type FUNDAMENTAL struct {
 	TICKER                 string
 	CUSIP                  string

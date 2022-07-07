@@ -8,8 +8,7 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// returns a FUNDAMENTAL; containing information regarding both price and underlying information and history
-// Returns fundamental data for a single instrument specified by ticker
+// Returns a FUNDAMENTAL; containing information regarding both price history and fundamentals.
 func Fundamental(ticker string) FUNDAMENTAL {
 	req, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
 	q := req.URL.Query()

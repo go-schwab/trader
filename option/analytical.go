@@ -7,8 +7,9 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// ANALYTICAL returns a string; allows you to control additional parameters for theoretical value calculations;
-// it takes nine parameters
+// ANALYTICAL returns a string; allows you to control additional parameters for theoretical value calculations:
+// It takes nine parameters:
+// Not functional ATM.
 func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatility, underlyingPrice, interestRate, daysToExpiration string) string {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()

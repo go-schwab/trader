@@ -10,8 +10,8 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more),
-// it takes one parameter:
+// RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
+// It takes one parameter:
 // ticker = "AAPL", etc.
 func RealTime(ticker string) QUOTE {
 	dt := Now(time.Now())

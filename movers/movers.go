@@ -46,17 +46,18 @@ func Get(index, direction, change string) []MOVER {
 		split2 := strings.Split(x, "\"")
 
 		for i, x := range split2 {
-			if x == "change" {
+			switch x {
+			case "change":
 				chang = split2[i+1]
-			} else if x == "description" {
+			case "description":
 				desc = split2[i+2]
-			} else if x == "direction" {
+			case "direction":
 				dir = split2[i+2]
-			} else if x == "last" {
+			case "last":
 				last = split2[i+1]
-			} else if x == "symbol" {
+			case "symbol":
 				ticker = split2[i+2]
-			} else if x == "totalVolume" {
+			case "totalVolume":
 				volume = split2[i+1]
 			}
 		}

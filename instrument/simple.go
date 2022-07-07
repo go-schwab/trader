@@ -9,8 +9,8 @@ import (
 	. "github.com/samjtro/go-tda/utils"
 )
 
-// Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker,
-// it takes one parameter:
+// Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker.
+// It takes one parameter:
 // cusip = "037833100", etc.
 func Simple(ticker string) SIMPLE {
 	req2, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
