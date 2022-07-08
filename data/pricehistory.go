@@ -42,7 +42,7 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 	var df []FRAME
 	var open, hi, lo, Close, volume, datetime string
 	split := strings.Split(body, "{")
-	split = split[2:len(split)]
+	split = split[2:]
 
 	for _, x := range split {
 		split2 := strings.Split(x, "\"")

@@ -14,11 +14,12 @@ import (
 // thus removing the neccesity of copying around the .APIKEY file for every implementation
 func keySearch() (string, error) {
 	path, err := os.Getwd()
-	var newPath string
 
 	if err != nil {
 		return "", err
 	}
+
+	var newPath string
 
 	if path[0] == 'C' { // for Windows systems
 		splitPath := strings.Split(path, "\\")
