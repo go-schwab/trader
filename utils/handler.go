@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -74,6 +75,10 @@ func Handler(req *http.Request) (string, error) {
 	req.URL.RawQuery = q.Encode()
 	client := http.Client{}
 	resp, err := client.Do(req)
+
+	if resp.StatusCode <= 200 || resp.StatusCode >= 300 {
+		fmt.Println(fmt.Sprintf("Error %d", resp.StatusCode))
+	}
 
 	if err != nil {
 		return "", err

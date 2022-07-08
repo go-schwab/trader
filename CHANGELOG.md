@@ -5,6 +5,7 @@ Major updates are h1, minors are h2
 - Documentation updates
 - Increases in efficiency
 - Addressing staticcheck suggestions
+- (**beta**) Handler function returns Error Code
 
 ## 0.7.1
 
