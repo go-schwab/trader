@@ -9,11 +9,10 @@ import (
 	"strings"
 )
 
-// create helper functions for file name search, for .APIKEY, in the project directory
-// it will return a string, which is the path to the .APIKEY file in the directory
-// Handler will then subsequently utilize that path for the api key element,
-// thus removing the neccesity of copying around the .APIKEY file for every implementation
-func keySearch() (string, error) {
+// KeySearch returns the parent directory + ".APIKEY".
+// This will later serve as a search function for the entire home directory, hence the name, but I don't want to spend that much time on this yet when this accomplishes the same thing.
+// Namely, the ability for .APIKEY to remain outside of the project folder
+func KeySearch() (string, error) {
 	path, err := os.Getwd()
 
 	if err != nil {
@@ -42,14 +41,13 @@ func keySearch() (string, error) {
 	return newPath, nil
 }
 
-// Handler is the general purpose request function for the td-ameritrade api
-// all functions will be routed through this handler function, which does all of the API calling work
-// it performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function
-// it returns the body of the GET request's return
-// it takes one parameter:
+// Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
+// It performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function,
+// then returns the body of the GET request's return.
+// It takes one parameter:
 // req = a request of type *http.Request
 func Handler(req *http.Request) (string, error) {
-	keyPath, err := keySearch()
+	keyPath, err := KeySearch()
 
 	if err != nil {
 		return "", err
