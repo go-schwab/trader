@@ -2,8 +2,8 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -77,7 +77,15 @@ func Handler(req *http.Request) (string, error) {
 	resp, err := client.Do(req)
 
 	if resp.StatusCode < 200 || resp.StatusCode > 300 {
-		fmt.Println(fmt.Sprintf("Error %d", resp.StatusCode))
+		errorCode := resp.StatusCode
+
+		switch errorCode {
+		case 500:
+			log.Fatalf("Error %d - Invalid Authentication; Check your API Key", errorCode)
+		case 400:
+			log.Fatalf("Error %d - Bad Request; Ensure your parameters are correct", errorCode)
+		}
+
 	}
 
 	if err != nil {
