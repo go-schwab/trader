@@ -65,12 +65,12 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 		}
 
 		f := FRAME{
-			DATETIME: TrimL(TrimFL(datetime)),
-			VOLUME:   TrimFL(volume),
-			OPEN:     TrimFL(open),
-			CLOSE:    TrimFL(Close),
-			HI:       TrimFL(hi),
-			LO:       TrimFL(lo),
+			Datetime: TrimL(TrimFL(datetime)),
+			Volume:   TrimFL(volume),
+			Open:     TrimFL(open),
+			Close:    TrimFL(Close),
+			Hi:       TrimFL(hi),
+			Lo:       TrimFL(lo),
 		}
 
 		df = append(df, f)

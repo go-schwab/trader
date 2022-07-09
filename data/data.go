@@ -5,30 +5,30 @@ var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%
 
 // RealTime's native struct; returns various indicators related to the asset
 type QUOTE struct {
-	DATETIME   string
-	TICKER     string
-	MARK       string
-	VOLUME     string
-	VOLATILITY string
-	BID        string
-	ASK        string
-	LAST       string
-	OPEN       string
-	CLOSE      string
-	HI         string
-	LO         string
-	HI52       string
-	LO52       string
-	PE_RATIO   string
+	Datetime   string
+	Ticker     string
+	Mark       string
+	Volume     string
+	Volatility string
+	Bid        string
+	Ask        string
+	Last       string
+	Open       string
+	Close      string
+	Hi         string
+	Lo         string
+	Hi52       string
+	Lo52       string
+	PE         string
 }
 
 // this is a Go implementation of the pandas DataFrame
 // slices of FRAMEs form DataFrames, which can then be used in analysis
 type FRAME struct {
-	DATETIME string
-	VOLUME   string
-	OPEN     string
-	CLOSE    string
-	HI       string
-	LO       string
+	Datetime string
+	Volume   string
+	Open     string
+	Close    string
+	Hi       string
+	Lo       string
 }

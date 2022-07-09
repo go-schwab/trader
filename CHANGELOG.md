@@ -1,5 +1,9 @@
 Major updates are h1, minors are h2
 
+## 0.7.5 (WIP)
+
+- Documentation updates
+
 ## 0.7.3-0.7.4
 
 - Documentation updates
