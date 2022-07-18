@@ -2,25 +2,24 @@ package data
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"time"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
 // It takes one parameter:
 // ticker = "AAPL", etc.
-func RealTime(ticker string) QUOTE {
-	dt := Now(time.Now())
+func RealTime(ticker string) (QUOTE, error) {
+	dt := utils.Now(time.Now())
 	url := fmt.Sprintf(endpoint_realtime, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return QUOTE{}, err
 	}
 
 	var bid, ask, last, open, hi, lo, closeP, mark, volume, volatility, hi52, lo52, pe string
@@ -58,20 +57,20 @@ func RealTime(ticker string) QUOTE {
 	}
 
 	return QUOTE{
-		DATETIME:   dt,
-		TICKER:     ticker,
-		MARK:       TrimFL(mark),
-		VOLUME:     TrimFL(volume),
-		VOLATILITY: TrimFL(volatility),
-		BID:        TrimFL(bid),
-		ASK:        TrimFL(ask),
-		LAST:       TrimFL(last),
-		OPEN:       TrimFL(open),
-		CLOSE:      TrimFL(closeP),
-		HI:         TrimFL(hi),
-		LO:         TrimFL(lo),
-		HI52:       TrimFL(hi52),
-		LO52:       TrimFL(lo52),
-		PE_RATIO:   TrimFL(pe),
-	}
+		Datetime:   dt,
+		Ticker:     ticker,
+		Mark:       utils.TrimFL(mark),
+		Volume:     utils.TrimFL(volume),
+		Volatility: utils.TrimFL(volatility),
+		Bid:        utils.TrimFL(bid),
+		Ask:        utils.TrimFL(ask),
+		Last:       utils.TrimFL(last),
+		Open:       utils.TrimFL(open),
+		Close:      utils.TrimFL(closeP),
+		Hi:         utils.TrimFL(hi),
+		Lo:         utils.TrimFL(lo),
+		Hi52:       utils.TrimFL(hi52),
+		Lo52:       utils.TrimFL(lo52),
+		PE:         utils.TrimFL(pe),
+	}, nil
 }

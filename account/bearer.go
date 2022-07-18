@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 //func main() { fmt.Println(GetBearerToken("","")) }
@@ -18,7 +18,7 @@ func GetBearerToken(accountID string) (string, error) {
 	q.Add("grant_type", "authorization_code")
 	q.Add("client_id", accountID)
 	req.URL.RawQuery = q.Encode()
-	resp, err := Handler(req)
+	resp, err := utils.Handler(req)
 
 	if err != nil {
 		return "", err

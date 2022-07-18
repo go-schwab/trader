@@ -2,11 +2,10 @@ package data
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick.
@@ -15,16 +14,16 @@ import (
 // periodType = "day", "month", "year", "ytd" - default is "day";
 // period = the number of periods to show;
 // frequencyType = the type of frequency with which each candle is formed; valid fTypes by pType;
-// "day": "minute"
-// "month": "daily", "weekly"
-// "year": "daily", "weekly", "monthly"
-// "ytd": "daily", "weekly"
-// frequency = the number of the frequencyType included in each candle; valid freqs by fType;
-// "minute": 1,5,10,15,30
-// "daily": 1
-// "weekly": 1
+// "day": "minute" /
+// "month": "daily", "weekly" /
+// "year": "daily", "weekly", "monthly" /
+// "ytd": "daily", "weekly";
+// frequency = the number of the frequencyType included in each candle; valid freqs by fType
+// "minute": 1,5,10,15,30 /
+// "daily": 1 /
+// "weekly": 1 /
 // "monthly": 1
-func PriceHistory(ticker, periodType, period, frequencyType, frequency string) []FRAME {
+func PriceHistory(ticker, periodType, period, frequencyType, frequency string) ([]FRAME, error) {
 	url := fmt.Sprintf(endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
@@ -33,10 +32,10 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 	q.Add("frequencyType", frequencyType)
 	q.Add("frequency", frequency)
 	req.URL.RawQuery = q.Encode()
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return []FRAME{}, err
 	}
 
 	var df []FRAME
@@ -65,16 +64,16 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 		}
 
 		f := FRAME{
-			DATETIME: TrimL(TrimFL(datetime)),
-			VOLUME:   TrimFL(volume),
-			OPEN:     TrimFL(open),
-			CLOSE:    TrimFL(Close),
-			HI:       TrimFL(hi),
-			LO:       TrimFL(lo),
+			Datetime: utils.TrimL(utils.TrimFL(datetime)),
+			Volume:   utils.TrimFL(volume),
+			Open:     utils.TrimFL(open),
+			Close:    utils.TrimFL(Close),
+			Hi:       utils.TrimFL(hi),
+			Lo:       utils.TrimFL(lo),
 		}
 
 		df = append(df, f)
 	}
 
-	return df
+	return df, nil
 }

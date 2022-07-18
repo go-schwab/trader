@@ -2,11 +2,10 @@ package movers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 type MOVER struct {
@@ -25,17 +24,17 @@ var endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/move
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"
-func Get(index, direction, change string) []MOVER {
+func Get(index, direction, change string) ([]MOVER, error) {
 	url := fmt.Sprintf(endpoint_movers, index)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
 	q.Add("direction", direction)
 	q.Add("change", change)
 	req.URL.RawQuery = q.Encode()
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return []MOVER{}, err
 	}
 
 	var movers []MOVER
@@ -65,14 +64,14 @@ func Get(index, direction, change string) []MOVER {
 		mov := MOVER{
 			TICKER:      ticker,
 			DESCRIPTION: desc,
-			LAST:        TrimFL(last),
-			CHANGE:      TrimFL(chang),
+			LAST:        utils.TrimFL(last),
+			CHANGE:      utils.TrimFL(chang),
 			DIRECTION:   dir,
-			VOLUME:      TrimF(volume),
+			VOLUME:      utils.TrimF(volume),
 		}
 
 		movers = append(movers, mov)
 	}
 
-	return movers
+	return movers, nil
 }

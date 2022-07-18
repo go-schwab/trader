@@ -1,15 +1,14 @@
 package option
 
 import (
-	"log"
 	"net/http"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // Butterfly returns a string; containing Butterfly spread option calls.
 // Not functional ATM.
-func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) string {
+func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "BUTTERFLY")
@@ -18,11 +17,11 @@ func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) st
 	q.Add("range", strikeRange)
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	return body
+	return body, nil
 }

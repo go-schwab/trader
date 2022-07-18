@@ -1,24 +1,23 @@
 package instrument
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // Returns a FUNDAMENTAL; containing information regarding both price history and fundamentals.
-func Fundamental(ticker string) FUNDAMENTAL {
+func Fundamental(ticker string) (FUNDAMENTAL, error) {
 	req, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
 	q.Add("projection", "fundamental")
 	req.URL.RawQuery = q.Encode()
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return FUNDAMENTAL{}, err
 	}
 
 	var cusip, desc, exchange, Type, hi52, lo52, divAmount, divYield, pe, peg, pb, pr, pcf, gmTTM, gmMRQ, npmTTM, npmMRQ, omTTM, omMRQ, roe, roa, roi, qRatio, cRatio, interestCoverage, debtCapital, debtEquity, epsTTM, epsPercentTTM, epsChangeYR, revChangeYR, revChangeTTM, revChangeIn, sharesOutstanding, marketCapFloat, marketCap, bookVPS, beta, vol1, vol10, vol3 string
@@ -117,42 +116,42 @@ func Fundamental(ticker string) FUNDAMENTAL {
 		DESCRIPTION:            desc,
 		EXCHANGE:               exchange,
 		TYPE:                   Type,
-		HI52:                   TrimFL(hi52),
-		LO52:                   TrimFL(lo52),
-		DIV_YIELD:              TrimFL(divYield),
-		DIV_AMOUNT:             TrimFL(divAmount),
-		PE_RATIO:               TrimFL(pe),
-		PEG_RATIO:              TrimFL(peg),
-		PB_RATIO:               TrimFL(pb),
-		PR_RATIO:               TrimFL(pr),
-		PCF_RATIO:              TrimFL(pcf),
-		GROSS_MARGIN_TTM:       TrimFL(gmTTM),
-		GROSS_MARGIN_MRQ:       TrimFL(gmMRQ),
-		NET_PROFIT_MARGIN_TTM:  TrimFL(npmTTM),
-		NET_PROFIT_MARGIN_MRQ:  TrimFL(npmMRQ),
-		OPERATING_MARGIN_TTM:   TrimFL(omTTM),
-		OPERATING_MARGIN_MRQ:   TrimFL(omMRQ),
-		RETURN_ON_EQUITY:       TrimFL(roe),
-		RETURN_ON_ASSETS:       TrimFL(roa),
-		RETURN_ON_INVESTMENT:   TrimFL(roi),
-		QUICK_RATIO:            TrimFL(qRatio),
-		CURRENT_RATIO:          TrimFL(cRatio),
-		INTEREST_COVERAGE:      TrimFL(interestCoverage),
-		TOTAL_DEBT_TO_CAPITAL:  TrimFL(debtCapital),
-		TOTAL_DEBT_TO_EQUITY:   TrimFL(debtEquity),
-		EPS_TTM:                TrimFL(epsTTM),
-		EPS_CHANGE_PERCENT_TTM: TrimFL(epsPercentTTM),
-		EPS_CHANGE_YR:          TrimFL(epsChangeYR),
-		REV_CHANGE_YR:          TrimFL(revChangeYR),
-		REV_CHANGE_TTM:         TrimFL(revChangeTTM),
-		REV_CHANGE_IN:          TrimFL(revChangeIn),
-		SHARES_OUTSTANDING:     TrimFL(sharesOutstanding),
-		MARKET_CAP_FLOAT:       TrimFL(marketCapFloat),
-		MARKET_CAP:             TrimFL(marketCap),
-		BOOK_VALUE_PER_SHARE:   TrimFL(bookVPS),
-		BETA:                   TrimFL(beta),
-		VOL_1DAY:               TrimFL(vol1),
-		VOL_10DAY:              TrimFL(vol10),
-		VOL_3MON:               TrimFL(TrimL(vol3)),
-	}
+		HI52:                   utils.TrimFL(hi52),
+		LO52:                   utils.TrimFL(lo52),
+		DIV_YIELD:              utils.TrimFL(divYield),
+		DIV_AMOUNT:             utils.TrimFL(divAmount),
+		PE_RATIO:               utils.TrimFL(pe),
+		PEG_RATIO:              utils.TrimFL(peg),
+		PB_RATIO:               utils.TrimFL(pb),
+		PR_RATIO:               utils.TrimFL(pr),
+		PCF_RATIO:              utils.TrimFL(pcf),
+		GROSS_MARGIN_TTM:       utils.TrimFL(gmTTM),
+		GROSS_MARGIN_MRQ:       utils.TrimFL(gmMRQ),
+		NET_PROFIT_MARGIN_TTM:  utils.TrimFL(npmTTM),
+		NET_PROFIT_MARGIN_MRQ:  utils.TrimFL(npmMRQ),
+		OPERATING_MARGIN_TTM:   utils.TrimFL(omTTM),
+		OPERATING_MARGIN_MRQ:   utils.TrimFL(omMRQ),
+		RETURN_ON_EQUITY:       utils.TrimFL(roe),
+		RETURN_ON_ASSETS:       utils.TrimFL(roa),
+		RETURN_ON_INVESTMENT:   utils.TrimFL(roi),
+		QUICK_RATIO:            utils.TrimFL(qRatio),
+		CURRENT_RATIO:          utils.TrimFL(cRatio),
+		INTEREST_COVERAGE:      utils.TrimFL(interestCoverage),
+		TOTAL_DEBT_TO_CAPITAL:  utils.TrimFL(debtCapital),
+		TOTAL_DEBT_TO_EQUITY:   utils.TrimFL(debtEquity),
+		EPS_TTM:                utils.TrimFL(epsTTM),
+		EPS_CHANGE_PERCENT_TTM: utils.TrimFL(epsPercentTTM),
+		EPS_CHANGE_YR:          utils.TrimFL(epsChangeYR),
+		REV_CHANGE_YR:          utils.TrimFL(revChangeYR),
+		REV_CHANGE_TTM:         utils.TrimFL(revChangeTTM),
+		REV_CHANGE_IN:          utils.TrimFL(revChangeIn),
+		SHARES_OUTSTANDING:     utils.TrimFL(sharesOutstanding),
+		MARKET_CAP_FLOAT:       utils.TrimFL(marketCapFloat),
+		MARKET_CAP:             utils.TrimFL(marketCap),
+		BOOK_VALUE_PER_SHARE:   utils.TrimFL(bookVPS),
+		BETA:                   utils.TrimFL(beta),
+		VOL_1DAY:               utils.TrimFL(vol1),
+		VOL_10DAY:              utils.TrimFL(vol10),
+		VOL_3MON:               utils.TrimFL(utils.TrimL(vol3)),
+	}, nil
 }

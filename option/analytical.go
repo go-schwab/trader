@@ -1,16 +1,15 @@
 package option
 
 import (
-	"log"
 	"net/http"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // ANALYTICAL returns a string; allows you to control additional parameters for theoretical value calculations:
 // It takes nine parameters:
 // Not functional ATM.
-func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatility, underlyingPrice, interestRate, daysToExpiration string) string {
+func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatility, underlyingPrice, interestRate, daysToExpiration string) (string, error) {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "ANALYTICAL")
@@ -24,11 +23,11 @@ func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatili
 	q.Add("interestRate", interestRate)
 	q.Add("daysToExpiration", underlyingPrice)
 	req.URL.RawQuery = q.Encode()
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	return body
+	return body, nil
 }

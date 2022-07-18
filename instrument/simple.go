@@ -2,26 +2,25 @@ package instrument
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker.
 // It takes one parameter:
 // cusip = "037833100", etc.
-func Simple(ticker string) SIMPLE {
+func Simple(ticker string) (SIMPLE, error) {
 	req2, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
 	q2 := req2.URL.Query()
 	q2.Add("symbol", ticker)
 	q2.Add("projection", "fundamental")
 	req2.URL.RawQuery = q2.Encode()
-	body2, err := Handler(req2)
+	body2, err := utils.Handler(req2)
 
 	if err != nil {
-		log.Fatal(err)
+		return SIMPLE{}, err
 	}
 
 	var cusip string
@@ -35,10 +34,10 @@ func Simple(ticker string) SIMPLE {
 
 	url := fmt.Sprintf(endpoint_getinstrument, cusip)
 	req, _ := http.NewRequest("GET", url, nil)
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return SIMPLE{}, err
 	}
 
 	var desc, exchange, Type string
@@ -60,5 +59,5 @@ func Simple(ticker string) SIMPLE {
 		DESCRIPTION: desc,
 		EXCHANGE:    exchange,
 		TYPE:        Type,
-	}
+	}, nil
 }

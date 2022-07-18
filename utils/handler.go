@@ -2,18 +2,18 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 )
 
-// create helper functions for file name search, for .APIKEY, in the project directory
-// it will return a string, which is the path to the .APIKEY file in the directory
-// Handler will then subsequently utilize that path for the api key element,
-// thus removing the neccesity of copying around the .APIKEY file for every implementation
-func keySearch() (string, error) {
+// KeySearch returns the parent directory + ".APIKEY".
+// This will later serve as a search function for the entire home directory, hence the name, but I don't want to spend that much time on this yet when this accomplishes the same thing.
+// Namely, the ability for .APIKEY to remain outside of the project folder
+func KeySearch() (string, error) {
 	path, err := os.Getwd()
 
 	if err != nil {
@@ -21,17 +21,30 @@ func keySearch() (string, error) {
 	}
 
 	var newPath string
+	var length int
 
 	if path[0] == 'C' { // for Windows systems
 		splitPath := strings.Split(path, "\\")
 
-		for i := 0; i < len(splitPath)-1; i++ {
+		for i, x := range splitPath {
+			if x == "Users" {
+				length += i + 2
+			}
+		}
+
+		for i := 0; i < length+2; i++ {
 			newPath += splitPath[i] + "\\"
 		}
-	} else { // for linux/bsd systems
+	} else { // for linux/bsd/mac systems
 		splitPath := strings.Split(path, "/")
 
-		for i := 0; i < len(splitPath)-1; i++ {
+		for i, x := range splitPath {
+			if x == "home" || x == "Users" {
+				length += i + 2
+			}
+		}
+
+		for i := 0; i < length; i++ {
 			newPath += splitPath[i] + "/"
 		}
 
@@ -42,14 +55,13 @@ func keySearch() (string, error) {
 	return newPath, nil
 }
 
-// Handler is the general purpose request function for the td-ameritrade api
-// all functions will be routed through this handler function, which does all of the API calling work
-// it performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function
-// it returns the body of the GET request's return
-// it takes one parameter:
+// Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
+// It performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function,
+// then returns the body of the GET request's return.
+// It takes one parameter:
 // req = a request of type *http.Request
 func Handler(req *http.Request) (string, error) {
-	keyPath, err := keySearch()
+	keyPath, err := KeySearch()
 
 	if err != nil {
 		return "", err
@@ -77,7 +89,16 @@ func Handler(req *http.Request) (string, error) {
 	resp, err := client.Do(req)
 
 	if resp.StatusCode < 200 || resp.StatusCode > 300 {
-		fmt.Println(fmt.Sprintf("Error %d", resp.StatusCode))
+		errorCode := resp.StatusCode
+		bodyB, err := io.ReadAll(resp.Body)
+
+		if err != nil {
+			return "", err
+		}
+
+		body := string(bodyB)
+
+		log.Fatalf("Error %d - %s", errorCode, body)
 	}
 
 	if err != nil {

@@ -2,28 +2,27 @@ package account
 
 import (
 	"fmt"
-	"log"
 
 	//"strings"
 	"net/http"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 var endpoint_watchlist = "https://api.tdameritrade.com/v1/accounts/%s/watchlists"
 
 // function to create a watchlist
-func CreateWatchlist(accountID, Bearer string) string {
+func CreateWatchlist(accountID, Bearer string) (string, error) {
 	url := fmt.Sprintf(endpoint_watchlist, accountID)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", Bearer)
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	return body
+	return body, nil
 }
 
 // func DeleteWatchlist() {}
