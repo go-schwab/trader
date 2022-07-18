@@ -1,5 +1,0 @@
-package tests
-
-func UtilsTest() {
-
-}
