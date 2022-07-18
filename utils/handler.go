@@ -105,5 +105,5 @@ func Handler(req *http.Request) (string, error) {
 		log.Fatalf("Error %d - %s", errorCode, body)
 	}
 
-	return string(body), nil
+	return body, nil
 }
