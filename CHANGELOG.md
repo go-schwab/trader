@@ -1,8 +1,12 @@
 Major updates are h1, minors are h2
 
-## 0.7.5 (WIP)
+## 0.7.5
 
 - Documentation updates
+- Handler function no longer uses KeySearch() function - Standard practice is now to put .APIKEY in ~/ dir
+- Tests added
+- More go-simplecheck efficiency updates
+- Update to syntax of all major packages structs - No longer all caps for struct fields
 
 ## 0.7.3-0.7.4
 

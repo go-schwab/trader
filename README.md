@@ -1,7 +1,7 @@
 # go-tda
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda)](https://goreportcard.com/report/github.com/samjtro/go-tda)
  
-[latest](https://github.com/samjtro/go-tda/releases/tag/v0.7.4) | [stable](https://github.com/samjtro/go-tda/tree/stable)
+[latest](https://github.com/samjtro/go-tda/releases/tag/v0.7.5) | [stable](https://github.com/samjtro/go-tda/tree/stable)
 
 ## how can i use this project?
 
@@ -14,7 +14,7 @@
 
 2. go to your app (once it has been approved), and get the api key under the "Consumer Key" section  
 - create a file called `.APIKEY` and store your api key you generated in that file (with NO extra lines) 
-- move that file to the parent directory of the project 
+- move that file to your home directory (`~/`)
 
 3. `go get github.com/samjtro/go-tda`
 
