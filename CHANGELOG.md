@@ -2,9 +2,10 @@ Major updates are h1, minors are h3
 
 # 0.8.0 (WIP)
 
+- Cross-platform bug fixes; `Handler` now works again on Linux/BSD/MacOS
+
 ### 0.7.9
 
-- Minor Update: Cross-platform bug fixes - `Handler` now works again on Linux/BSD/MacOS
 - `account` package rewrites, bug fixes & more
 
 ### 0.7.8

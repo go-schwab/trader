@@ -13,14 +13,14 @@ import (
 // This will later serve as a search function for the entire home directory, hence the name, but I don't want to spend that much time on this yet when this accomplishes the same thing.
 // Namely, the ability for .APIKEY to remain outside of the project folder
 func KeySearch() (string, error) {
+	var newPath string
+	var length int
+
 	path, err := os.Getwd()
 
 	if err != nil {
 		return "", err
 	}
-
-	var newPath string
-	var length int
 
 	if path[0] == 'C' { // for Windows systems
 		splitPath := strings.Split(path, "\\")
@@ -60,6 +60,8 @@ func KeySearch() (string, error) {
 // It takes one parameter:
 // req = a request of type *http.Request
 func Handler(req *http.Request) (string, error) {
+	var APIKEY string
+
 	keyPath, err := KeySearch()
 
 	if err != nil {
@@ -74,7 +76,6 @@ func Handler(req *http.Request) (string, error) {
 
 	defer file.Close()
 
-	var APIKEY string
 	s := bufio.NewScanner(file)
 
 	for s.Scan() {
