@@ -1,8 +1,8 @@
 # go-tda
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda)](https://goreportcard.com/report/github.com/samjtro/go-tda)
 
-Latest: [v0.7.7](https://github.com/samjtro/go-tda/tree/main)
-Stable: [v0.7.7](https://github.com/samjtro/go-tda/tree/stable)
+Latest: [v0.7.8](https://github.com/samjtro/go-tda/tree/main)
+Stable: [v0.7.8](https://github.com/samjtro/go-tda/tree/stable)
 
 ## how can i use this project?
 

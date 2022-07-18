@@ -1,8 +1,15 @@
-Major updates are h1, minors are h2
+Major updates are h1, minors are h3
+
+### 0.7.8
+
+- Cross-platform functionality bug fixes; Handler function works again on Windows
+- Testing complete for all working packages
+- Updates to Handler function efficiency
+- Moved tests into package directories
 
 ### 0.7.7
 
-- v0.7.6 broke functionality for MacOS systems; this update fixes cross-platform functionality for the KeySearch function
+- Cross-platform functionality bug fixes; KeySearch function works again on MacOS
 - Added additional test for Data
 - Every function now returns errors rather than using log.Fatalf
 
