@@ -2,7 +2,6 @@ package data
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -24,7 +23,7 @@ import (
 // "daily": 1 /
 // "weekly": 1 /
 // "monthly": 1
-func PriceHistory(ticker, periodType, period, frequencyType, frequency string) []FRAME {
+func PriceHistory(ticker, periodType, period, frequencyType, frequency string) ([]FRAME, error) {
 	url := fmt.Sprintf(endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
@@ -36,7 +35,7 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return []FRAME{}, err
 	}
 
 	var df []FRAME
@@ -76,5 +75,5 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 		df = append(df, f)
 	}
 
-	return df
+	return df, nil
 }
