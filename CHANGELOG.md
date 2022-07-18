@@ -1,5 +1,11 @@
 Major updates are h1, minors are h2
 
+## 0.7.6
+
+- Bug fix in Handler function - ~ was not working for .APIKEY lookup - Brought back KeySearch
+- TestData updates
+- RealTime + PriceHistory now return errors
+
 ## 0.7.5
 
 - Documentation updates
