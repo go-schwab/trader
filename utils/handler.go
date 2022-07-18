@@ -39,9 +39,7 @@ func KeySearch() (string, error) {
 		splitPath := strings.Split(path, "/")
 
 		for i, x := range splitPath {
-			if x == "home" {
-				length += i + 2
-			} else if x == "Users" {
+			if x == "home" || x == "Users" {
 				length += i + 2
 			}
 		}
@@ -95,7 +93,7 @@ func Handler(req *http.Request) (string, error) {
 		bodyB, err := io.ReadAll(resp.Body)
 
 		if err != nil {
-			log.Fatal(err.Error())
+			return "", err
 		}
 
 		body := string(bodyB)
