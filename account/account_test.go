@@ -1,3 +1,3 @@
-package tests
+package account
 
 //func AccountTest() error {}
