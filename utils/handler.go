@@ -40,7 +40,7 @@ func KeySearch() (string, error) {
 
 		for i, x := range splitPath {
 			if x == "home" {
-				length += i + 1
+				length += i + 2
 			} else if x == "Users" {
 				length += i + 2
 			}
