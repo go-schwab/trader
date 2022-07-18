@@ -28,7 +28,7 @@ func KeySearch() (string, error) {
 
 		for i, x := range splitPath {
 			if x == "Users" {
-				length += i
+				length += i + 2
 			}
 		}
 
@@ -40,15 +40,16 @@ func KeySearch() (string, error) {
 
 		for i, x := range splitPath {
 			if x == "home" {
-				length += i
+				length += i + 1
 			} else if x == "Users" {
-				length += i
+				length += i + 2
 			}
 		}
 
-		for i := 0; i < length+1; i++ {
+		for i := 0; i < length; i++ {
 			newPath += splitPath[i] + "/"
 		}
+
 	}
 
 	newPath += ".APIKEY"
