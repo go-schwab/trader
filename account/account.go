@@ -2,7 +2,6 @@ package account
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/samjtro/go-tda/utils"
@@ -39,7 +38,7 @@ var endpoint_account string = "https://api.tdameritrade.com/v1/accounts/%s" // a
 // accountID = your accountID
 // fields = this command will only return balances, but you can add positions or orders, or both - "positions,orders"
 // Bearer = Bearer token for your account, generated from https://developer.tdameritrade.com/authentication/apis/post/token-0
-func Get(accountID, fields, Bearer string) string {
+func Get(accountID, fields, Bearer string) (string, error) {
 	url := fmt.Sprintf(endpoint_account, accountID)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", Bearer)
@@ -48,8 +47,8 @@ func Get(accountID, fields, Bearer string) string {
 	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	return body
+	return body, err
 }

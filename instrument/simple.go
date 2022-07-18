@@ -2,7 +2,6 @@ package instrument
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -12,7 +11,7 @@ import (
 // Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker.
 // It takes one parameter:
 // cusip = "037833100", etc.
-func Simple(ticker string) SIMPLE {
+func Simple(ticker string) (SIMPLE, error) {
 	req2, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
 	q2 := req2.URL.Query()
 	q2.Add("symbol", ticker)
@@ -21,7 +20,7 @@ func Simple(ticker string) SIMPLE {
 	body2, err := utils.Handler(req2)
 
 	if err != nil {
-		log.Fatal(err)
+		return SIMPLE{}, err
 	}
 
 	var cusip string
@@ -38,7 +37,7 @@ func Simple(ticker string) SIMPLE {
 	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return SIMPLE{}, err
 	}
 
 	var desc, exchange, Type string
@@ -60,5 +59,5 @@ func Simple(ticker string) SIMPLE {
 		DESCRIPTION: desc,
 		EXCHANGE:    exchange,
 		TYPE:        Type,
-	}
+	}, nil
 }

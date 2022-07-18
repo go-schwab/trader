@@ -1,7 +1,6 @@
 package option
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/samjtro/go-tda/utils"
@@ -9,7 +8,7 @@ import (
 
 // Covered returns a string; containing covered option calls.
 // Not functional ATM.
-func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) string {
+func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "COVERED")
@@ -21,8 +20,8 @@ func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) stri
 	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	return body
+	return body, nil
 }

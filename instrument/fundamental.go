@@ -1,7 +1,6 @@
 package instrument
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -9,7 +8,7 @@ import (
 )
 
 // Returns a FUNDAMENTAL; containing information regarding both price history and fundamentals.
-func Fundamental(ticker string) FUNDAMENTAL {
+func Fundamental(ticker string) (FUNDAMENTAL, error) {
 	req, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
@@ -18,7 +17,7 @@ func Fundamental(ticker string) FUNDAMENTAL {
 	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return FUNDAMENTAL{}, err
 	}
 
 	var cusip, desc, exchange, Type, hi52, lo52, divAmount, divYield, pe, peg, pb, pr, pcf, gmTTM, gmMRQ, npmTTM, npmMRQ, omTTM, omMRQ, roe, roa, roi, qRatio, cRatio, interestCoverage, debtCapital, debtEquity, epsTTM, epsPercentTTM, epsChangeYR, revChangeYR, revChangeTTM, revChangeIn, sharesOutstanding, marketCapFloat, marketCap, bookVPS, beta, vol1, vol10, vol3 string
@@ -154,5 +153,5 @@ func Fundamental(ticker string) FUNDAMENTAL {
 		VOL_1DAY:               utils.TrimFL(vol1),
 		VOL_10DAY:              utils.TrimFL(vol10),
 		VOL_3MON:               utils.TrimFL(utils.TrimL(vol3)),
-	}
+	}, nil
 }

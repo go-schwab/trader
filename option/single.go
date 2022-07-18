@@ -1,7 +1,6 @@
 package option
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -24,7 +23,7 @@ import (
 // toDate = Only return expirations before this date. Valid ISO-8601 formats are: yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ssz.
 // Lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01").
 // This returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the status of the contract ("ALL"), expiring before 2022-07-01
-func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CONTRACT {
+func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CONTRACT, error) {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
@@ -36,7 +35,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CON
 	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return []CONTRACT{}, err
 	}
 
 	var chain []CONTRACT
@@ -135,5 +134,5 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CON
 		chain = append(chain, contract)
 	}
 
-	return chain
+	return chain, nil
 }

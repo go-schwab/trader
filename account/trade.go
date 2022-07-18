@@ -3,7 +3,6 @@ package account
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/samjtro/go-tda/utils"
@@ -16,11 +15,11 @@ var endpoint_place = "https://api.tdameritrade.com/v1/accounts/%s/orders"
 //var endpoint_get = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 
 // function to Place an order with TD-Ameritrade
-func Place(accountID, order string) string {
+func Place(accountID, order string) (string, error) {
 	bearer, err := GetBearerToken(accountID)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	req, _ := http.NewRequest("POST", fmt.Sprintf(endpoint_place, accountID), bytes.NewReader([]byte(order)))
@@ -29,17 +28,17 @@ func Place(accountID, order string) string {
 	body, err := utils.Handler(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	return body
+	return body, nil
 }
 
 // func Replace(accountID, bearerToken, orderID string) (string, error) {}
 // func Get(accountID, bearerToken, orderID string) (string, error) {}
 // func Cancel(accountID, bearerToken, orderID string) (string, error) {}
 
-func Stock(accountID, instruction, ticker, quantity string) string {
+func Stock(accountID, instruction, ticker, quantity string) (string, error) {
 	str := fmt.Sprintf(`
   {
     \"orderType\": \"MARKET\",
@@ -58,10 +57,16 @@ func Stock(accountID, instruction, ticker, quantity string) string {
     ]
   }`, instruction, quantity, ticker)
 
-	return Place(accountID, str)
+	placeOrder, err := Place(accountID, str)
+
+	if err != nil {
+		return "", err
+	}
+
+	return placeOrder, nil
 }
 
-func ConditionalOrder(accountID, price, instruction, quantity, ticker, price2, instruction2, quantity2, ticker2 string) string {
+func ConditionalOrder(accountID, price, instruction, quantity, ticker, price2, instruction2, quantity2, ticker2 string) (string, error) {
 	str := fmt.Sprintf(`
 {
   \"orderType\": \"LIMIT\",
@@ -100,10 +105,16 @@ func ConditionalOrder(accountID, price, instruction, quantity, ticker, price2, i
   ]
 }`, price, instruction, quantity, ticker, price2, instruction2, quantity2, ticker2)
 
-	return Place(accountID, str)
+	placeOrder, err := Place(accountID, str)
+
+	if err != nil {
+		return "", err
+	}
+
+	return placeOrder, nil
 }
 
-func SingleOption(accountID, price, quantity, ticker string) string {
+func SingleOption(accountID, price, quantity, ticker string) (string, error) {
 	str := fmt.Sprintf(`
 {
   \"complexOrderStrategyType\": \"NONE\",
@@ -124,10 +135,17 @@ func SingleOption(accountID, price, quantity, ticker string) string {
   ]
 }`, price, quantity, ticker)
 
-	return Place(accountID, str)
+	placeOrder, err := Place(accountID, str)
+
+	if err != nil {
+		return "", err
+	}
+
+	return placeOrder, nil
 }
 
-func VerticalSpread(accountID, bearerToken string) string {
+/* WIP
+func VerticalSpread(accountID, bearerToken string) (string, error) {
 	str := fmt.Sprintf(`
 {
   \"orderType\": \"NET_DEBIT\",
@@ -155,10 +173,16 @@ func VerticalSpread(accountID, bearerToken string) string {
   ]
 }`)
 
-	return str
+	placeOrder, err := Place(accountID, str)
+
+	if err != nil {
+		return "", err
+	}
+
+	return placeOrder, nil
 }
 
-func CustomSpread(accountID, bearerToken string) string {
+func CustomSpread(accountID, bearerToken string) (string, error) {
 	str := fmt.Sprintf(`
 {
  \"orderStrategyType\": \"SINGLE\",
@@ -186,5 +210,11 @@ func CustomSpread(accountID, bearerToken string) string {
   \"session\": \"NORMAL\"
 }`)
 
-	return str
-}
+	placeOrder, err := Place(accountID, str)
+
+	if err != nil {
+		return "", err
+	}
+
+	return placeOrder, nil
+}*/
