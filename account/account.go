@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 /*type MARGIN struct {
@@ -45,7 +45,7 @@ func Get(accountID, fields, Bearer string) string {
 	req.Header.Add("Authorization", Bearer)
 	q := req.URL.Query()
 	req.URL.RawQuery = q.Encode()
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
 		log.Fatal(err)

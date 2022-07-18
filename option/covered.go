@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // Covered returns a string; containing covered option calls.
@@ -18,7 +18,7 @@ func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) stri
 	q.Add("range", strikeRange)
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
 		log.Fatal(err)

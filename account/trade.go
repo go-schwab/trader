@@ -6,13 +6,14 @@ import (
 	"log"
 	"net/http"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 var endpoint_place = "https://api.tdameritrade.com/v1/accounts/%s/orders"
-var endpoint_replace = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
-var endpoint_cancel = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
-var endpoint_get = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
+
+//var endpoint_replace = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
+//var endpoint_cancel = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
+//var endpoint_get = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 
 // function to Place an order with TD-Ameritrade
 func Place(accountID, order string) string {
@@ -25,7 +26,7 @@ func Place(accountID, order string) string {
 	req, _ := http.NewRequest("POST", fmt.Sprintf(endpoint_place, accountID), bytes.NewReader([]byte(order)))
 	req.Header.Set("Authorization", bearer)
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
 		log.Fatal(err)

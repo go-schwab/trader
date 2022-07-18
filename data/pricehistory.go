@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick.
@@ -33,7 +33,7 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 	q.Add("frequencyType", frequencyType)
 	q.Add("frequency", frequency)
 	req.URL.RawQuery = q.Encode()
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
 		log.Fatal(err)
@@ -65,12 +65,12 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) [
 		}
 
 		f := FRAME{
-			Datetime: TrimL(TrimFL(datetime)),
-			Volume:   TrimFL(volume),
-			Open:     TrimFL(open),
-			Close:    TrimFL(Close),
-			Hi:       TrimFL(hi),
-			Lo:       TrimFL(lo),
+			Datetime: utils.TrimL(utils.TrimFL(datetime)),
+			Volume:   utils.TrimFL(volume),
+			Open:     utils.TrimFL(open),
+			Close:    utils.TrimFL(Close),
+			Hi:       utils.TrimFL(hi),
+			Lo:       utils.TrimFL(lo),
 		}
 
 		df = append(df, f)

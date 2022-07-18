@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker.
@@ -18,7 +18,7 @@ func Simple(ticker string) SIMPLE {
 	q2.Add("symbol", ticker)
 	q2.Add("projection", "fundamental")
 	req2.URL.RawQuery = q2.Encode()
-	body2, err := Handler(req2)
+	body2, err := utils.Handler(req2)
 
 	if err != nil {
 		log.Fatal(err)
@@ -35,7 +35,7 @@ func Simple(ticker string) SIMPLE {
 
 	url := fmt.Sprintf(endpoint_getinstrument, cusip)
 	req, _ := http.NewRequest("GET", url, nil)
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
 		log.Fatal(err)

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // Single returns a []CONTRACT; containing a SINGLE option chain of your desired strike, type, etc.,
@@ -33,7 +33,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CON
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
 	req.URL.RawQuery = q.Encode()
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
 		log.Fatal(err)
@@ -106,30 +106,30 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) []CON
 		contract := CONTRACT{
 			TYPE:                   Type,
 			SYMBOL:                 symbol,
-			STRIKE:                 TrimFL(strikePrice),
+			STRIKE:                 utils.TrimFL(strikePrice),
 			EXCHANGE:               exchange,
-			EXPIRATION:             TrimFL(exp),
-			DAYS2EXPIRATION:        TrimFL(d2e),
-			BID:                    TrimFL(bid),
-			ASK:                    TrimFL(ask),
-			LAST:                   TrimFL(last),
-			MARK:                   TrimFL(mark),
+			EXPIRATION:             utils.TrimFL(exp),
+			DAYS2EXPIRATION:        utils.TrimFL(d2e),
+			BID:                    utils.TrimFL(bid),
+			ASK:                    utils.TrimFL(ask),
+			LAST:                   utils.TrimFL(last),
+			MARK:                   utils.TrimFL(mark),
 			BIDASK_SIZE:            bidAskSize,
-			VOLATILITY:             TrimFL(volatility),
-			DELTA:                  TrimFL(delta),
-			GAMMA:                  TrimFL(gamma),
-			THETA:                  TrimFL(theta),
-			VEGA:                   TrimFL(vega),
-			RHO:                    TrimFL(rho),
-			OPEN_INTEREST:          TrimFL(openInterest),
-			TIME_VALUE:             TrimFL(timeValue),
-			THEORETICAL_VALUE:      TrimFL(theoreticalValue),
-			THEORETICAL_VOLATILITY: TrimFL(theoreticalVolatility),
-			PERCENT_CHANGE:         TrimFL(percentChange),
-			MARK_CHANGE:            TrimFL(markChange),
-			MARK_PERCENT_CHANGE:    TrimFL(markPercentChange),
-			INTRINSIC_VALUE:        TrimFL(intrinsicValue),
-			IN_THE_MONEY:           TrimFL(inTheMoney),
+			VOLATILITY:             utils.TrimFL(volatility),
+			DELTA:                  utils.TrimFL(delta),
+			GAMMA:                  utils.TrimFL(gamma),
+			THETA:                  utils.TrimFL(theta),
+			VEGA:                   utils.TrimFL(vega),
+			RHO:                    utils.TrimFL(rho),
+			OPEN_INTEREST:          utils.TrimFL(openInterest),
+			TIME_VALUE:             utils.TrimFL(timeValue),
+			THEORETICAL_VALUE:      utils.TrimFL(theoreticalValue),
+			THEORETICAL_VOLATILITY: utils.TrimFL(theoreticalVolatility),
+			PERCENT_CHANGE:         utils.TrimFL(percentChange),
+			MARK_CHANGE:            utils.TrimFL(markChange),
+			MARK_PERCENT_CHANGE:    utils.TrimFL(markPercentChange),
+			INTRINSIC_VALUE:        utils.TrimFL(intrinsicValue),
+			IN_THE_MONEY:           utils.TrimFL(inTheMoney),
 		}
 
 		chain = append(chain, contract)

@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // Butterfly returns a string; containing Butterfly spread option calls.
@@ -18,7 +18,7 @@ func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) st
 	q.Add("range", strikeRange)
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
 		log.Fatal(err)

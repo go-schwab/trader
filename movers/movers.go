@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	. "github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 type MOVER struct {
@@ -32,7 +32,7 @@ func Get(index, direction, change string) []MOVER {
 	q.Add("direction", direction)
 	q.Add("change", change)
 	req.URL.RawQuery = q.Encode()
-	body, err := Handler(req)
+	body, err := utils.Handler(req)
 
 	if err != nil {
 		log.Fatal(err)
@@ -65,10 +65,10 @@ func Get(index, direction, change string) []MOVER {
 		mov := MOVER{
 			TICKER:      ticker,
 			DESCRIPTION: desc,
-			LAST:        TrimFL(last),
-			CHANGE:      TrimFL(chang),
+			LAST:        utils.TrimFL(last),
+			CHANGE:      utils.TrimFL(chang),
 			DIRECTION:   dir,
-			VOLUME:      TrimF(volume),
+			VOLUME:      utils.TrimF(volume),
 		}
 
 		movers = append(movers, mov)
