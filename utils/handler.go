@@ -32,7 +32,7 @@ func KeySearch() (string, error) {
 			}
 		}
 
-		for i := 0; i < length+2; i++ {
+		for i := 0; i < length; i++ {
 			newPath += splitPath[i] + "\\"
 		}
 	} else { // for linux/bsd/mac systems
