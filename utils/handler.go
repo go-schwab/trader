@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bufio"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -88,29 +87,22 @@ func Handler(req *http.Request) (string, error) {
 	client := http.Client{}
 	resp, err := client.Do(req)
 
-	if resp.StatusCode < 200 || resp.StatusCode > 300 {
-		errorCode := resp.StatusCode
-		bodyB, err := io.ReadAll(resp.Body)
-
-		if err != nil {
-			return "", err
-		}
-
-		body := string(bodyB)
-
-		log.Fatalf("Error %d - %s", errorCode, body)
-	}
-
 	if err != nil {
 		return "", err
 	}
 
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	errorCode := resp.StatusCode
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	body := string(bodyBytes)
 
 	if err != nil {
 		return "", err
+	}
+
+	if errorCode < 200 || errorCode > 300 {
+		log.Fatalf("Error %d - %s", errorCode, body)
 	}
 
 	return string(body), nil
