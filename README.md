@@ -90,13 +90,13 @@ func main() {
         simple, err := Simple("AAPL")
 
 	if err != nil {
-		t.Fatalf(err.Error())
+		panic(err)
 	}
 
 	fundamental, err = Fundamental("AAPL")
 
 	if err != nil {
-		t.Fatalf(err.Error())
+		panic(err)
 	}
 }
 ```
@@ -112,7 +112,7 @@ func main() {
         movers, err := Get("$DJI", "up", "percent")
 
 	if err != nil {
-		t.Fatalf(err.Error())
+		panic(err)
 	}
 }
 ```
@@ -128,7 +128,7 @@ func main() {
         single, err := Single("AAPL", "ALL", "ALL", "15", "2022-09-20")
 
 	if err != nil {
-		t.Fatalf(err.Error())
+		panic(err)
 	}
 }
 ```
