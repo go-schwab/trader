@@ -1,6 +1,6 @@
 Major updates are h1, minors are h3
 
-# 0.8.0 (WIP)
+# 0.8.0
 
 - Cross-platform bug fixes; `Handler` now works again on Linux/BSD/MacOS
 

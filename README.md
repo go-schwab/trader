@@ -54,3 +54,81 @@ in order to have a fully functional project, we must implement:
 like previously mentioned, the goal is for you to use this in a wide variety of capacities. do what you wish with this project, but...  
 
 see the license; it is permissive, there are guidelines for proper reproduction & crediting :) 
+
+## get started
+
+### data
+
+```
+import (
+        "github.com/samjtro/go-tda/data"
+)
+
+func main() {
+        quote, err := data.RealTime("AAPL")
+
+        if err != nil {
+                panic(err)
+        }
+
+        df, err := data.PriceHistory("AAPL", "month", "1", "daily", "1")
+
+        if err != nil {
+                panic(err)
+        }
+}
+```
+
+### instrument
+
+```
+import (
+        "github.com/samjtro/go-tda/instrument"
+)
+
+func main() {
+        simple, err := Simple("AAPL")
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	fundamental, err = Fundamental("AAPL")
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+}
+```
+
+### movers
+
+```
+import (
+        "github.com/samjtro/go-tda/movers"
+)
+
+func main() {
+        movers, err := Get("$DJI", "up", "percent")
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+}
+```
+
+### option
+
+```
+import (
+        "github.com/samjtro/go-tda/option"
+)
+
+func main() {
+        single, err := Single("AAPL", "ALL", "ALL", "15", "2022-09-20")
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+}
+```
