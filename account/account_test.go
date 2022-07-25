@@ -1,3 +1,3 @@
 package account
 
-//func AccountTest() error {}
+//func TestAccount() error {}

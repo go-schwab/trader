@@ -32,6 +32,9 @@ type CASH struct {
 }*/
 
 var endpoint_account string = "https://api.tdameritrade.com/v1/accounts/%s" // accountID
+var endpoint_place = "https://api.tdameritrade.com/v1/accounts/%s/orders"
+var endpoint_watchlist = "https://api.tdameritrade.com/v1/accounts/%s/watchlists"
+var endpoint_bearer = "https://api.tdameritrade.com/v1/oauth2/token"
 
 // Get returns a string; containing account information,
 // it takes three params:

@@ -8,8 +8,6 @@ import (
 	"github.com/samjtro/go-tda/utils"
 )
 
-var endpoint_place = "https://api.tdameritrade.com/v1/accounts/%s/orders"
-
 //var endpoint_replace = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 //var endpoint_cancel = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
 //var endpoint_get = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"
@@ -130,7 +128,7 @@ func SingleOption(accountID, price, quantity, ticker string) (string, error) {
       \"instrument\": {
         \"symbol\": \"%s\",
         \"assetType\": \"OPTION\"
-    	}
+      }
     }
   ]
 }`, price, quantity, ticker)
@@ -146,7 +144,7 @@ func SingleOption(accountID, price, quantity, ticker string) (string, error) {
 
 /* WIP
 func VerticalSpread(accountID, bearerToken string) (string, error) {
-	str := fmt.Sprintf(`
+        str := fmt.Sprintf(`
 {
   \"orderType\": \"NET_DEBIT\",
   \"session\": \"NORMAL\",
@@ -173,17 +171,17 @@ func VerticalSpread(accountID, bearerToken string) (string, error) {
   ]
 }`)
 
-	placeOrder, err := Place(accountID, str)
+        placeOrder, err := Place(accountID, str)
 
-	if err != nil {
-		return "", err
-	}
+        if err != nil {
+        return "", err
+        }
 
-	return placeOrder, nil
+        return placeOrder, nil
 }
 
 func CustomSpread(accountID, bearerToken string) (string, error) {
-	str := fmt.Sprintf(`
+        str := fmt.Sprintf(`
 {
  \"orderStrategyType\": \"SINGLE\",
   \"orderType\": \"MARKET\",
@@ -210,11 +208,11 @@ func CustomSpread(accountID, bearerToken string) (string, error) {
   \"session\": \"NORMAL\"
 }`)
 
-	placeOrder, err := Place(accountID, str)
+        placeOrder, err := Place(accountID, str)
 
-	if err != nil {
-		return "", err
-	}
+        if err != nil {
+        return "", err
+        }
 
-	return placeOrder, nil
+        return placeOrder, nil
 }*/
