@@ -6,52 +6,25 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 // KeySearch returns the parent directory + ".APIKEY".
 // This will later serve as a search function for the entire home directory, hence the name, but I don't want to spend that much time on this yet when this accomplishes the same thing.
 // Namely, the ability for .APIKEY to remain outside of the project folder
 func KeySearch() (string, error) {
-	var newPath string
-	var length int
-
-	path, err := os.Getwd()
+	dir, err := os.UserHomeDir()
 
 	if err != nil {
 		return "", err
 	}
 
-	if path[0] == 'C' { // for Windows systems
-		splitPath := strings.Split(path, "\\")
-
-		for i, x := range splitPath {
-			if x == "Users" {
-				length += i + 2
-			}
-		}
-
-		for i := 0; i < length; i++ {
-			newPath += splitPath[i] + "\\"
-		}
-	} else { // for linux/bsd/mac systems
-		splitPath := strings.Split(path, "/")
-
-		for i, x := range splitPath {
-			if x == "home" || x == "Users" {
-				length += i + 1
-			}
-		}
-
-		for i := 0; i < length; i++ {
-			newPath += splitPath[i] + "/"
-		}
-
+	if dir[0] == 'C' {
+		dir += "\\.APIKEY"
+	} else {
+		dir += "/.APIKEY"
 	}
 
-	newPath += ".APIKEY"
-
-	return newPath, nil
+	return dir, nil
 }
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work

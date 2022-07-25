@@ -1,8 +1,8 @@
 # go-tda
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda)](https://goreportcard.com/report/github.com/samjtro/go-tda)
 
-Latest: [v0.7.9](https://github.com/samjtro/go-tda/tree/main)
-Stable: [v0.7.8](https://github.com/samjtro/go-tda/tree/stable)
+Latest: [v0.8.0](https://github.com/samjtro/go-tda/tree/main)
+Stable: [v0.8.0](https://github.com/samjtro/go-tda/tree/stable)
 
 ## how can i use this project?
 
@@ -30,7 +30,7 @@ Stable: [v0.7.8](https://github.com/samjtro/go-tda/tree/stable)
 - `instrument`: contains `Fundamental` & `Get`; returns information on a desired ticker or CUSIP
 - `account` will contain account monitoring and trading functions but is not functional as of right now   
 
-read the documentation for proper function usage, most are straight forward (as described above) but some require some pretty specific input to get working correctly. if you still have a question, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@protonmail.com
+read the documentation for proper function usage, most are straight forward (as described above) but some require some pretty specific input to get working correctly. if you still have a question, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@proton.me
 
 ## why tda?
 
