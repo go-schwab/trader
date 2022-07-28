@@ -20,7 +20,7 @@ Stable: [v0.8.0](https://github.com/samjtro/go-tda/tree/stable)
 3. `go get github.com/samjtro/go-tda`
 
 - you're now ready to go! import the library by package ( `github.com/samjtro/go-tda/data` for the data package, for instance )
-- if you have any questions, check the [go reference](https://pkg.go.dev/github.com/samjtro/go-tda), which is also at the top of the page
+- if you have any questions, check the [go reference](https://pkg.go.dev/github.com/samjtro/go-tda), which is also at the top of the page; or, scroll down to the code samples below
 
 ### package details
 
@@ -55,7 +55,7 @@ like previously mentioned, the goal is for you to use this in a wide variety of 
 
 see the license; it is permissive, there are guidelines for proper reproduction & crediting :) 
 
-## get started
+## samples
 
 ### data
 
