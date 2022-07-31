@@ -87,13 +87,13 @@ import (
 )
 
 func main() {
-        simple, err := Simple("AAPL")
+        simple, err := instrument.Simple("AAPL")
 
 	if err != nil {
 		panic(err)
 	}
 
-	fundamental, err = Fundamental("AAPL")
+	fundamental, err = instrument.Fundamental("AAPL")
 
 	if err != nil {
 		panic(err)
@@ -109,7 +109,7 @@ import (
 )
 
 func main() {
-        movers, err := Get("$DJI", "up", "percent")
+        movers, err := movers.Get("$DJI", "up", "percent")
 
 	if err != nil {
 		panic(err)
@@ -125,7 +125,7 @@ import (
 )
 
 func main() {
-        single, err := Single("AAPL", "ALL", "ALL", "15", "2022-09-20")
+        single, err := option.Single("AAPL", "ALL", "ALL", "15", "2022-09-20")
 
 	if err != nil {
 		panic(err)
