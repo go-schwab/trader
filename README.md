@@ -1,5 +1,7 @@
 # go-tda
-[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda)](https://goreportcard.com/report/github.com/samjtro/go-tda)
+[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)
+[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda)](https://goreportcard.com/report/github.com/samjtro/go-tda)
+[![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
 Latest: [v0.8.0](https://github.com/samjtro/go-tda/tree/main)
 Stable: [v0.8.0](https://github.com/samjtro/go-tda/tree/stable)
@@ -55,9 +57,9 @@ like previously mentioned, the goal is for you to use this in a wide variety of 
 
 see the license; it is permissive, there are guidelines for proper reproduction & crediting :) 
 
-## samples
+## code samples
 
-### data
+### data package
 
 ```
 import (
@@ -79,7 +81,7 @@ func main() {
 }
 ```
 
-### instrument
+### instrument package
 
 ```
 import (
@@ -101,7 +103,7 @@ func main() {
 }
 ```
 
-### movers
+### movers package
 
 ```
 import (
@@ -117,7 +119,7 @@ func main() {
 }
 ```
 
-### option
+### option package
 
 ```
 import (

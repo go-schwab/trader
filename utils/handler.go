@@ -6,26 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 )
-
-// KeySearch returns the parent directory + ".APIKEY".
-// This will later serve as a search function for the entire home directory, hence the name, but I don't want to spend that much time on this yet when this accomplishes the same thing.
-// Namely, the ability for .APIKEY to remain outside of the project folder
-func KeySearch() (string, error) {
-	dir, err := os.UserHomeDir()
-
-	if err != nil {
-		return "", err
-	}
-
-	if dir[0] == 'C' {
-		dir += "\\.APIKEY"
-	} else {
-		dir += "/.APIKEY"
-	}
-
-	return dir, nil
-}
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
 // It performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function,
@@ -33,15 +15,27 @@ func KeySearch() (string, error) {
 // It takes one parameter:
 // req = a request of type *http.Request
 func Handler(req *http.Request) (string, error) {
-	var APIKEY string
+	var (
+		m      sync.Mutex
+		APIKEY string
+	)
 
-	keyPath, err := KeySearch()
+	dir, err := os.UserHomeDir()
 
 	if err != nil {
 		return "", err
 	}
 
-	file, err := os.Open(keyPath)
+	switch dir[0] {
+	case 'C':
+		dir += "\\.APIKEY"
+	default:
+		dir += "/.APIKEY"
+	}
+
+	m.Lock()
+
+	file, err := os.Open(dir)
 
 	if err != nil {
 		return "", err
@@ -55,10 +49,13 @@ func Handler(req *http.Request) (string, error) {
 		APIKEY += s.Text()
 	}
 
+	m.Unlock()
+
 	q := req.URL.Query()
 	q.Add("apikey", APIKEY)
 	req.URL.RawQuery = q.Encode()
 	client := http.Client{}
+	m.Lock()
 	resp, err := client.Do(req)
 
 	if err != nil {
@@ -79,5 +76,6 @@ func Handler(req *http.Request) (string, error) {
 		log.Fatalf("Error %d - %s", errorCode, body)
 	}
 
+	m.Unlock()
 	return body, nil
 }
