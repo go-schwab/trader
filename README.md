@@ -8,7 +8,7 @@ Latest: [v0.8.1](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.0
 
 ## what is this project?
 
-this is a go implementation of a td-ameritrade API hook. the goal of this project is to incentivize others to build algorithmic trading models on top of these packages. the purpose for this projects existence is really speed; a lot of td-ameritrade hooks are built in Python, which is fine, but they are so unbelievably slow. when you have to wait multiple seconds to make a request, you know it's bad. we have built an incredibly light handler function that routes all calls in the library, making speeds predictably stable. this, on top of well optimized and efficient Marshaling of JSON - custom Structs, means that you can make ~15 requests per second if you wish.
+this is a go implementation of a td-ameritrade API hook. the goal of this project is to incentivize others to build algorithmic trading models on top of these packages. the purpose for this projects existence is really speed; a lot of td-ameritrade hooks are built in Python, which is fine, but they are so unbelievably slow. when you have to wait multiple seconds to make a request, you know it's bad. we have built an incredibly light handler function that routes all calls in the library, making speeds predictably stable. this, on top of well optimized and efficient Marshaling of JSON to custom Structs, means that you can make up to 15 requests per second if you wish.
 
 - the average response times for all calls in this library is 152ms (weighted average of over 100,000 test requests)
 - a light call like RealTime can achieve request times as low as 80ms
