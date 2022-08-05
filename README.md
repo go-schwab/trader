@@ -6,6 +6,13 @@
 Latest: [v0.8.1](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.0](https://github.com/samjtro/go-tda/tree/stable)
 - *(Suggested Pre-v1.0.0)
 
+## what is this project?
+
+this is a go implementation of a td-ameritrade API hook. the goal of this project is to incentivize others to build algorithmic trading models on top of these packages. the purpose for this projects existence is really speed; a lot of td-ameritrade hooks are built in Python, which is fine, but they are so unbelievably slow. when you have to wait multiple seconds to make a request, you know it's bad. we have built an incredibly light handler function that routes all calls in the library, making speeds predictably stable. this, on top of well optimized and efficient Marshaling of JSON - custom Structs, means that you can make ~15 requests per second if you wish.
+
+- the average response times for all calls in this library is 152ms (weighted average of over 100,000 test requests)
+- a light call like RealTime can achieve request times as low as 80ms
+
 ## how can i use this project?
 
 ### quick start
@@ -22,7 +29,7 @@ Latest: [v0.8.1](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.0
 3. `go get github.com/samjtro/go-tda`
 
 - you're now ready to go! import the library by package ( `github.com/samjtro/go-tda/data` for the data package, for instance )
-- if you have any questions, check the [go reference](https://pkg.go.dev/github.com/samjtro/go-tda), which is also at the top of the page; or, scroll down to the code samples below
+- if you have any questions, check the [go reference](https://pkg.go.dev/github.com/samjtro/go-tda); or, scroll down to the code samples below
 
 ### package details
 
@@ -32,22 +39,68 @@ Latest: [v0.8.1](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.0
 - `instrument`: contains `Fundamental` & `Get`; returns information on a desired ticker or CUSIP
 - `account` will contain account monitoring and trading functions but is not functional as of right now   
 
-read the documentation for proper function usage, most are straight forward (as described above) but some require some pretty specific input to get working correctly. if you still have a question, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@proton.me
+if you still have a question about something after checking the go reference and code samples, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@proton.me
 
-## why tda?
+### code samples
 
-td-ameritrade has the latest & most in-depth available market data. if you want the best indicators, you use tda. as well, tda has the easiest available option chain data. there is almost no other platform that allows you to fetch option chains with as much precision as tda.
+#### data package
 
-## what is this project?
+```
+quote, err := data.RealTime("AAPL")
 
-this is a go implementation of a td-ameritrade API hook. the goal of this project is to incentivize others to build algorithmic trading models on top of these packages.
+if err != nil {
+        panic(err)
+}
+
+df, err := data.PriceHistory("AAPL", "month", "1", "daily", "1")
+
+if err != nil {
+        panic(err)
+}
+```
+
+#### instrument package
+
+```
+simple, err := instrument.Simple("AAPL")
+
+if err != nil {
+	panic(err)
+}
+
+fundamental, err = instrument.Fundamental("AAPL")
+
+if err != nil {
+	panic(err)
+}
+```
+
+#### movers package
+
+```
+movers, err := movers.Get("$DJI", "up", "percent")
+
+if err != nil {
+	panic(err)
+}
+```
+
+#### option package
+
+```
+single, err := option.Single("AAPL", "ALL", "ALL", "15", "2022-09-20")
+
+if err != nil {
+	panic(err)
+}
+```
 
 ## roadmap to v1.0.0
 
-in order to have a fully functional project, we must implement:
+in order to have a fully functional v1.0.0 release, we must implement:
 
-- [ ] full trading functionality for account package
-- [ ] Analytical, Covered & Butterfly option spreads
+- [ ] account package functionality, including trading
+- [ ] Strategy option spreads
 - [x] custom structs for every package for easy navigation
 - [x] "pandas dataframe-esque" struct for data package
 
@@ -56,81 +109,3 @@ in order to have a fully functional project, we must implement:
 like previously mentioned, the goal is for you to use this in a wide variety of capacities. do what you wish with this project, but...  
 
 see the license; it is permissive, there are guidelines for proper reproduction & crediting :) 
-
-## code samples
-
-### data package
-
-```
-import (
-        "github.com/samjtro/go-tda/data"
-)
-
-func main() {
-        quote, err := data.RealTime("AAPL")
-
-        if err != nil {
-                panic(err)
-        }
-
-        df, err := data.PriceHistory("AAPL", "month", "1", "daily", "1")
-
-        if err != nil {
-                panic(err)
-        }
-}
-```
-
-### instrument package
-
-```
-import (
-        "github.com/samjtro/go-tda/instrument"
-)
-
-func main() {
-        simple, err := instrument.Simple("AAPL")
-
-	if err != nil {
-		panic(err)
-	}
-
-	fundamental, err = instrument.Fundamental("AAPL")
-
-	if err != nil {
-		panic(err)
-	}
-}
-```
-
-### movers package
-
-```
-import (
-        "github.com/samjtro/go-tda/movers"
-)
-
-func main() {
-        movers, err := movers.Get("$DJI", "up", "percent")
-
-	if err != nil {
-		panic(err)
-	}
-}
-```
-
-### option package
-
-```
-import (
-        "github.com/samjtro/go-tda/option"
-)
-
-func main() {
-        single, err := option.Single("AAPL", "ALL", "ALL", "15", "2022-09-20")
-
-	if err != nil {
-		panic(err)
-	}
-}
-```
