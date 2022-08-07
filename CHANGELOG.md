@@ -1,5 +1,13 @@
 Major updates are h1, minors are h3
 
+### 0.8.2
+
+**Important update**
+Changed all structs dealing with numbers to return `float64` instead of `string`. This is for a number of reasons, but primarily of which is that I was working on [go-algotrader](https://github.com/samjtro/go-algotrader) and realized that it was a pain to convert each string to float64 just to do calculations. Therefore, I am making the decision to migrate this library over to convert those values natively. This should make it much easier to use the library for building models; conversion from `string` to `float64` shouldn't be a requirement to use this library.
+- Updated timestamp function to use ISO 8601
+- Instead of using .APIKEY, this library now utilizes viper to marshal a `config.env` file located at your `$HOME` (`~`)
+- I have updated packages in all structs except `option` from `string` values for numbers to `float64`, as described above
+
 ### 0.8.1
 
 Added concurrency to `Handler` function... 

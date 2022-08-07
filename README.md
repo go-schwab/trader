@@ -23,8 +23,14 @@ this is a go implementation of a td-ameritrade API hook. the goal of this projec
 1. create an app on td ameritrade developer at [https://developer.tdameritrade.com/user/me/apps](https://developer.tdameritrade.com/user/me/apps), or by going to the My Apps tab while logged in  
 
 2. go to your app (once it has been approved), and get the api key under the "Consumer Key" section  
-- create a file called `.APIKEY` and store your api key you generated in that file (with NO extra lines) 
-- move that file to your home directory (`~/`)
+- create a file called `tda-config.env`
+- move that file to your `$HOME` directory (`~/`)
+- edit the file and add the following information in the format:
+
+```
+APIKEY=Your_APIKEY_Here
+UTC_DIFF=+0:00 // This is a placeholder; for MST, you would use -06:00, etc. It is your Difference from UTC time
+```
 
 3. `go get github.com/samjtro/go-tda`
 

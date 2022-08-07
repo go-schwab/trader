@@ -1,11 +1,9 @@
 package utils
 
 import (
-	"bufio"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
-	"os"
 	"sync"
 )
 
@@ -16,46 +14,21 @@ import (
 // req = a request of type *http.Request
 func Handler(req *http.Request) (string, error) {
 	var (
-		m      sync.Mutex
-		APIKEY string
+		m sync.Mutex
 	)
 
-	dir, err := os.UserHomeDir()
-
-	if err != nil {
-		return "", err
-	}
-
-	switch dir[0] {
-	case 'C':
-		dir += "\\.APIKEY"
-	default:
-		dir += "/.APIKEY"
-	}
-
 	m.Lock()
 
-	file, err := os.Open(dir)
+	config, err := LoadConfig()
 
 	if err != nil {
-		return "", err
+		log.Fatalf(err.Error())
 	}
-
-	defer file.Close()
-
-	s := bufio.NewScanner(file)
-
-	for s.Scan() {
-		APIKEY += s.Text()
-	}
-
-	m.Unlock()
 
 	q := req.URL.Query()
-	q.Add("apikey", APIKEY)
+	q.Add("apikey", config.APIKEY)
 	req.URL.RawQuery = q.Encode()
 	client := http.Client{}
-	m.Lock()
 	resp, err := client.Do(req)
 
 	if err != nil {
@@ -65,7 +38,7 @@ func Handler(req *http.Request) (string, error) {
 	defer resp.Body.Close()
 
 	errorCode := resp.StatusCode
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	body := string(bodyBytes)
 
 	if err != nil {

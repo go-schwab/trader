@@ -2,7 +2,9 @@ package data
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/samjtro/go-tda/utils"
@@ -49,27 +51,57 @@ func PriceHistory(ticker, periodType, period, frequencyType, frequency string) (
 		for i, x2 := range split2 {
 			switch x2 {
 			case "open":
-				open = split2[i+1]
+				open = utils.TrimFL(split2[i+1])
 			case "high":
-				hi = split2[i+1]
+				hi = utils.TrimFL(split2[i+1])
 			case "low":
-				lo = split2[i+1]
+				lo = utils.TrimFL(split2[i+1])
 			case "close":
-				Close = split2[i+1]
+				Close = utils.TrimFL(split2[i+1])
 			case "volume":
-				volume = split2[i+1]
+				volume = utils.TrimFL(split2[i+1])
 			case "datetime":
-				datetime = split2[i+1]
+				datetime = utils.TrimFL(split2[i+1])
 			}
 		}
 
+		volume, err := strconv.ParseFloat(volume, 64)
+
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+
+		open, err := strconv.ParseFloat(open, 64)
+
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+
+		Close, err := strconv.ParseFloat(Close, 64)
+
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+
+		hi, err := strconv.ParseFloat(hi, 64)
+
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+
+		lo, err := strconv.ParseFloat(lo, 64)
+
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+
 		f := FRAME{
-			Datetime: utils.TrimL(utils.TrimFL(datetime)),
-			Volume:   utils.TrimFL(volume),
-			Open:     utils.TrimFL(open),
-			Close:    utils.TrimFL(Close),
-			Hi:       utils.TrimFL(hi),
-			Lo:       utils.TrimFL(lo),
+			Datetime: utils.TrimL(datetime),
+			Volume:   volume,
+			Open:     open,
+			Close:    Close,
+			Hi:       hi,
+			Lo:       lo,
 		}
 
 		df = append(df, f)

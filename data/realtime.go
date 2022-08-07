@@ -2,7 +2,9 @@ package data
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -22,55 +24,133 @@ func RealTime(ticker string) (QUOTE, error) {
 		return QUOTE{}, err
 	}
 
-	var bid, ask, last, open, hi, lo, closeP, mark, volume, volatility, hi52, lo52, pe string
+	var bid, ask, last, open, hi, lo, closeP, mark, volume, volatility, hi52, lo52, pe float64
 	split := strings.Split(body, "\"")
 
 	for i, x := range split {
 		switch x {
 		case "bidPrice":
-			bid = split[i+1]
+			bid1 := utils.TrimFL(split[i+1])
+
+			bid, err = strconv.ParseFloat(bid1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "askPrice":
-			ask = split[i+1]
+			ask1 := utils.TrimFL(split[i+1])
+
+			ask, err = strconv.ParseFloat(ask1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "lastPrice":
-			last = split[i+1]
+			last1 := utils.TrimFL(split[i+1])
+
+			last, err = strconv.ParseFloat(last1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "openPrice":
-			open = split[i+1]
+			open1 := utils.TrimFL(split[i+1])
+
+			open, err = strconv.ParseFloat(open1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "highPrice":
-			hi = split[i+1]
+			hi1 := utils.TrimFL(split[i+1])
+
+			hi, err = strconv.ParseFloat(hi1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "lowPrice":
-			lo = split[i+1]
+			lo1 := utils.TrimFL(split[i+1])
+
+			lo, err = strconv.ParseFloat(lo1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "closePrice":
-			closeP = split[i+1]
+			closeP1 := utils.TrimFL(split[i+1])
+
+			closeP, err = strconv.ParseFloat(closeP1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "mark":
-			mark = split[i+1]
+			mark1 := utils.TrimFL(split[i+1])
+
+			mark, err = strconv.ParseFloat(mark1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "totalVolume":
-			volume = split[i+1]
+			volume1 := utils.TrimFL(split[i+1])
+
+			volume, err = strconv.ParseFloat(volume1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "volatility":
-			volatility = split[i+1]
+			volatility1 := utils.TrimFL(split[i+1])
+
+			volatility, err = strconv.ParseFloat(volatility1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "52WkHigh":
-			hi52 = split[i+1]
+			hi521 := utils.TrimFL(split[i+1])
+
+			hi52, err = strconv.ParseFloat(hi521, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "52WkLow":
-			lo52 = split[i+1]
+			lo521 := utils.TrimFL(split[i+1])
+
+			lo52, err = strconv.ParseFloat(lo521, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		case "peRatio":
-			pe = split[i+1]
+			pe1 := utils.TrimFL(split[i+1])
+
+			pe, err = strconv.ParseFloat(pe1, 64)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
 		}
 	}
 
 	return QUOTE{
 		Datetime:   dt,
 		Ticker:     ticker,
-		Mark:       utils.TrimFL(mark),
-		Volume:     utils.TrimFL(volume),
-		Volatility: utils.TrimFL(volatility),
-		Bid:        utils.TrimFL(bid),
-		Ask:        utils.TrimFL(ask),
-		Last:       utils.TrimFL(last),
-		Open:       utils.TrimFL(open),
-		Close:      utils.TrimFL(closeP),
-		Hi:         utils.TrimFL(hi),
-		Lo:         utils.TrimFL(lo),
-		Hi52:       utils.TrimFL(hi52),
-		Lo52:       utils.TrimFL(lo52),
-		PE:         utils.TrimFL(pe),
+		Mark:       mark,
+		Volume:     volume,
+		Volatility: volatility,
+		Bid:        bid,
+		Ask:        ask,
+		Last:       last,
+		Open:       open,
+		Close:      closeP,
+		Hi:         hi,
+		Lo:         lo,
+		Hi52:       hi52,
+		Lo52:       lo52,
+		PE:         pe,
 	}, nil
 }
