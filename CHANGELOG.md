@@ -1,5 +1,7 @@
 Major updates are h1, minors are h3
 
+###### Main --> Stable (08/07/2022)
+
 ### 0.8.2
 
 **Important update**
