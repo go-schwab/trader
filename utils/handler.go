@@ -1,31 +1,11 @@
 package utils
 
 import (
-	"bufio"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
-	"os"
+	"sync"
 )
-
-// KeySearch returns the parent directory + ".APIKEY".
-// This will later serve as a search function for the entire home directory, hence the name, but I don't want to spend that much time on this yet when this accomplishes the same thing.
-// Namely, the ability for .APIKEY to remain outside of the project folder
-func KeySearch() (string, error) {
-	dir, err := os.UserHomeDir()
-
-	if err != nil {
-		return "", err
-	}
-
-	if dir[0] == 'C' {
-		dir += "\\.APIKEY"
-	} else {
-		dir += "/.APIKEY"
-	}
-
-	return dir, nil
-}
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
 // It performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function,
@@ -33,30 +13,20 @@ func KeySearch() (string, error) {
 // It takes one parameter:
 // req = a request of type *http.Request
 func Handler(req *http.Request) (string, error) {
-	var APIKEY string
+	var (
+		m sync.Mutex
+	)
 
-	keyPath, err := KeySearch()
+	m.Lock()
 
-	if err != nil {
-		return "", err
-	}
-
-	file, err := os.Open(keyPath)
+	config, err := LoadConfig()
 
 	if err != nil {
-		return "", err
-	}
-
-	defer file.Close()
-
-	s := bufio.NewScanner(file)
-
-	for s.Scan() {
-		APIKEY += s.Text()
+		log.Fatalf(err.Error())
 	}
 
 	q := req.URL.Query()
-	q.Add("apikey", APIKEY)
+	q.Add("apikey", config.APIKEY)
 	req.URL.RawQuery = q.Encode()
 	client := http.Client{}
 	resp, err := client.Do(req)
@@ -68,7 +38,7 @@ func Handler(req *http.Request) (string, error) {
 	defer resp.Body.Close()
 
 	errorCode := resp.StatusCode
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	body := string(bodyBytes)
 
 	if err != nil {
@@ -79,5 +49,6 @@ func Handler(req *http.Request) (string, error) {
 		log.Fatalf("Error %d - %s", errorCode, body)
 	}
 
+	m.Unlock()
 	return body, nil
 }
