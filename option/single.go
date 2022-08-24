@@ -1,7 +1,9 @@
 package option
 
 import (
+	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/samjtro/go-tda/utils"
@@ -39,7 +41,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 	}
 
 	var chain []CONTRACT
-	var Type, symbol, exchange, strikePrice, exp, d2e, bid, ask, last, mark, bidAskSize, volatility, delta, gamma, theta, vega, rho, openInterest, timeValue, theoreticalValue, theoreticalVolatility, percentChange, markChange, markPercentChange, intrinsicValue, inTheMoney string
+	var Type, symbol, exchange, strikePrice, exp, d2e, bid, ask, last, mark, bidAskSize, volatility, delta, gamma, theta, vega, rho, openInterest, timeValue, theoreticalValue, theoreticalVolatility, percentChange, markChange, markPercentChange, intrinsicValue, inTheMoney float64
 	split := strings.Split(body, "}],")
 
 	for _, x := range split {
@@ -48,87 +50,243 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 		for i, x := range split2 {
 			switch x {
 			case "putCall":
-				Type = split2[i+2]
+				Type1 := split2[i+2]
+
+				Type, err = strconv.ParseFloat(Type1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "symbol":
-				symbol = split2[i+2]
+				symbol1 := split2[i+2]
+
+				symbol, err = strconv.ParseFloat(symbol1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "exchangeName":
-				exchange = split2[i+2]
+				exchange1 := split2[i+2]
+
+				exchange, err = strconv.ParseFloat(exchange1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "strikePrice":
-				strikePrice = split2[i+1]
+				strikePrice1 := utils.TrimFL(split2[i+1])
+
+				strikePrice, err = strconv.ParseFloat(strikePrice1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "expirationDate":
-				exp = split2[i+1]
+				exp1 := utils.TrimFL(split2[i+1])
+
+				exp, err = strconv.ParseFloat(exp1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "daysToExpiration":
-				d2e = split2[i+1]
+				d2e1 := utils.TrimFL(split2[i+1])
+
+				d2e, err = strconv.ParseFloat(d2e1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "bid":
-				bid = split2[i+1]
+				bid1 := utils.TrimFL(split2[i+1])
+
+				bid, err = strconv.ParseFloat(bid1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "ask":
-				ask = split2[i+1]
+				ask1 := utils.TrimFL(split2[i+1])
+
+				ask, err = strconv.ParseFloat(ask1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "last":
-				last = split2[i+1]
+				last1 := utils.TrimFL(split2[i+1])
+
+				last, err = strconv.ParseFloat(last1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "mark":
-				mark = split2[i+1]
+				mark1 := utils.TrimFL(split2[i+1])
+
+				mark, err = strconv.ParseFloat(mark1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "bidAskSize":
-				bidAskSize = split2[i+2]
+				bidAskSize1 := split2[i+2]
+
+				bidAskSize, err = strconv.ParseFloat(bidAskSize1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "volatility":
-				volatility = split2[i+1]
+				volatility1 := split2[i+1]
+
+				volatility, err = strconv.ParseFloat(volatility1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "delta":
-				delta = split2[i+1]
+				delta1 := utils.TrimFL(split2[i+1])
+
+				delta, err = strconv.ParseFloat(delta1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "gamma":
-				gamma = split2[i+1]
+				gamma1 := utils.TrimFL(split2[i+1])
+
+				gamma, err = strconv.ParseFloat(gamma1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "theta":
-				theta = split2[i+1]
+				theta1 := utils.TrimFL(split2[i+1])
+
+				theta, err = strconv.ParseFloat(theta1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "vega":
-				vega = split2[i+1]
+				vega1 := utils.TrimFL(split2[i+1])
+
+				vega, err = strconv.ParseFloat(vega1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "rho":
-				rho = split2[i+1]
+				rho1 := utils.TrimFL(split2[i+1])
+
+				rho, err = strconv.ParseFloat(rho1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "openInterest":
-				openInterest = split2[i+1]
+				openInterest1 := utils.TrimFL(split2[i+1])
+
+				openInterest, err = strconv.ParseFloat(openInterest1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "timeValue":
-				timeValue = split2[i+1]
+				timeValue1 := utils.TrimFL(split2[i+1])
+
+				timeValue, err = strconv.ParseFloat(timeValue1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "theoreticalOptionValue":
-				theoreticalValue = split2[i+1]
+				theoreticalValue1 := utils.TrimFL(split2[i+1])
+
+				theoreticalValue, err = strconv.ParseFloat(theoreticalValue1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "theoreticalVolatility":
-				theoreticalVolatility = split2[i+1]
+				theoreticalVolatility1 := utils.TrimFL(split2[i+1])
+
+				theoreticalVolatility, err = strconv.ParseFloat(theoreticalVolatility1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "percentChange":
-				percentChange = split2[i+1]
+				percentChange1 := utils.TrimFL(split2[i+1])
+
+				percentChange, err = strconv.ParseFloat(percentChange1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "markChange":
-				markChange = split2[i+1]
+				markChange1 := utils.TrimFL(split2[i+1])
+
+				markChange, err = strconv.ParseFloat(markChange1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "markPercentChange":
-				markPercentChange = split2[i+1]
+				markPercentChange1 := utils.TrimFL(split2[i+1])
+
+				markPercentChange, err = strconv.ParseFloat(markPercentChange1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "intrinsicValue":
-				intrinsicValue = split2[i+1]
+				intrinsicValue1 := utils.TrimFL(split2[i+1])
+
+				intrinsicValue, err = strconv.ParseFloat(intrinsicValue1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			case "inTheMoney":
-				inTheMoney = split2[i+1]
+				inTheMoney1 := utils.TrimFL(split2[i+1])
+
+				inTheMoney, err = strconv.ParseFloat(inTheMoney1, 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
 			}
 		}
 
 		contract := CONTRACT{
 			TYPE:                   Type,
 			SYMBOL:                 symbol,
-			STRIKE:                 utils.TrimFL(strikePrice),
+			STRIKE:                 strikePrice,
 			EXCHANGE:               exchange,
-			EXPIRATION:             utils.TrimFL(exp),
-			DAYS2EXPIRATION:        utils.TrimFL(d2e),
-			BID:                    utils.TrimFL(bid),
-			ASK:                    utils.TrimFL(ask),
-			LAST:                   utils.TrimFL(last),
-			MARK:                   utils.TrimFL(mark),
+			EXPIRATION:             exp,
+			DAYS2EXPIRATION:        d2e,
+			BID:                    bid,
+			ASK:                    ask,
+			LAST:                   last,
+			MARK:                   mark,
 			BIDASK_SIZE:            bidAskSize,
-			VOLATILITY:             utils.TrimFL(volatility),
-			DELTA:                  utils.TrimFL(delta),
-			GAMMA:                  utils.TrimFL(gamma),
-			THETA:                  utils.TrimFL(theta),
-			VEGA:                   utils.TrimFL(vega),
-			RHO:                    utils.TrimFL(rho),
-			OPEN_INTEREST:          utils.TrimFL(openInterest),
-			TIME_VALUE:             utils.TrimFL(timeValue),
-			THEORETICAL_VALUE:      utils.TrimFL(theoreticalValue),
-			THEORETICAL_VOLATILITY: utils.TrimFL(theoreticalVolatility),
-			PERCENT_CHANGE:         utils.TrimFL(percentChange),
-			MARK_CHANGE:            utils.TrimFL(markChange),
-			MARK_PERCENT_CHANGE:    utils.TrimFL(markPercentChange),
-			INTRINSIC_VALUE:        utils.TrimFL(intrinsicValue),
-			IN_THE_MONEY:           utils.TrimFL(inTheMoney),
+			VOLATILITY:             volatility,
+			DELTA:                  delta,
+			GAMMA:                  gamma,
+			THETA:                  theta,
+			VEGA:                   vega,
+			RHO:                    rho,
+			OPEN_INTEREST:          openInterest,
+			TIME_VALUE:             timeValue,
+			THEORETICAL_VALUE:      theoreticalValue,
+			THEORETICAL_VOLATILITY: theoreticalVolatility,
+			PERCENT_CHANGE:         percentChange,
+			MARK_CHANGE:            markChange,
+			MARK_PERCENT_CHANGE:    markPercentChange,
+			INTRINSIC_VALUE:        intrinsicValue,
+			IN_THE_MONEY:           inTheMoney,
 		}
 
 		chain = append(chain, contract)
