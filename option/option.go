@@ -12,30 +12,30 @@ var endpoint_option string = "https://api.tdameritrade.com/v1/marketdata/chains"
 type CONTRACT struct {
 	TYPE                   string
 	SYMBOL                 string
-	STRIKE                 string
+	STRIKE                 float64
 	EXCHANGE               string
-	EXPIRATION             string
-	DAYS2EXPIRATION        string
-	BID                    string
-	ASK                    string
-	LAST                   string
-	MARK                   string
+	EXPIRATION             float64
+	DAYS2EXPIRATION        float64
+	BID                    float64
+	ASK                    float64
+	LAST                   float64
+	MARK                   float64
 	BIDASK_SIZE            string
-	VOLATILITY             string
-	DELTA                  string
-	GAMMA                  string
-	THETA                  string
-	VEGA                   string
-	RHO                    string
-	OPEN_INTEREST          string
-	TIME_VALUE             string
-	THEORETICAL_VALUE      string
-	THEORETICAL_VOLATILITY string
-	PERCENT_CHANGE         string
-	MARK_CHANGE            string
-	MARK_PERCENT_CHANGE    string
-	INTRINSIC_VALUE        string
-	IN_THE_MONEY           string //bool
+	VOLATILITY             float64
+	DELTA                  float64
+	GAMMA                  float64
+	THETA                  float64
+	VEGA                   float64
+	RHO                    float64
+	OPEN_INTEREST          float64
+	TIME_VALUE             float64
+	THEORETICAL_VALUE      float64
+	THEORETICAL_VOLATILITY float64
+	PERCENT_CHANGE         float64
+	MARK_CHANGE            float64
+	MARK_PERCENT_CHANGE    float64
+	INTRINSIC_VALUE        float64
+	IN_THE_MONEY           bool //bool
 }
 
 // func Vertical() string {}

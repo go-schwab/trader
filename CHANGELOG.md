@@ -1,5 +1,11 @@
 Major updates are h1, minors are h3
 
+### 0.8.3
+
+Changed `option` package to use `float64` instead of `string`, and changed InTheMoney to return a bool now.
+- Moved all tests into `test`
+- Other minor updates to accompany the above changes
+
 ###### Main --> Stable (08/07/2022)
 
 ### 0.8.2
