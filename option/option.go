@@ -10,17 +10,17 @@ var endpoint_option string = "https://api.tdameritrade.com/v1/marketdata/chains"
 //type UNDERLYING struct {}
 
 type CONTRACT struct {
-	TYPE                   float64
-	SYMBOL                 float64
+	TYPE                   string
+	SYMBOL                 string
 	STRIKE                 float64
-	EXCHANGE               float64
+	EXCHANGE               string
 	EXPIRATION             float64
 	DAYS2EXPIRATION        float64
 	BID                    float64
 	ASK                    float64
 	LAST                   float64
 	MARK                   float64
-	BIDASK_SIZE            float64
+	BIDASK_SIZE            string
 	VOLATILITY             float64
 	DELTA                  float64
 	GAMMA                  float64
@@ -35,7 +35,7 @@ type CONTRACT struct {
 	MARK_CHANGE            float64
 	MARK_PERCENT_CHANGE    float64
 	INTRINSIC_VALUE        float64
-	IN_THE_MONEY           float64 //bool
+	IN_THE_MONEY           bool //bool
 }
 
 // func Vertical() string {}

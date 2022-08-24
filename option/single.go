@@ -41,7 +41,9 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 	}
 
 	var chain []CONTRACT
-	var Type, symbol, exchange, strikePrice, exp, d2e, bid, ask, last, mark, bidAskSize, volatility, delta, gamma, theta, vega, rho, openInterest, timeValue, theoreticalValue, theoreticalVolatility, percentChange, markChange, markPercentChange, intrinsicValue, inTheMoney float64
+	var Type, symbol, exchange, bidAskSize string
+	var strikePrice, exp, d2e, bid, ask, last, mark, volatility, delta, gamma, theta, vega, rho, openInterest, timeValue, theoreticalValue, theoreticalVolatility, percentChange, markChange, markPercentChange, intrinsicValue float64
+	var inTheMoney bool
 	split := strings.Split(body, "}],")
 
 	for _, x := range split {
@@ -50,29 +52,11 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 		for i, x := range split2 {
 			switch x {
 			case "putCall":
-				Type1 := split2[i+2]
-
-				Type, err = strconv.ParseFloat(Type1, 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				Type = split2[i+2]
 			case "symbol":
-				symbol1 := split2[i+2]
-
-				symbol, err = strconv.ParseFloat(symbol1, 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				symbol = split2[i+2]
 			case "exchangeName":
-				exchange1 := split2[i+2]
-
-				exchange, err = strconv.ParseFloat(exchange1, 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				exchange = split2[i+2]
 			case "strikePrice":
 				strikePrice1 := utils.TrimFL(split2[i+1])
 
@@ -130,15 +114,9 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "bidAskSize":
-				bidAskSize1 := split2[i+2]
-
-				bidAskSize, err = strconv.ParseFloat(bidAskSize1, 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				bidAskSize = split2[i+2]
 			case "volatility":
-				volatility1 := split2[i+1]
+				volatility1 := utils.TrimFL(split2[i+1])
 
 				volatility, err = strconv.ParseFloat(volatility1, 64)
 
@@ -250,9 +228,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "inTheMoney":
-				inTheMoney1 := utils.TrimFL(split2[i+1])
-
-				inTheMoney, err = strconv.ParseFloat(inTheMoney1, 64)
+				inTheMoney, err = strconv.ParseBool(utils.TrimFL(split2[i+1]))
 
 				if err != nil {
 					log.Fatalf(err.Error())
