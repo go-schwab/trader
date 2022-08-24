@@ -3,7 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda)](https://goreportcard.com/report/github.com/samjtro/go-tda)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Latest: [v0.8.3](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.3](https://github.com/samjtro/go-tda/tree/stable)
+Latest: [v0.8.3](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.2](https://github.com/samjtro/go-tda/tree/stable)
 - *(Suggested Pre-v1.0.0)
 
 ## what is this project?
