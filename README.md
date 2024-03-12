@@ -100,15 +100,6 @@ if err != nil {
 }
 ```
 
-## roadmap to v1.0.0
-
-in order to have a fully functional v1.0.0 release, we must implement:
-
-- [ ] account package functionality, including trading
-- [ ] Strategy option spreads
-- [x] custom structs for every package for easy navigation
-- [x] "pandas dataframe-esque" struct for data package
-
 ## what can i do with this project?
 
 like previously mentioned, the goal is for you to use this in a wide variety of capacities. do what you wish with this project, but...  
