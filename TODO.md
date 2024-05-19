@@ -1,17 +1,16 @@
 # Roadmap to v 1.0.0
 
-- [ ] Full TDA API access
-    * [ ] Accounts & Trading, Authentication
-    * [x] Instruments
-    * [x] Movers
-    * [x] Simple Option Chains
-    * [ ] Strategy Option Chains
-    * [x] Price History
-    * [x] Quotes
+- [ ] Finish test package & integrate CI for new PRs
+- [ ] Migrate to Schwab
+    * [ ] Endpoints
+    * [ ] Structs
+    * [ ] Misc (JSON, etc.)
+- [ ] Account functionality
+    * [ ] Account Authentication
+    * [ ] Trading
     * [ ] Transaction History
     * [ ] User Info & Prefs
     * [ ] Watchlist
-- [x] Custom "pandas dataframe-esque" structs per package for efficient data return
-- [ ] Performance testing to minimize thread load & maximize performance
-    * Need to do comprehensive testing to ensure current strategy is correct
-
+- [ ] Advanced API features
+    * [ ] Strategy Option Chains
+- [ ] Performance Testing

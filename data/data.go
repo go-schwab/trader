@@ -1,5 +1,6 @@
 package data
 
+// As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.
 var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"           // symbol
 var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory" // symbol
 
@@ -22,8 +23,8 @@ type QUOTE struct {
 	PE         float64
 }
 
-// this is a Go implementation of the pandas DataFrame
-// slices of FRAMEs form DataFrames, which can then be used in analysis
+// This is a Go implementation of the pandas "DataFrame" structure
+// Slices of FRAMEs form DataFrames, which can then be used in analysis
 type FRAME struct {
 	Datetime string
 	Volume   float64

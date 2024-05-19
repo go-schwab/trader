@@ -6,6 +6,9 @@
 Latest: [v0.8.3](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.3](https://github.com/samjtro/go-tda/tree/stable)
 - *(Suggested Pre-v1.0.0)
 
+[Roadmap to v1.0.0](https://github.com/samjtro/go-tda/blob/main/TODO.md)
+[Changelog](https://github.com/samjtro/go-tda/blob/main/CHANGELOG.md)
+
 ## what is this?
 
 the fastest td-ameritrade hook out there. purpose-built for real-time trading, weighted average request time is 152ms with the RealTime() quote function at 80ms. (per 100k test requests)

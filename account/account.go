@@ -7,7 +7,10 @@ import (
 	"github.com/samjtro/go-tda/utils"
 )
 
-/*type MARGIN struct {
+/*
+TDA Account Structs - Deprecated 2024
+Moving to Schwab
+type MARGIN struct {
 	Type			string
 	accountId		string
 	roundTrips		string

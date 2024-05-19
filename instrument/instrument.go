@@ -1,5 +1,6 @@
 package instrument
 
+// As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.
 var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
 var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s" // cusip
 

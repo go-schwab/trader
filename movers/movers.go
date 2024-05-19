@@ -10,6 +10,7 @@ import (
 	"github.com/samjtro/go-tda/utils"
 )
 
+// As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.
 type MOVER struct {
 	TICKER      string
 	DESCRIPTION string
