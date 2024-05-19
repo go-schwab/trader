@@ -7,8 +7,6 @@ import (
 	"github.com/samjtro/go-tda/utils"
 )
 
-//func main() { fmt.Println(GetBearerToken("","")) }
-
 // GetBearerToken returns a string; containing the Bearer Token for your account
 func GetBearerToken(accountID string) (string, error) {
 	req, _ := http.NewRequest("GET", endpoint_bearer, nil)

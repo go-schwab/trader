@@ -6,11 +6,17 @@
 Latest: [v0.8.3](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.3](https://github.com/samjtro/go-tda/tree/stable)
 - *(Suggested Pre-v1.0.0)
 
-## what is this project?
+## what is this?
 
-this is a go implementation of a td-ameritrade API hook. the goal of this project is to incentivize others to build algorithmic trading models on top of these packages. the purpose for this projects existence is really speed; a lot of td-ameritrade hooks are built in Python, which is fine, but they are so unbelievably slow. when you have to wait multiple seconds to make a request, you know it's bad. we have built an incredibly light handler function that routes all calls in the library, making speeds predictable and lightning fast. this, on top of well optimized and efficient Marshaling of JSON to custom Structs, means that you can make up to 15 requests per second if you wish.
-- the average response times for all functions in this library is 152ms (weighted average of over 100,000 test requests)
-- a light function like RealTime can achieve request times as low as 80ms
+the fastest td-ameritrade hook out there. purpose-built for real-time trading, weighted average request time is 152ms with the RealTime() quote function at 80ms. (per 100k test requests)
+
+built, maintained by @samjtro.
+
+### 2024 update
+
+td-ameritrade was bought by schwab, who have taken over the developer program. you can register a dev account with schwab at [developer.schwab.com](https://developer.schwab.com). if you have an existing td-ameritrade project, you are unaffected by this change.
+
+the account package has been deprecated as a result of this change - out of a personal interest, i will be finishing up the schwab account integration soon enough.
 
 ## how can i use this project?
 
@@ -42,7 +48,7 @@ UTC_DIFF=+0:00 // This is a placeholder; for MST, you would use -06:00, etc. It 
 - `movers`: contains `Get`; returns a list of movers for the day by index & direction
 - `option`: contains `Single`; returns Option Chains of your desired parameters
 - `instrument`: contains `Fundamental` & `Get`; returns information on a desired ticker or CUSIP
-- `account` will contain account monitoring and trading functions but is not functional as of right now   
+- WIP: `account` will contain account monitoring and trading functions   
 
 if you still have a question about something after checking the go reference and code samples, or something isn't quite working right, either file an issue or a pull request on the repo OR send me an email @ samjtro@proton.me
 
@@ -73,7 +79,7 @@ if err != nil {
 	panic(err)
 }
 
-fundamental, err = instrument.Fundamental("AAPL")
+fundamental, err := instrument.Fundamental("AAPL")
 
 if err != nil {
 	panic(err)
