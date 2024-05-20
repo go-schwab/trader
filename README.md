@@ -1,14 +1,14 @@
-# go-tda
-[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-tda.svg)](https://pkg.go.dev/github.com/samjtro/go-tda)
-[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-tda)](https://goreportcard.com/report/github.com/samjtro/go-tda)
+# go-trade
+[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-trade.svg)](https://pkg.go.dev/github.com/samjtro/go-trade)
+[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-trade)](https://goreportcard.com/report/github.com/samjtro/go-trade)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Latest: [v0.8.3](https://github.com/samjtro/go-tda/tree/main) | Stable*: [v0.8.3](https://github.com/samjtro/go-tda/tree/stable)
+Latest: [v0.8.3](https://github.com/samjtro/go-trade/tree/main) | Stable*: [v0.8.3](https://github.com/samjtro/go-trade/tree/stable)
 - *(Suggested Pre-v1.0.0)
 
-[Roadmap to v1.0.0](https://github.com/samjtro/go-tda/blob/main/TODO.md)
+[Roadmap to v1.0.0](https://github.com/samjtro/go-trade/blob/main/TODO.md)
 
-[Changelog](https://github.com/samjtro/go-tda/blob/main/CHANGELOG.md)
+[Changelog](https://github.com/samjtro/go-tradtradee/blob/main/CHANGELOG.md)
 
 ## what is this?
 
@@ -46,7 +46,7 @@ UTC_DIFF=+0:00 // This is a placeholder; for MST, you would use -06:00, etc. It 
 3. `go get github.com/samjtro/go-tda`
 
 - you're now ready to go! import the library by package ( `github.com/samjtro/go-tda/data` for the data package, for instance )
-- if you have any questions, check the [go reference](https://pkg.go.dev/github.com/samjtro/go-tda); or, scroll down to the code samples below
+- if you have any questions, check the [go reference](https://pkg.go.dev/github.com/samjtro/go-trade); or, scroll down to the code samples below
 
 ### package details
 
