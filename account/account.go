@@ -7,9 +7,8 @@ import (
 	"github.com/samjtro/go-tda/utils"
 )
 
-/*
-TDA Account Structs - Deprecated 2024
-Moving to Schwab
+// As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.
+
 type MARGIN struct {
 	Type			string
 	accountId		string
@@ -32,7 +31,7 @@ type CASH struct {
 	initialBalances 	[]map(string,int)
 	currentBalances 	[]map(string,int)
 	projectedBalances	[]map(string,int)
-}*/
+}
 
 var endpoint_account string = "https://api.tdameritrade.com/v1/accounts/%s" // accountID
 var endpoint_place = "https://api.tdameritrade.com/v1/accounts/%s/orders"
