@@ -16,7 +16,7 @@ import (
 // ticker = "AAPL", etc.
 func RealTime(ticker string) (QUOTE, error) {
 	dt := utils.Now(time.Now())
-	url := fmt.Sprintf(endpoint_quote, ticker)
+	url := fmt.Sprintf(endpoint_realtime, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := utils.Handler(req)
 

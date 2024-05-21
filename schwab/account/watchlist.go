@@ -6,7 +6,7 @@ import (
 	//"strings"
 	"net/http"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // function to create a watchlist

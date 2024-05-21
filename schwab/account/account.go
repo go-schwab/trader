@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.

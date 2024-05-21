@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // Single returns a []CONTRACT; containing a SINGLE option chain of your desired strike, type, etc.,

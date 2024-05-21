@@ -3,7 +3,7 @@ package schwab
 import (
 	"net/http"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // Covered returns a string; containing covered option calls.

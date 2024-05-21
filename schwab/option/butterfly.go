@@ -3,7 +3,7 @@ package schwab
 import (
 	"net/http"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // Butterfly returns a string; containing Butterfly spread option calls.

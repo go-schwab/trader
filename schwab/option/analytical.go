@@ -3,7 +3,7 @@ package schwab
 import (
 	"net/http"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // ANALYTICAL returns a string; allows you to control additional parameters for theoretical value calculations:

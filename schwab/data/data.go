@@ -2,7 +2,7 @@ package schwab
 
 var (
 	// endpoint_quotelist
-	endpoint_quote string = fmt.Sprintf(endpoint + "/%s/quotes") // Symbol
+	endpoint_realtime string = fmt.Sprintf(endpoint + "/%s/quotes") // Symbol
 	endpoint_pricehistory string = fmt.Sprintf(endpoint + "/%s/pricehistory") // Symbol
 )
 

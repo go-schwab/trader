@@ -3,17 +3,17 @@ package test
 import (
 	"testing"
 
-	"github.com/samjtro/go-tda/instrument"
+	"github.com/samjtro/go-trade/schwab"
 )
 
 func TestInstrument(t *testing.T) {
-	_, err := instrument.Simple("AAPL")
+	_, err := schwab.Simple("AAPL")
 
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
 
-	_, err = instrument.Fundamental("AAPL")
+	_, err = schwab.Fundamental("AAPL")
 
 	if err != nil {
 		t.Fatalf(err.Error())
