@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/samjtro/go-trade/utils"
+	"github.com/samjtro/go-trade/schwab/utils"
 )
 
 //var endpoint_replace = "https://api.tdameritrade.com/v1/accounts/%s/orders/%s"

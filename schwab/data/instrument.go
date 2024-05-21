@@ -1,13 +1,131 @@
 package instrument 
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
+	"strconv"
 
-	"github.com/samjtro/go-trade/utils"
+	"github.com/samjtro/go-trade/schwab" 
+	"github.com/samjtro/go-trade/schwab/utils"
 )
+
+var (
+	endpoint_searchinstruments string = fmt.Sprintf(schwab.Endpoint + "/instruments")
+	endpoint_getinstrument string = fmt.Sprintf(schwab.Endpoint + "/instruments/%s") // Cusip
+)
+
+// Returns simple information regarding the assets
+type SIMPLE struct {
+	CUSIP       string
+	TICKER      string
+	DESCRIPTION string
+	EXCHANGE    string
+	TYPE        string
+}
+
+// Returns all fundamentals of the given asset
+type FUNDAMENTAL struct {
+	TICKER                 string
+	CUSIP                  string
+	DESCRIPTION            string
+	EXCHANGE               string
+	TYPE                   string
+	HI52                   float64
+	LO52                   float64
+	DIV_YIELD              float64
+	DIV_AMOUNT             float64
+	PE_RATIO               float64
+	PEG_RATIO              float64
+	PB_RATIO               float64
+	PR_RATIO               float64
+	PCF_RATIO              float64
+	GROSS_MARGIN_TTM       float64
+	GROSS_MARGIN_MRQ       float64
+	NET_PROFIT_MARGIN_TTM  float64
+	NET_PROFIT_MARGIN_MRQ  float64
+	OPERATING_MARGIN_TTM   float64
+	OPERATING_MARGIN_MRQ   float64
+	RETURN_ON_EQUITY       float64
+	RETURN_ON_ASSETS       float64
+	RETURN_ON_INVESTMENT   float64
+	QUICK_RATIO            float64
+	CURRENT_RATIO          float64
+	INTEREST_COVERAGE      float64
+	TOTAL_DEBT_TO_CAPITAL  float64
+	TOTAL_DEBT_TO_EQUITY   float64
+	EPS_TTM                float64
+	EPS_CHANGE_PERCENT_TTM float64
+	EPS_CHANGE_YR          float64
+	REV_CHANGE_YR          float64
+	REV_CHANGE_TTM         float64
+	REV_CHANGE_IN          float64
+	SHARES_OUTSTANDING     float64
+	MARKET_CAP_FLOAT       float64
+	MARKET_CAP             float64
+	BOOK_VALUE_PER_SHARE   float64
+	BETA                   float64
+	VOL_1DAY               float64
+	VOL_10DAY              float64
+	VOL_3MON               float64
+}
+
+// desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C.
+
+// Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker.
+// It takes one parameter:
+// cusip = "037833100", etc.
+func Simple(ticker string) (SIMPLE, error) {
+	req2, _ := http.NewRequest("GET", endpoint_searchinstruments, nil)
+	q2 := req2.URL.Query()
+	q2.Add("symbol", ticker)
+	q2.Add("projection", "fundamental")
+	req2.URL.RawQuery = q2.Encode()
+	body2, err := utils.Handler(req2)
+
+	if err != nil {
+		return SIMPLE{}, err
+	}
+
+	var cusip string
+	split2 := strings.Split(body2, "\"")
+
+	for i, x := range split2 {
+		if x == "cusip" {
+			cusip = split2[i+2]
+		}
+	}
+
+	url := fmt.Sprintf(endpoint_getinstrument, cusip)
+	req, _ := http.NewRequest("GET", url, nil)
+	body, err := utils.Handler(req)
+
+	if err != nil {
+		return SIMPLE{}, err
+	}
+
+	var desc, exchange, Type string
+	split := strings.Split(body, "\"")
+
+	for i, x := range split {
+		if x == "description" {
+			desc = split[i+2]
+		} else if x == "exchange" {
+			exchange = split[i+2]
+		} else if x == "assetType" {
+			Type = split[i+2]
+		}
+	}
+
+	return SIMPLE{
+		CUSIP:       cusip,
+		TICKER:      ticker,
+		DESCRIPTION: desc,
+		EXCHANGE:    exchange,
+		TYPE:	     Type,
+	}, nil
+}
 
 // Returns a FUNDAMENTAL; containing information regarding both price history and fundamentals.
 func Fundamental(ticker string) (FUNDAMENTAL, error) {

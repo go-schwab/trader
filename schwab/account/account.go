@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/samjtro/go-trade/utils"
+	"github.com/samjtro/go-trade/schwab/utils"
 	"github.com/samjtro/go-trade/schwab"
 )
 
