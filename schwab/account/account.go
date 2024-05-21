@@ -5,9 +5,10 @@ import (
 	"net/http"
 
 	"github.com/samjtro/go-trade/utils"
+	"github.com/samjtro/go-trade/schwab"
 )
 
-// As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.
+// Need to migrate this whole package to schwab
 
 type MARGIN struct {
 	Type			string

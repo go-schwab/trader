@@ -1,9 +1,13 @@
 package data 
 
+import (
+	"github.com/samjtro/go-trade/schwab"
+)
+
 var (
 	// endpoint_quotelist
-	endpoint_realtime string = fmt.Sprintf(endpoint + "/%s/quotes") // Symbol
-	endpoint_pricehistory string = fmt.Sprintf(endpoint + "/%s/pricehistory") // Symbol
+	endpoint_realtime string = fmt.Sprintf(schwab.Endpoint + "/%s/quotes") // Symbol
+	endpoint_pricehistory string = fmt.Sprintf(schwab.Endpoint + "/%s/pricehistory") // Symbol
 )
 
 // RealTime's native struct; returns various indicators related to the asset

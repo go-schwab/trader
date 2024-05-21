@@ -1,8 +1,12 @@
 package instrument 
 
+import (
+	"github.com/samjtro/go-trade/schwab" 
+)
+
 var (
-	endpoint_searchinstruments string = fmt.Sprintf(endpoint + "/instruments")
-	endpoint_getinstrument string = fmt.Sprintf(endpoint + "/instruments/%s") // Cusip
+	endpoint_searchinstruments string = fmt.Sprintf(schwab.Endpoint + "/instruments")
+	endpoint_getinstrument string = fmt.Sprintf(schwab.Endpoint + "/instruments/%s") // Cusip
 )
 
 // Returns simple information regarding the assets
