@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/samjtro/go-tda/option"
+	"github.com/samjtro/go-trade/option"
 )
 
 func TestOption(t *testing.T) {
