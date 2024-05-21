@@ -1,4 +1,4 @@
-package data
+package data 
 
 import (
 	"fmt"
@@ -8,15 +8,40 @@ import (
 	"strings"
 	"time"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/schwab"
+	"github.com/samjtro/go-trade/schwab/utils"
 )
 
-// RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
+var (
+	endpoint_quote string = fmt.Sprintf(schwab.Endpoint + "/%s/quotes") // Symbol
+	// endpoint_quotes string
+)
+
+// RealTime's native struct; returns various indicators related to the asset
+type QUOTE struct {
+	Datetime   string
+	Ticker     string
+	Mark       float64
+	Volume     float64
+	Volatility float64
+	Bid        float64
+	Ask        float64
+	Last       float64
+	Open       float64
+	Close      float64
+	Hi         float64
+	Lo         float64
+	Hi52       float64
+	Lo52       float64
+	PE         float64
+}
+
+// Quote returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
 // It takes one parameter:
 // ticker = "AAPL", etc.
-func RealTime(ticker string) (QUOTE, error) {
+func Quote(ticker string) (QUOTE, error) {
 	dt := utils.Now(time.Now())
-	url := fmt.Sprintf(endpoint_realtime, ticker)
+	url := fmt.Sprintf(endpoint_quote, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := utils.Handler(req)
 
@@ -154,3 +179,5 @@ func RealTime(ticker string) (QUOTE, error) {
 		PE:         pe,
 	}, nil
 }
+
+// func Quotes() []QUOTE {}

@@ -1,4 +1,4 @@
-package data
+package data 
 
 import (
 	"fmt"
@@ -7,8 +7,24 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/schwab"
+	"github.com/samjtro/go-trade/schwab/utils"
 )
+
+var (
+	endpoint_pricehistory string = fmt.Sprintf(schwab.Endpoint + "/%s/pricehistory") // Symbol
+)
+
+// This is a Go implementation of the pandas "DataFrame" structure
+// Slices of FRAMEs form DataFrames, which can then be used in analysis
+type FRAME struct {
+	Datetime string
+	Volume   float64
+	Open     float64
+	Close    float64
+	Hi       float64
+	Lo       float64
+}
 
 // PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick.
 // It takes five parameters:

@@ -1,4 +1,4 @@
-package account
+package account 
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	//"strings"
 	"net/http"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/schwab/utils"
 )
 
 // function to create a watchlist

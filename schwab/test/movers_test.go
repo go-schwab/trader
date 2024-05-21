@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/samjtro/go-tda/movers"
+	"github.com/samjtro/go-trade/movers"
 )
 
 func TestMovers(t *testing.T) {
