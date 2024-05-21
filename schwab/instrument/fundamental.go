@@ -11,7 +11,7 @@ import (
 
 // Returns a FUNDAMENTAL; containing information regarding both price history and fundamentals.
 func Fundamental(ticker string) (FUNDAMENTAL, error) {
-	req, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
+	req, _ := http.NewRequest("GET", endpoint_searchinstruments, nil)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
 	q.Add("projection", "fundamental")

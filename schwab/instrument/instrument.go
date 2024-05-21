@@ -1,6 +1,8 @@
 package instrument 
 
 import (
+	fmt
+
 	"github.com/samjtro/go-trade/schwab" 
 )
 

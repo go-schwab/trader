@@ -1,6 +1,8 @@
 package data 
 
 import (
+	fmt
+
 	"github.com/samjtro/go-trade/schwab"
 )
 

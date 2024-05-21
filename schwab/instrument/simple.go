@@ -12,7 +12,7 @@ import (
 // It takes one parameter:
 // cusip = "037833100", etc.
 func Simple(ticker string) (SIMPLE, error) {
-	req2, _ := http.NewRequest("GET", endpoint_searchinstrument, nil)
+	req2, _ := http.NewRequest("GET", endpoint_searchinstruments, nil)
 	q2 := req2.URL.Query()
 	q2.Add("symbol", ticker)
 	q2.Add("projection", "fundamental")
