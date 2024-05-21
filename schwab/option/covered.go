@@ -1,4 +1,4 @@
-package option
+package schwab 
 
 import (
 	"net/http"
@@ -6,12 +6,12 @@ import (
 	"github.com/samjtro/go-tda/utils"
 )
 
-// Butterfly returns a string; containing Butterfly spread option calls.
+// Covered returns a string; containing covered option calls.
 // Not functional ATM.
-func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
+func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
 	req, _ := http.NewRequest("GET", endpoint_option, nil)
 	q := req.URL.Query()
-	q.Add("strategy", "BUTTERFLY")
+	q.Add("strategy", "COVERED")
 	q.Add("symbol", ticker)
 	q.Add("contractType", contractType)
 	q.Add("range", strikeRange)

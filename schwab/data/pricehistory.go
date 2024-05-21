@@ -1,4 +1,4 @@
-package data
+package schwab 
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick.

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker.

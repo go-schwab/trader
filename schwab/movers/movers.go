@@ -1,4 +1,4 @@
-package movers
+package schwab 
 
 import (
 	"fmt"
@@ -7,10 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
-// As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.
 type MOVER struct {
 	TICKER      string
 	DESCRIPTION string
@@ -21,7 +20,7 @@ type MOVER struct {
 }
 
 var (
-	endpoint_movers string = "https://api.tdameritrade.com/v1/marketdata/%s/movers" // index
+	endpoint_movers string = fmt.Sprintf(endpoint + "/movers/%s") // Index ID
 )
 
 // Get returns a string; containing information on the desired index's movers per your desired direction and change type(percent or value),

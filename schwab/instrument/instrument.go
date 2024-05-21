@@ -1,8 +1,9 @@
-package instrument
+package schwab
 
-// As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.
-var endpoint_searchinstrument string = "https://api.tdameritrade.com/v1/instruments"
-var endpoint_getinstrument string = "https://api.tdameritrade.com/v1/instruments/%s" // cusip
+var (
+	endpoint_searchinstruments string = fmt.Sprintf(endpoint + "/instruments")
+	endpoint_getinstrument string = fmt.Sprintf(endpoint + "/instruments/%s") // Cusip
+)
 
 // Returns simple information regarding the assets
 type SIMPLE struct {

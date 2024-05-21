@@ -1,4 +1,4 @@
-package instrument
+package schwab 
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // Returns a FUNDAMENTAL; containing information regarding both price history and fundamentals.

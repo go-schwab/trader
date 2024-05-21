@@ -1,8 +1,10 @@
-package data
+package schwab 
 
-// As of 2024, these TDA endpoints are still functional. Working on migrating to Schwab before v1.0.0.
-var endpoint_realtime string = "https://api.tdameritrade.com/v1/marketdata/%s/quotes"           // symbol
-var endpoint_pricehistory string = "https://api.tdameritrade.com/v1/marketdata/%s/pricehistory" // symbol
+var (
+	// endpoint_quotelist
+	endpoint_quote string = fmt.Sprintf(endpoint + "/%s/quotes") // Symbol
+	endpoint_pricehistory string = fmt.Sprintf(endpoint + "/%s/pricehistory") // Symbol
+)
 
 // RealTime's native struct; returns various indicators related to the asset
 type QUOTE struct {

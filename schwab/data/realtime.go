@@ -1,4 +1,4 @@
-package data
+package schwab 
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/samjtro/go-tda/utils"
+	"github.com/samjtro/go-trade/utils"
 )
 
 // RealTime returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
@@ -16,7 +16,7 @@ import (
 // ticker = "AAPL", etc.
 func RealTime(ticker string) (QUOTE, error) {
 	dt := utils.Now(time.Now())
-	url := fmt.Sprintf(endpoint_realtime, ticker)
+	url := fmt.Sprintf(endpoint_quote, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := utils.Handler(req)
 

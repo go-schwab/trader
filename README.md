@@ -3,7 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-trade)](https://goreportcard.com/report/github.com/samjtro/go-trade)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Latest: [v0.8.3](https://github.com/samjtro/go-trade/tree/main) | Stable*: [v0.8.3](https://github.com/samjtro/go-trade/tree/stable)
+Latest: [v0.8.4](https://github.com/samjtro/go-trade/tree/schwab-migration) | Stable*: [v0.8.3](https://github.com/samjtro/go-trade/tree/stable)
 - *(Suggested Pre-v1.0.0)
 
 [Roadmap to v1.0.0](https://github.com/samjtro/go-trade/blob/main/TODO.md)
@@ -14,13 +14,11 @@ Latest: [v0.8.3](https://github.com/samjtro/go-trade/tree/main) | Stable*: [v0.8
 
 the fastest td-ameritrade hook out there. purpose-built for real-time trading, weighted average request time is 152ms with the RealTime() quote function at 80ms. (per 100k test requests)
 
-built, maintained by @samjtro.
+built, maintained by [@samjtro](https://github.com/samjtro).
 
 ### 2024 update
 
 ameritrade was bought by schwab, who have taken over the developer program. you can register a dev account with schwab at [developer.schwab.com](https://developer.schwab.com). if you have an existing td-ameritrade project, you are unaffected by this change.
-
-i have applied for developer access at schwab, and will be finishing up all functionality for v1.0.0 before July 2024.
 
 after i have completed the schwab integration, the last step before v1.0.0 is laying out a roadmap for integrating with other platforms. the reason for the change in name from 'go-tda' to 'go-trade' is because i want this to be a general purpose go integration for individual developers to hook into any brokerage account for algotrading. plus, i'd like this project to be a starting point for go ai-trading research.
 
@@ -28,12 +26,7 @@ after i have completed the schwab integration, the last step before v1.0.0 is la
 
 ### quick start
 
-0. go to [developer.tdameritrade.com](https://developer.tdameritrade.com/) and register for an account
-- optionally, if you'd like to trade using the `trade` package, you will have to register for a td-ameritrade brokerage account - this is NOT neccesary, as you can use the data from tda to trade on any platform you wish  
-
-1. create an app on td ameritrade developer at [https://developer.tdameritrade.com/user/me/apps](https://developer.tdameritrade.com/user/me/apps), or by going to the My Apps tab while logged in  
-
-2. go to your app (once it has been approved), and get the api key under the "Consumer Key" section  
+0. go to your app (once it has been approved), and get the api key under the "Consumer Key" section  
 - create a file called `tda-config.env`
 - move that file to your `$HOME` directory (`~/`)
 - edit the file and add the following information in the format:
@@ -43,7 +36,7 @@ APIKEY=Your_APIKEY_Here
 UTC_DIFF=+0:00 // This is a placeholder; for MST, you would use -06:00, etc. It is your Difference from UTC time
 ```
 
-3. `go get github.com/samjtro/go-tda`
+1. `go get github.com/samjtro/go-trade`
 
 - you're now ready to go! import the library by package ( `github.com/samjtro/go-tda/data` for the data package, for instance )
 - if you have any questions, check the [go reference](https://pkg.go.dev/github.com/samjtro/go-trade); or, scroll down to the code samples below
