@@ -26,7 +26,7 @@ func Handler(req *http.Request) (string, error) {
 	}
 
 	q := req.URL.Query()
-	// Need to add config.APPKEY & config.SECRET to header to authenticate Market Data Production requests
+	q.Add("apikey", config.APIKEY)
 	req.URL.RawQuery = q.Encode()
 	client := http.Client{}
 	resp, err := client.Do(req)

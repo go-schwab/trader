@@ -3,13 +3,12 @@ package utils
 import "github.com/spf13/viper"
 
 type Config struct {
-	APPKEY   string `mapstructure:"APPKEY"`
-	SECRET	 string `mapstructure:"SECRET"`
+	APIKEY   string `mapstructure:"APIKEY"`
 	UTC_DIFF string `mapstructure:"UTC_DIFF"`
 }
 
 func LoadConfig() (config Config, err error) {
-	viper.SetConfigName("config")
+	viper.SetConfigName("tda-config")
 	viper.SetConfigType("env")
 	viper.AddConfigPath("$HOME/")
 	viper.AutomaticEnv()

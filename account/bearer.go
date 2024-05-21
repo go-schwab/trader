@@ -1,10 +1,10 @@
-package account 
+package account
 
 import (
 	"fmt"
 	"net/http"
 
-	"github.com/samjtro/go-trade/schwab/utils"
+	"github.com/samjtro/go-tda/utils"
 )
 
 // GetBearerToken returns a string; containing the Bearer Token for your account
