@@ -1,4 +1,4 @@
-package schwab
+package instrument 
 
 var (
 	endpoint_searchinstruments string = fmt.Sprintf(endpoint + "/instruments")

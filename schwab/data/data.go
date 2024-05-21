@@ -1,4 +1,4 @@
-package schwab 
+package data 
 
 var (
 	// endpoint_quotelist

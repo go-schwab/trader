@@ -3,11 +3,11 @@ package test
 import (
 	"testing"
 
-	"github.com/samjtro/go-trade/schwab"
+	"github.com/samjtro/go-trade/data"
 )
 
 func TestQuote(t *testing.T) {
-	_, err := schwab.RealTime("AAPL")
+	_, err := data.RealTime("AAPL")
 
 	if err != nil {
 		t.Fatalf(err.Error())
@@ -15,7 +15,7 @@ func TestQuote(t *testing.T) {
 }
 
 func TestPriceHistory(t *testing.T) {
-	_, err = schwab.PriceHistory("AAPL", "month", "1", "daily", "1")
+	_, err = data.PriceHistory("AAPL", "month", "1", "daily", "1")
 
 	if err != nil {
 		t.Fatalf(err.Error())
