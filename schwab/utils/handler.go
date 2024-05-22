@@ -143,7 +143,7 @@ func oAuthRefresh() string {
 	}
 
 	split := strings.Split(string(body), ",")
-	refreshExpiration, err := time.Parse("2021-08-30T08:30:00", split[0])
+	refreshExpiration, err := time.Parse("2021-8-30T08:30:00", split[0])
 
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -152,7 +152,7 @@ func oAuthRefresh() string {
 	tokens.RefreshExpiration = refreshExpiration
 	tokens.Refresh = split[1]
 
-	bearerExpiration, err := time.Parse("2021-08-30T08:30:00", split[2])
+	bearerExpiration, err := time.Parse("2021-8-30T08:30:00", split[2])
 
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -220,7 +220,7 @@ func Handler(req *http.Request) (string, error) {
 		}
 
 		split := strings.Split(string(body), ",")
-		refreshExpiration, err := time.Parse("2021-08-30T08:30:00", split[0])
+		refreshExpiration, err := time.Parse("2021-8-30T08:30:00", split[0])
 
 		if err != nil {
 			log.Fatalf(err.Error())
@@ -228,7 +228,7 @@ func Handler(req *http.Request) (string, error) {
 		tokens.RefreshExpiration = refreshExpiration
 		tokens.Refresh = split[1]
 
-		bearerExpiration, err := time.Parse("2021-08-30T08:30:00", split[2])
+		bearerExpiration, err := time.Parse("2021-8-30T08:30:00", split[2])
 
 		if err != nil {
 			log.Fatalf(err.Error())
