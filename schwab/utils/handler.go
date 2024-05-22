@@ -62,11 +62,16 @@ func oAuthInit() TOKEN {
 	} // WIP: else if resp.StatusCode != 404 { Handle }
 
 	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?code=", "&session=")
+	authCodeDecoded, err := url.QueryUnescape(authCodeEncoded)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 
 	// POST Request for Bearer/Refresh TOKENs 
 	EncodedIDSecret := url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
 	client := http.Client{}
-	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", url.QueryUnescape(authCodeEncoded))))
+	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", authCodeDecoded))))
 
 	if err != nil {
 		log.Fatalf(err.Error())
