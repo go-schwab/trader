@@ -111,7 +111,7 @@ func oAuthInit() TOKEN {
 	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
 
 	writeOutData := fmt.Sprintf("%s,%s,%s,%s", utils.NowNoUTCDiff(tokens.RefreshExpiration), tokens.Refresh, utils.NowNoUTCDiff(tokens.BearerExpiration), tokens.Bearer)
-	err = os.WriteFile(config.DBPATH, []byte(writeOutData), 0777)
+	err = os.WriteFile(config.DBPATH, []byte(writeOutData), 0755)
 
 	if err != nil {
 		log.Fatalf(err.Error())
