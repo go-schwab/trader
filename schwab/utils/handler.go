@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -110,7 +111,7 @@ func oAuthInit() TOKEN {
 	tokens.BearerExpiration = time.Now().Add(time.Minute * 30)
 	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
 
-	writeOutData := fmt.Sprintf("%s,%s,%s,%s", utils.NowNoUTCDiff(tokens.RefreshExpiration), tokens.Refresh, utils.NowNoUTCDiff(tokens.BearerExpiration), tokens.Bearer)
+	writeOutData := fmt.Sprintf("%d,%s,%d,%s", tokens.RefreshExpiration.Unix(), tokens.Refresh, tokens.BearerExpiration.Unix(), tokens.Bearer)
 	err = os.WriteFile(config.DBPATH, []byte(writeOutData), 0755)
 
 	if err != nil {
@@ -143,22 +144,21 @@ func oAuthRefresh() string {
 	}
 
 	split := strings.Split(string(body), ",")
-	refreshExpiration, err := time.Parse("2021-8-30T08:30:00", split[0])
+	refreshAsInt, err := strconv.ParseInt(split[0], 10, 64)
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	tokens.RefreshExpiration = refreshExpiration
+	tokens.RefreshExpiration = time.Unix(refreshAsInt, 0)
 	tokens.Refresh = split[1]
-
-	bearerExpiration, err := time.Parse("2021-8-30T08:30:00", split[2])
+	bearerAsInt, err := strconv.ParseInt(split[2], 10, 64)
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	tokens.BearerExpiration = bearerExpiration
+	tokens.BearerExpiration = time.Unix(bearerAsInt, 0)
 	tokens.Bearer = split[3]
 
 	EncodedIDSecret := url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
@@ -220,21 +220,22 @@ func Handler(req *http.Request) (string, error) {
 		}
 
 		split := strings.Split(string(body), ",")
-		refreshExpiration, err := time.Parse("2021-8-30T08:30:00", split[0])
+		refreshAsInt, err := strconv.ParseInt(split[0], 10, 64)
 
 		if err != nil {
 			log.Fatalf(err.Error())
 		}
-		tokens.RefreshExpiration = refreshExpiration
+
+		tokens.RefreshExpiration = time.Unix(refreshAsInt, 0)
 		tokens.Refresh = split[1]
 
-		bearerExpiration, err := time.Parse("2021-8-30T08:30:00", split[2])
+		bearerAsInt, err := strconv.ParseInt(split[0], 10, 64)
 
 		if err != nil {
 			log.Fatalf(err.Error())
 		}
 
-		tokens.BearerExpiration = bearerExpiration
+		tokens.BearerExpiration = time.Unix(bearerAsInt, 0)
 		tokens.Bearer = split[3]
 	}
 
