@@ -4,8 +4,9 @@ import "github.com/spf13/viper"
 
 type Config struct {
 	APPKEY   string `mapstructure:"APPKEY"`
-	SECRET	 string `mapstructure:"SECRET"`
+	SECRET   string `mapstructure:"SECRET"`
 	UTC_DIFF string `mapstructure:"UTC_DIFF"`
+	DBPATH   string `mapstructure:"DBPATH"`
 }
 
 func LoadConfig() (config Config, err error) {

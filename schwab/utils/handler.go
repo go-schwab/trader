@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -107,16 +106,7 @@ func oAuthInit() TOKEN {
 	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
 
 	writeOutData := fmt.Sprintf("%s,%s,%s,%s", utils.NowNoUTCDiff(tokens.RefreshExpiration), tokens.Refresh, utils.NowNoUTCDiff(tokens.BearerExpiration), tokens.Bearer)
-
-	wd, err := os.Executable()
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	wdPath := filepath.Dir(wd)
-
-	err = os.WriteFile(fmt.Sprintf("%s/db.txt", wdPath), []byte(writeOutData), 0644)
+	err = os.WriteFile(config.DBPATH, []byte(writeOutData), 0644)
 
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -141,15 +131,7 @@ func oAuthRefresh() string {
 		log.Fatalf(err.Error())
 	}
 
-	wd, err := os.Executable()
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	wdPath := filepath.Dir(wd)
-
-	body, err := os.ReadFile(fmt.Sprintf("%s/db.txt", wdPath))
+	body, err := os.ReadFile(config.DBPATH)
 
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -216,17 +198,14 @@ func Handler(req *http.Request) (string, error) {
 
 	m.Lock()
 
-	// Going to change this to use a local godb, for now plaintext works fine
-	wd, err := os.Executable()
+	config, err := utils.LoadConfig()
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	wdPath := filepath.Dir(wd)
-
-	if _, err := os.Stat(wdPath); err == nil {
-		body, err := os.ReadFile(fmt.Sprintf("%s/db.txt", wdPath))
+	if _, err := os.Stat(config.DBPATH); err == nil {
+		body, err := os.ReadFile(config.DBPATH)
 
 		if err != nil {
 			log.Fatalf(err.Error())
