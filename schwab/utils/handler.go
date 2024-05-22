@@ -81,16 +81,16 @@ func oAuthInit() TOKEN {
 		log.Fatalf(err.Error())
 	}
 
-	res.Body, err = res.(TOKEN)
+	tokens, err := res.Body.(TOKEN)
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	res.BearerExpiration = time.Now().Add(time.Minute * 30)
-	res.RefreshExpiration = time.Now().Add(time.Hour * 168)
+	tokens.BearerExpiration = time.Now().Add(time.Minute * 30)
+	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
 	
-	writeOutData := fmt.Sprintf("%s,%s,%s,%s", res.RefreshExpiration, res.Refresh, res.BearerExpiration, res.Bearer)
+	writeOutData := fmt.Sprintf("%s,%s,%s,%s", tokens.RefreshExpiration, tokens.Refresh, tokens.BearerExpiration, tokens.Bearer)
 	
 	wd, err := os.Executable()
 
@@ -102,7 +102,7 @@ func oAuthInit() TOKEN {
 
 	err = ioutil.WriteFile(fmt.Sprintf("%s/db.txt", wdPath))
 	m.Unlock()
-	return res
+	return tokens
 }
 
 func oAuthRefresh() string {
