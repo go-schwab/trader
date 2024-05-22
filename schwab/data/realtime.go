@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	endpoint_quote string = fmt.Sprintf(schwab.Endpoint + "/%s/quotes") // Symbol
+	endpoint_quote string = schwab.Endpoint + "/%s/quotes" // Symbol
 	// endpoint_quotes string
 )
 

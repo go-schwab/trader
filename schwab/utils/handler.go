@@ -114,7 +114,6 @@ func oAuthInit() TOKEN {
 	err = os.WriteFile(config.DBPATH, []byte(writeOutData), 0755)
 
 	if err != nil {
-		fmt.Println("Hi")
 		log.Fatalf(err.Error())
 	}
 
