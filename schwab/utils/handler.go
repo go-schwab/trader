@@ -48,13 +48,6 @@ func GetStringInBetween(str string, start string, end string) (result string) {
 	return str[s : s+e]
 }
 
-// https://golangtutorial.dev/tips/check-if-a-file-exists-or-not-in-go/
-func checkFileExists(filePath string) bool {
-	_, error := os.Stat(filePath)
-	//return !os.IsNotExist(err)
-	return !errors.Is(error, os.ErrNotExist)
-}
-
 func oAuthInit() TOKEN {
 	// Get Auth Code
 	var (
@@ -216,7 +209,8 @@ func Handler(req *http.Request) (string, error) {
 		log.Fatalf(err.Error())
 	}
 
-	if !checkFileExists(config.DBPATH) {
+	// Credit: https://golangtutorial.dev/tips/check-if-a-file-exists-or-not-in-go/
+	if _, err := os.Stat(config.DBPATH); errors.Is(err, os.ErrNotExist) {
 		tokens = oAuthInit()
 	} else {
 		body, err := os.ReadFile(config.DBPATH)
