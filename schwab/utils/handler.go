@@ -71,7 +71,7 @@ func oAuthInit() TOKEN {
 	} // WIP: else if resp.StatusCode != 404 { Handle }
 
 	fmt.Println(resp.Request.URL.String())
-	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?code=", "&session=")
+	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?clientID=", "&region=")
 	authCodeDecoded, err := url.QueryUnescape(authCodeEncoded)
 
 	if err != nil {
