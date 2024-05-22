@@ -209,7 +209,10 @@ func Handler(req *http.Request) (string, error) {
 		log.Fatalf(err.Error())
 	}
 
-	if _, err := os.Stat(config.DBPATH); err == nil {
+	// Credit: https://stackoverflow.com/questions/12518876/how-to-check-if-a-file-exists-in-go
+	if _, err := os.Stat(config.DBPATH); errors.Is(err, os.ErrNotExist) {
+		tokens = oAuthInit()
+	} else {
 		body, err := os.ReadFile(config.DBPATH)
 
 		if err != nil {
@@ -233,8 +236,6 @@ func Handler(req *http.Request) (string, error) {
 
 		tokens.BearerExpiration = bearerExpiration
 		tokens.Bearer = split[3]
-	} else if errors.Is(err, os.ErrNotExist) {
-		tokens = oAuthInit()
 	}
 
 	q := req.URL.Query()
