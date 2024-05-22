@@ -10,7 +10,7 @@ import (
 	"strings"
 	"bytes"
 	"encoding/base64"
-	"ioutil"
+	"io/ioutil"
 )
 
 type TOKEN struct {
