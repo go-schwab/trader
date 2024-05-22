@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"os"
 	"io"
 	"log"
 	"net/http"
@@ -21,14 +22,6 @@ type TOKEN struct {
 	Refresh string `json:"refresh_token"`
 	BearerExpiration time.Time
 	Bearer string `json:"access_token"`
-}
-
-func init() {
-	config, err := LoadConfig()
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
 }
 
 // Credit: https://stackoverflow.com/questions/26916952/go-retrieve-a-string-from-between-two-characters-or-other-strings
