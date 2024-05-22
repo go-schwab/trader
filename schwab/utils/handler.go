@@ -70,7 +70,6 @@ func oAuthInit() TOKEN {
 		log.Fatalf(err.Error())
 	} // WIP: else if resp.StatusCode != 404 { Handle }
 
-	fmt.Println(resp.Request.URL.String())
 	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?clientID=", "&region=")
 	authCodeDecoded, err := url.QueryUnescape(authCodeEncoded)
 
@@ -100,7 +99,7 @@ func oAuthInit() TOKEN {
 
 	defer res.Body.Close()
 
-	err = json.NewDecoder(res.Body).Decode(accessTokenResponse)
+	err = json.NewDecoder(res.Body).Decode(&accessTokenResponse)
 
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -181,7 +180,7 @@ func oAuthRefresh() string {
 		log.Fatalf(err.Error())
 	}
 
-	err = json.NewDecoder(res.Body).Decode(accessTokenResponse)
+	err = json.NewDecoder(res.Body).Decode(&accessTokenResponse)
 
 	if err != nil {
 		log.Fatalf(err.Error())
