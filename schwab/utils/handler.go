@@ -130,7 +130,7 @@ func oAuthRefresh() string {
 	tokens.BearerExpiration = bearerExpiration
 	tokens.Bearer = split[3]
 
-	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)
+	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh), url.QueryUnescape(authCodeEncoded)))
 
