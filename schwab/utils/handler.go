@@ -57,7 +57,7 @@ func oAuthInit() TOKEN {
 	// POST Request for Bearer/Refresh TOKENs 
 	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)
 	client := http.Client{}
-	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example"), url.QueryUnescape(authCodeEncoded)))
+	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", url.QueryUnescape(authCodeEncoded))))
 	req.Header = http.Header{
 		"Content-Type": {"application/x-www-form-urlencoded"},
 		"Authorization": {EncodedIDSecret},
@@ -76,8 +76,6 @@ func oAuthInit() TOKEN {
 
 	res.BearerExpiration = time.Now().Add(time.Minute * 30)
 	res.RefreshExpiration = time.Now().Add(time.Hour * 168)
-
-	m.Unlock()
 	
 	writeOutData := fmt.Sprintf("%s,%s,%s,%s", res.RefreshExpiration, res.Refresh, res.BearerExpiration, res.Bearer)
 	
@@ -90,10 +88,60 @@ func oAuthInit() TOKEN {
 	wdPath := filepath.Dir(wd)
 
 	err = ioutil.WriteFile(fmt.Sprintf("%s/db.txt", wdPath))
+	m.Unlock()
 	return res
 }
 
-func oAuthRefresh() {}
+func oAuthRefresh() string {
+	var (
+		m sync.Mutex
+		tokens TOKEN
+	)
+
+	m.Lock()
+
+	body, err := ioutil.ReadFile(fmt.Sprintf("%s/db.txt"), wdPath)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	split := strings.Split(string(body), ",")
+	refreshExpiration, err := split[0].(time.Time)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	tokens.RefreshExpiration = refreshExpiration
+	tokens.Refresh = split[1]
+
+	bearerExpiration, err := split[0].(time.Time)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	tokens.BearerExpiration = bearerExpiration
+	tokens.Bearer = split[3]
+
+	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)
+	client := http.Client{}
+	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh), url.QueryUnescape(authCodeEncoded)))
+	req.Header = http.Header{
+		"Content-Type": {"application/x-www-form-urlencoded"},
+		"Authorization": {EncodedIDSecret},
+	}
+	res, err := client.Do(req)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	tokens = res.(TOKEN)
+
+	m.Unlock()
+	return tokens.Bearer
+}
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
 // It performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function,
@@ -153,7 +201,7 @@ func Handler(req *http.Request) (string, error) {
 			"Authorization": {fmt.Sprintf("Bearer %s", tokens.Bearer)},
 		}
 	} else {
-		newBearerToken = oAuthRefresh()
+		newBearerToken := oAuthRefresh()
 		req.Header = http.Header{
 			"Authorization": {fmt.Sprintf("Bearer %s", newBearerToken)},
 		}
