@@ -17,6 +17,15 @@ import (
 	"github.com/samjtro/go-trade/utils"
 )
 
+type AccessTokenResponse struct {
+	expires_in int `json:"expires_in"`
+	token_type string `json:"token_type"`
+	scope string `json:"scope"`
+	refresh_token string `json:"refresh_token"`
+	access_token string `json:"access_token"`
+	id_token string `json:"id_token"`
+}
+
 type TOKEN struct {
 	RefreshExpiration time.Time
 	Refresh string `json:"refresh_token"`
@@ -38,6 +47,7 @@ func oAuthInit() TOKEN {
 	// Get Auth Code
 	var (
 		m sync.Mutex
+		tokens TOKEN
 	)
 
 	m.Lock()
@@ -81,12 +91,14 @@ func oAuthInit() TOKEN {
 		log.Fatalf(err.Error())
 	}
 
-	tokens, err := res.Body.(TOKEN)
+	accessTokenResponse, err := res.Body.(AccessTokenResponse)
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
+	tokens.Refresh = accessTokenResponse.refresh_token
+	tokens.Bearer = accessTokenResponse.access_token
 	tokens.BearerExpiration = time.Now().Add(time.Minute * 30)
 	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
 	
@@ -100,7 +112,12 @@ func oAuthInit() TOKEN {
 
 	wdPath := filepath.Dir(wd)
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/db.txt", wdPath))
+	err = os.WriteFile(fmt.Sprintf("%s/db.txt", wdPath), writeOutData, 0644)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 	m.Unlock()
 	return tokens
 }
@@ -161,7 +178,7 @@ func oAuthRefresh() string {
 		log.Fatalf(err.Error())
 	}
 
-	tokens = res.(TOKEN)
+	tokens = res.Body.(TOKEN)
 
 	m.Unlock()
 	return tokens.Bearer
