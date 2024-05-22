@@ -81,7 +81,7 @@ func oAuthInit() TOKEN {
 		log.Fatalf(err.Error())
 	}
 
-	res, err = res.(TOKEN)
+	res.Body, err = res.(TOKEN)
 
 	if err != nil {
 		log.Fatalf(err.Error())
