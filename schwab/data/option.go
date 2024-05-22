@@ -1,4 +1,4 @@
-package data 
+package data
 
 import (
 	"fmt"
@@ -7,8 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-trade/schwab/utils"
 	"github.com/samjtro/go-trade/schwab"
+	schwabutils "github.com/samjtro/go-trade/schwab/utils"
+	utils "github.com/samjtro/go-trade/utils"
 )
 
 var endpoint_option string = fmt.Sprintf(schwab.Endpoint + "/chains")
@@ -69,7 +70,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
+	body, err := schwabutils.Handler(req)
 
 	if err != nil {
 		return []CONTRACT{}, err
@@ -317,7 +318,7 @@ func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (str
 	q.Add("range", strikeRange)
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
-	body, err := utils.Handler(req)
+	body, err := schwabutils.Handler(req)
 
 	if err != nil {
 		return "", err
@@ -337,7 +338,7 @@ func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (s
 	q.Add("range", strikeRange)
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
-	body, err := utils.Handler(req)
+	body, err := schwabutils.Handler(req)
 
 	if err != nil {
 		return "", err
@@ -363,7 +364,7 @@ func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatili
 	q.Add("interestRate", interestRate)
 	q.Add("daysToExpiration", underlyingPrice)
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
+	body, err := schwabutils.Handler(req)
 
 	if err != nil {
 		return "", err

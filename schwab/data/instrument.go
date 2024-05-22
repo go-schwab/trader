@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	"strconv"
+	"strings"
 
-	"github.com/samjtro/go-trade/schwab" 
-	"github.com/samjtro/go-trade/schwab/utils"
+	"github.com/samjtro/go-trade/schwab"
+	schwabutils "github.com/samjtro/go-trade/schwab/utils"
+	utils "github.com/samjtro/go-trade/utils"
 )
 
 var (
@@ -68,7 +69,7 @@ func SearchInstrument(symbol string) (INSTRUMENT, error) {
 	q.Add("symbol", symbol)
 	q.Add("projection", "fundamental")
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
+	body, err := schwabutils.Handler(req)
 
 	if err != nil {
 		return INSTRUMENT{}, err
@@ -388,7 +389,7 @@ func SearchInstrument(symbol string) (INSTRUMENT, error) {
 	}
 
 	return INSTRUMENT{
-		TICKER:                 ticker,
+		TICKER:                 symbol,
 		CUSIP:                  cusip,
 		DESCRIPTION:            desc,
 		EXCHANGE:               exchange,

@@ -27,3 +27,15 @@ func Now(t time.Time) string {
 
 	return str
 }
+
+func NowNoUTCDiff(t time.Time) string {
+	str := fmt.Sprintf("%d-%d-%dT%d:%d:%d",
+		t.Year(),
+		t.Month(),
+		t.Day(),
+		t.Hour(),
+		t.Minute(),
+		t.Second())
+
+	return str
+}

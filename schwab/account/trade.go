@@ -1,4 +1,4 @@
-package account 
+package account
 
 import (
 	"bytes"

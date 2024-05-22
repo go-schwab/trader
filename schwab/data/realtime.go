@@ -1,4 +1,4 @@
-package data 
+package data
 
 import (
 	"fmt"
@@ -9,7 +9,8 @@ import (
 	"time"
 
 	"github.com/samjtro/go-trade/schwab"
-	"github.com/samjtro/go-trade/schwab/utils"
+	schwabutils "github.com/samjtro/go-trade/schwab/utils"
+	utils "github.com/samjtro/go-trade/utils"
 )
 
 var (
@@ -43,7 +44,7 @@ func GetQuote(ticker string) (QUOTE, error) {
 	dt := utils.Now(time.Now())
 	url := fmt.Sprintf(endpoint_quote, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
-	body, err := utils.Handler(req)
+	body, err := schwabutils.Handler(req)
 
 	if err != nil {
 		return QUOTE{}, err

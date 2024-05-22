@@ -1,4 +1,4 @@
-package data 
+package data
 
 import (
 	"fmt"
@@ -7,8 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-trade/schwab/utils"
-	"github.com/samjtro/go-trade/schwab" 
+	"github.com/samjtro/go-trade/schwab"
+	schwabutils "github.com/samjtro/go-trade/schwab/utils"
+	utils "github.com/samjtro/go-trade/utils"
 )
 
 type MOVER struct {
@@ -36,7 +37,7 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 	q.Add("direction", direction)
 	q.Add("change", change)
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
+	body, err := schwabutils.Handler(req)
 
 	if err != nil {
 		return []MOVER{}, err

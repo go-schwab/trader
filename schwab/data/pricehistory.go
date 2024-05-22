@@ -1,4 +1,4 @@
-package data 
+package data
 
 import (
 	"fmt"
@@ -8,7 +8,8 @@ import (
 	"strings"
 
 	"github.com/samjtro/go-trade/schwab"
-	"github.com/samjtro/go-trade/schwab/utils"
+	schwabutils "github.com/samjtro/go-trade/schwab/utils"
+	utils "github.com/samjtro/go-trade/utils"
 )
 
 var (
@@ -50,7 +51,7 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency string
 	q.Add("frequencyType", frequencyType)
 	q.Add("frequency", frequency)
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
+	body, err := schwabutils.Handler(req)
 
 	if err != nil {
 		return []FRAME{}, err

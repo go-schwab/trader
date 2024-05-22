@@ -1,53 +1,55 @@
 package utils
 
 import (
-	"os"
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
-	"sync"
-	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
-	"bytes"
-	"encoding/base64"
-	"io/ioutil"
+	"sync"
 	"time"
 
 	"github.com/samjtro/go-trade/utils"
 )
 
 type AccessTokenResponse struct {
-	expires_in int `json:"expires_in"`
-	token_type string `json:"token_type"`
-	scope string `json:"scope"`
+	expires_in    int    `json:"expires_in"`
+	token_type    string `json:"token_type"`
+	scope         string `json:"scope"`
 	refresh_token string `json:"refresh_token"`
-	access_token string `json:"access_token"`
-	id_token string `json:"id_token"`
+	access_token  string `json:"access_token"`
+	id_token      string `json:"id_token"`
 }
 
 type TOKEN struct {
 	RefreshExpiration time.Time
-	Refresh string `json:"refresh_token"`
-	BearerExpiration time.Time
-	Bearer string `json:"access_token"`
+	Refresh           string `json:"refresh_token"`
+	BearerExpiration  time.Time
+	Bearer            string `json:"access_token"`
 }
 
 // Credit: https://stackoverflow.com/questions/26916952/go-retrieve-a-string-from-between-two-characters-or-other-strings
-func GetStringInBetween(str string, start string, end string) (result string) {     
+func GetStringInBetween(str string, start string, end string) (result string) {
 	s := strings.Index(str, start)
 	s += len(start)
 	e := strings.Index(str[s:], end)
 	e += s + e - 1
 
-	return str[s:e] 
+	return str[s:e]
 }
 
 func oAuthInit() TOKEN {
 	// Get Auth Code
 	var (
-		m sync.Mutex
-		tokens TOKEN
+		m                   sync.Mutex
+		tokens              TOKEN
+		accessTokenResponse AccessTokenResponse
 	)
 
 	m.Lock()
@@ -71,7 +73,7 @@ func oAuthInit() TOKEN {
 		log.Fatalf(err.Error())
 	}
 
-	// POST Request for Bearer/Refresh TOKENs 
+	// POST Request for Bearer/Refresh TOKENs
 	EncodedIDSecret := url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", authCodeDecoded))))
@@ -81,7 +83,7 @@ func oAuthInit() TOKEN {
 	}
 
 	req.Header = http.Header{
-		"Content-Type": {"application/x-www-form-urlencoded"},
+		"Content-Type":  {"application/x-www-form-urlencoded"},
 		"Authorization": {EncodedIDSecret},
 	}
 
@@ -91,7 +93,9 @@ func oAuthInit() TOKEN {
 		log.Fatalf(err.Error())
 	}
 
-	accessTokenResponse, err := res.Body.(AccessTokenResponse)
+	defer res.Body.Close()
+
+	err = json.NewDecoder(res.Body).Decode(accessTokenResponse)
 
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -101,9 +105,9 @@ func oAuthInit() TOKEN {
 	tokens.Bearer = accessTokenResponse.access_token
 	tokens.BearerExpiration = time.Now().Add(time.Minute * 30)
 	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
-	
-	writeOutData := fmt.Sprintf("%s,%s,%s,%s", tokens.RefreshExpiration, tokens.Refresh, tokens.BearerExpiration, tokens.Bearer)
-	
+
+	writeOutData := fmt.Sprintf("%s,%s,%s,%s", utils.NowNoUTCDiff(tokens.RefreshExpiration), tokens.Refresh, utils.NowNoUTCDiff(tokens.BearerExpiration), tokens.Bearer)
+
 	wd, err := os.Executable()
 
 	if err != nil {
@@ -112,7 +116,7 @@ func oAuthInit() TOKEN {
 
 	wdPath := filepath.Dir(wd)
 
-	err = os.WriteFile(fmt.Sprintf("%s/db.txt", wdPath), writeOutData, 0644)
+	err = os.WriteFile(fmt.Sprintf("%s/db.txt", wdPath), []byte(writeOutData), 0644)
 
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -124,8 +128,9 @@ func oAuthInit() TOKEN {
 
 func oAuthRefresh() string {
 	var (
-		m sync.Mutex
-		tokens TOKEN
+		m                   sync.Mutex
+		tokens              TOKEN
+		accessTokenResponse AccessTokenResponse
 	)
 
 	m.Lock()
@@ -136,22 +141,31 @@ func oAuthRefresh() string {
 		log.Fatalf(err.Error())
 	}
 
-	body, err := ioutil.ReadFile(fmt.Sprintf("%s/db.txt"), wdPath)
+	wd, err := os.Executable()
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	wdPath := filepath.Dir(wd)
+
+	body, err := os.ReadFile(fmt.Sprintf("%s/db.txt", wdPath))
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
 	split := strings.Split(string(body), ",")
-	refreshExpiration, err := split[0].(time.Time)
+	refreshExpiration, err := time.Parse("2021-08-30T08:30:00", split[0])
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
+
 	tokens.RefreshExpiration = refreshExpiration
 	tokens.Refresh = split[1]
 
-	bearerExpiration, err := split[0].(time.Time)
+	bearerExpiration, err := time.Parse("2021-08-30T08:30:00", split[2])
 
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -169,19 +183,24 @@ func oAuthRefresh() string {
 	}
 
 	req.Header = http.Header{
-		"Content-Type": {"application/x-www-form-urlencoded"},
+		"Content-Type":  {"application/x-www-form-urlencoded"},
 		"Authorization": {EncodedIDSecret},
 	}
+
 	res, err := client.Do(req)
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	tokens = res.Body.(TOKEN)
+	err = json.NewDecoder(res.Body).Decode(accessTokenResponse)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 
 	m.Unlock()
-	return tokens.Bearer
+	return accessTokenResponse.access_token
 }
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
@@ -191,7 +210,7 @@ func oAuthRefresh() string {
 // req = a request of type *http.Request
 func Handler(req *http.Request) (string, error) {
 	var (
-		m sync.Mutex
+		m      sync.Mutex
 		tokens TOKEN
 	)
 
@@ -207,14 +226,14 @@ func Handler(req *http.Request) (string, error) {
 	wdPath := filepath.Dir(wd)
 
 	if _, err := os.Stat(wdPath); err == nil {
-		body, err := ioutil.ReadFile(fmt.Sprintf("%s/db.txt"), wdPath)
+		body, err := os.ReadFile(fmt.Sprintf("%s/db.txt", wdPath))
 
 		if err != nil {
 			log.Fatalf(err.Error())
 		}
 
 		split := strings.Split(string(body), ",")
-		refreshExpiration, err := split[0].(time.Time)
+		refreshExpiration, err := time.Parse("2021-08-30T08:30:00", split[0])
 
 		if err != nil {
 			log.Fatalf(err.Error())
@@ -222,7 +241,7 @@ func Handler(req *http.Request) (string, error) {
 		tokens.RefreshExpiration = refreshExpiration
 		tokens.Refresh = split[1]
 
-		bearerExpiration, err := split[0].(time.Time)
+		bearerExpiration, err := time.Parse("2021-08-30T08:30:00", split[2])
 
 		if err != nil {
 			log.Fatalf(err.Error())
@@ -237,7 +256,7 @@ func Handler(req *http.Request) (string, error) {
 	q := req.URL.Query()
 	req.URL.RawQuery = q.Encode()
 
-	if time.Now() <= tokens.BearerExpiration {
+	if !time.Now().Before(tokens.BearerExpiration) {
 		req.Header = http.Header{
 			"Authorization": {fmt.Sprintf("Bearer %s", tokens.Bearer)},
 		}
