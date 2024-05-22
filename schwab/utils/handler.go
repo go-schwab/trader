@@ -11,6 +11,9 @@ import (
 	"bytes"
 	"encoding/base64"
 	"io/ioutil"
+	"time"
+
+	"github.com/samjtro/go-trade/utils"
 )
 
 type TOKEN struct {
@@ -46,6 +49,12 @@ func oAuthInit() TOKEN {
 
 	m.Lock()
 
+	config, err := utils.LoadConfig()
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 	resp, err := http.Get(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=127.0.0.1", config.APPKEY))
 
 	if err != nil {
@@ -55,7 +64,7 @@ func oAuthInit() TOKEN {
 	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?code=", "&session=")
 
 	// POST Request for Bearer/Refresh TOKENs 
-	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
+	EncodedIDSecret := url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", url.QueryUnescape(authCodeEncoded))))
 
@@ -106,6 +115,12 @@ func oAuthRefresh() string {
 
 	m.Lock()
 
+	config, err := utils.LoadConfig()
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 	body, err := ioutil.ReadFile(fmt.Sprintf("%s/db.txt"), wdPath)
 
 	if err != nil {
@@ -130,9 +145,9 @@ func oAuthRefresh() string {
 	tokens.BearerExpiration = bearerExpiration
 	tokens.Bearer = split[3]
 
-	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
+	EncodedIDSecret := url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
 	client := http.Client{}
-	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh), url.QueryUnescape(authCodeEncoded)))
+	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh))))
 
 	if err != nil {
 		log.Fatalf(err.Error())
