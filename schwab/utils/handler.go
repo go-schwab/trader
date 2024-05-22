@@ -33,14 +33,19 @@ type TOKEN struct {
 	Bearer            string `json:"access_token"`
 }
 
-// Credit: https://stackoverflow.com/questions/26916952/go-retrieve-a-string-from-between-two-characters-or-other-strings
+// Credit - Old: https://stackoverflow.com/questions/26916952/go-retrieve-a-string-from-between-two-characters-or-other-strings
+// Credit - New: https://go.dev/play/p/C2sZRYC15XN
 func GetStringInBetween(str string, start string, end string) (result string) {
 	s := strings.Index(str, start)
+	if s == -1 {
+		return
+	}
 	s += len(start)
 	e := strings.Index(str[s:], end)
-	e += s + e - 1
-
-	return str[s:e]
+	if e == -1 {
+		return
+	}
+	return str[s : s+e]
 }
 
 func oAuthInit() TOKEN {
@@ -65,6 +70,7 @@ func oAuthInit() TOKEN {
 		log.Fatalf(err.Error())
 	} // WIP: else if resp.StatusCode != 404 { Handle }
 
+	fmt.Println(resp.Request.URL.String())
 	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?code=", "&session=")
 	authCodeDecoded, err := url.QueryUnescape(authCodeEncoded)
 
