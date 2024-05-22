@@ -55,13 +55,19 @@ func oAuthInit() TOKEN {
 	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?code=", "&session=")
 
 	// POST Request for Bearer/Refresh TOKENs 
-	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)
+	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", url.QueryUnescape(authCodeEncoded))))
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 	req.Header = http.Header{
 		"Content-Type": {"application/x-www-form-urlencoded"},
 		"Authorization": {EncodedIDSecret},
 	}
+
 	res, err := client.Do(req)
 
 	if err != nil {
@@ -127,6 +133,11 @@ func oAuthRefresh() string {
 	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh), url.QueryUnescape(authCodeEncoded)))
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 	req.Header = http.Header{
 		"Content-Type": {"application/x-www-form-urlencoded"},
 		"Authorization": {EncodedIDSecret},
