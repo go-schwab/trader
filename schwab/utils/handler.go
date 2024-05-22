@@ -265,6 +265,7 @@ func Handler(req *http.Request) (string, error) {
 	errorCode := resp.StatusCode
 	bodyBytes, err := io.ReadAll(resp.Body)
 	body := string(bodyBytes)
+	fmt.Println(body)
 
 	if err != nil {
 		return "", err
