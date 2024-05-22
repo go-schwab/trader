@@ -1,4 +1,4 @@
-package movers 
+package data 
 
 import (
 	"fmt"
@@ -29,7 +29,7 @@ var (
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"
-func Get(index, direction, change string) ([]MOVER, error) {
+func GetMovers(index, direction, change string) ([]MOVER, error) {
 	url := fmt.Sprintf(endpoint_movers, index)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()

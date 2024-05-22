@@ -39,7 +39,7 @@ type QUOTE struct {
 // Quote returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
 // It takes one parameter:
 // ticker = "AAPL", etc.
-func Quote(ticker string) (QUOTE, error) {
+func GetQuote(ticker string) (QUOTE, error) {
 	dt := utils.Now(time.Now())
 	url := fmt.Sprintf(endpoint_quote, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
@@ -180,4 +180,4 @@ func Quote(ticker string) (QUOTE, error) {
 	}, nil
 }
 
-// func Quotes() []QUOTE {}
+// func GetQuotes() []QUOTE {}

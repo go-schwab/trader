@@ -10,11 +10,14 @@ import (
 	"strings"
 	"bytes"
 	"encoding/base64"
+	"ioutil"
 )
 
-type Token struct {
-	refresh string `json:"refresh_token"` 
-	access string `json:"access_token"`
+type TOKEN struct {
+	RefreshExpiration time.Time
+	Refresh string `json:"refresh_token"`
+	BearerExpiration time.Time
+	Bearer string `json:"access_token"`
 }
 
 func init() {
@@ -35,23 +38,23 @@ func GetStringInBetween(str string, start string, end string) (result string) {
 	return str[s:e] 
 }
 
-func oAuth() {
+func oAuthInit() TOKEN {
 	// Get Auth Code
 	var (
 		m sync.Mutex
 	)
 
+	m.Lock()
+
 	resp, err := http.Get(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=127.0.0.1", config.APPKEY))
 
 	if err != nil {
 		log.Fatalf(err.Error())
-	} else if resp.StatusCode != 404 {
-		log.Fatalf(err.Error())
-	}
+	} // WIP: else if resp.StatusCode != 404 { Handle }
 
 	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?code=", "&session=")
 
-	// POST Request for Bearer/Refresh Tokens
+	// POST Request for Bearer/Refresh TOKENs 
 	EncodedIDSecret := base64.URLEncoding.EncodeToString(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example"), url.QueryUnescape(authCodeEncoded)))
@@ -65,8 +68,32 @@ func oAuth() {
 		log.Fatalf(err.Error())
 	}
 
-	res = res.(Tokens)
+	res, err = res.(TOKEN)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	res.BearerExpiration = time.Now().Add(time.Minute * 30)
+	res.RefreshExpiration = time.Now().Add(time.Hour * 168)
+
+	m.Unlock()
+	
+	writeOutData := fmt.Sprintf("%s,%s,%s,%s", res.RefreshExpiration, res.Refresh, res.BearerExpiration, res.Bearer)
+	
+	wd, err := os.Executable()
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	wdPath := filepath.Dir(wd)
+
+	err = ioutil.WriteFile(fmt.Sprintf("%s/db.txt", wdPath))
+	return res
 }
+
+func oAuthRefresh() {}
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
 // It performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function,
@@ -76,12 +103,62 @@ func oAuth() {
 func Handler(req *http.Request) (string, error) {
 	var (
 		m sync.Mutex
+		tokens TOKEN
 	)
 
 	m.Lock()
 
+	// Going to change this to use a local godb, for now plaintext works fine
+	wd, err := os.Executable()
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	wdPath := filepath.Dir(wd)
+
+	if _, err := os.Stat(wdPath); err == nil {
+		body, err := ioutil.ReadFile(fmt.Sprintf("%s/db.txt"), wdPath)
+
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+
+		split := strings.Split(string(body), ",")
+		refreshExpiration, err := split[0].(time.Time)
+
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+		tokens.RefreshExpiration = refreshExpiration
+		tokens.Refresh = split[1]
+
+		bearerExpiration, err := split[0].(time.Time)
+
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+
+		tokens.BearerExpiration = bearerExpiration
+		tokens.Bearer = split[3]
+	} else if errors.Is(err, os.ErrNotExist) {
+		tokens = oAuthInit()
+	}
+
 	q := req.URL.Query()
 	req.URL.RawQuery = q.Encode()
+
+	if time.Now() <= tokens.BearerExpiration {
+		req.Header = http.Header{
+			"Authorization": {fmt.Sprintf("Bearer %s", tokens.Bearer)},
+		}
+	} else {
+		newBearerToken = oAuthRefresh()
+		req.Header = http.Header{
+			"Authorization": {fmt.Sprintf("Bearer %s", newBearerToken)},
+		}
+	}
+
 	client := http.Client{}
 	resp, err := client.Do(req)
 

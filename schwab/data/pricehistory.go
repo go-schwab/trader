@@ -41,7 +41,7 @@ type FRAME struct {
 // "daily": 1 /
 // "weekly": 1 /
 // "monthly": 1
-func PriceHistory(ticker, periodType, period, frequencyType, frequency string) ([]FRAME, error) {
+func GetPriceHistory(ticker, periodType, period, frequencyType, frequency string) ([]FRAME, error) {
 	url := fmt.Sprintf(endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()

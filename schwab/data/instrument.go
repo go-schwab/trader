@@ -1,4 +1,4 @@
-package instrument 
+package data
 
 import (
 	"fmt"
@@ -13,20 +13,10 @@ import (
 
 var (
 	endpoint_searchinstruments string = fmt.Sprintf(schwab.Endpoint + "/instruments")
-	endpoint_getinstrument string = fmt.Sprintf(schwab.Endpoint + "/instruments/%s") // Cusip
 )
 
-// Returns simple information regarding the assets
-type SIMPLE struct {
-	CUSIP       string
-	TICKER      string
-	DESCRIPTION string
-	EXCHANGE    string
-	TYPE        string
-}
-
-// Returns all fundamentals of the given asset
-type FUNDAMENTAL struct {
+// All fundamental information for a given asset.
+type INSTRUMENT struct {
 	TICKER                 string
 	CUSIP                  string
 	DESCRIPTION            string
@@ -71,73 +61,17 @@ type FUNDAMENTAL struct {
 	VOL_3MON               float64
 }
 
-// desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C.
-
-// Simple returns a SIMPLE; with simple fundamental information regarding the desired ticker.
-// It takes one parameter:
-// cusip = "037833100", etc.
-func Simple(ticker string) (SIMPLE, error) {
-	req2, _ := http.NewRequest("GET", endpoint_searchinstruments, nil)
-	q2 := req2.URL.Query()
-	q2.Add("symbol", ticker)
-	q2.Add("projection", "fundamental")
-	req2.URL.RawQuery = q2.Encode()
-	body2, err := utils.Handler(req2)
-
-	if err != nil {
-		return SIMPLE{}, err
-	}
-
-	var cusip string
-	split2 := strings.Split(body2, "\"")
-
-	for i, x := range split2 {
-		if x == "cusip" {
-			cusip = split2[i+2]
-		}
-	}
-
-	url := fmt.Sprintf(endpoint_getinstrument, cusip)
-	req, _ := http.NewRequest("GET", url, nil)
-	body, err := utils.Handler(req)
-
-	if err != nil {
-		return SIMPLE{}, err
-	}
-
-	var desc, exchange, Type string
-	split := strings.Split(body, "\"")
-
-	for i, x := range split {
-		if x == "description" {
-			desc = split[i+2]
-		} else if x == "exchange" {
-			exchange = split[i+2]
-		} else if x == "assetType" {
-			Type = split[i+2]
-		}
-	}
-
-	return SIMPLE{
-		CUSIP:       cusip,
-		TICKER:      ticker,
-		DESCRIPTION: desc,
-		EXCHANGE:    exchange,
-		TYPE:	     Type,
-	}, nil
-}
-
-// Returns a FUNDAMENTAL; containing information regarding both price history and fundamentals.
-func Fundamental(ticker string) (FUNDAMENTAL, error) {
+// Search for an instrument by a specific symbol, return all fundamental asset information.
+func SearchInstrument(symbol string) (INSTRUMENT, error) {
 	req, _ := http.NewRequest("GET", endpoint_searchinstruments, nil)
 	q := req.URL.Query()
-	q.Add("symbol", ticker)
+	q.Add("symbol", symbol)
 	q.Add("projection", "fundamental")
 	req.URL.RawQuery = q.Encode()
 	body, err := utils.Handler(req)
 
 	if err != nil {
-		return FUNDAMENTAL{}, err
+		return INSTRUMENT{}, err
 	}
 
 	var cusip, desc, exchange, Type string
@@ -453,7 +387,7 @@ func Fundamental(ticker string) (FUNDAMENTAL, error) {
 		}
 	}
 
-	return FUNDAMENTAL{
+	return INSTRUMENT{
 		TICKER:                 ticker,
 		CUSIP:                  cusip,
 		DESCRIPTION:            desc,
