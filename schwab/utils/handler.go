@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -210,7 +209,7 @@ func Handler(req *http.Request) (string, error) {
 	}
 
 	// Credit: https://stackoverflow.com/questions/12518876/how-to-check-if-a-file-exists-in-go
-	if _, err := os.Stat(config.DBPATH); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(config.DBPATH); err != nil {
 		tokens = oAuthInit()
 	} else {
 		body, err := os.ReadFile(config.DBPATH)
