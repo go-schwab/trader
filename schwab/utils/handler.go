@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,6 +11,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -19,24 +22,23 @@ import (
 )
 
 type AccessTokenResponse struct {
-	expires_in    int    `json:"expires_in"`
-	token_type    string `json:"token_type"`
-	scope         string `json:"scope"`
-	refresh_token string `json:"refresh_token"`
-	access_token  string `json:"access_token"`
-	id_token      string `json:"id_token"`
+	expires_in    int
+	token_type    string
+	scope         string
+	refresh_token string
+	access_token  string
+	id_token      string
 }
 
 type TOKEN struct {
 	RefreshExpiration time.Time
-	Refresh           string `json:"refresh_token"`
+	Refresh           string
 	BearerExpiration  time.Time
-	Bearer            string `json:"access_token"`
+	Bearer            string
 }
 
-// Credit - Old: https://stackoverflow.com/questions/26916952/go-retrieve-a-string-from-between-two-characters-or-other-strings
-// Credit - New: https://go.dev/play/p/C2sZRYC15XN
-func GetStringInBetween(str string, start string, end string) (result string) {
+// Credit: https://go.dev/play/p/C2sZRYC15XN
+func getStringInBetween(str string, start string, end string) (result string) {
 	s := strings.Index(str, start)
 	if s == -1 {
 		return
@@ -49,8 +51,60 @@ func GetStringInBetween(str string, start string, end string) (result string) {
 	return str[s : s+e]
 }
 
+// Credit: https://gist.github.com/hyg/9c4afcd91fe24316cbf0
+func openBrowser(url string) {
+	var err error
+
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func readDB() TOKEN {
+	config, err := utils.LoadConfig()
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	body, err := os.ReadFile(config.DBPATH)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	split := strings.Split(string(body), ",")
+	refreshAsInt, err := strconv.ParseInt(split[0], 10, 64)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	bearerAsInt, err := strconv.ParseInt(split[2], 10, 64)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	return TOKEN{
+		RefreshExpiration: time.Unix(refreshAsInt, 0),
+		Refresh:           split[1],
+		BearerExpiration:  time.Unix(bearerAsInt, 0),
+		Bearer:            split[3],
+	}
+}
+
 func oAuthInit() TOKEN {
-	// Get Auth Code
 	var (
 		m                   sync.Mutex
 		tokens              TOKEN
@@ -58,27 +112,25 @@ func oAuthInit() TOKEN {
 	)
 
 	m.Lock()
-
 	config, err := utils.LoadConfig()
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	resp, err := http.Get(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=127.0.0.1", config.APPKEY))
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	} // WIP: else if resp.StatusCode != 404 { Handle }
-
-	authCodeEncoded := GetStringInBetween(resp.Request.URL.String(), "?clientID=", "&region=")
+	// oAuth Leg 1 - App Authorization
+	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", base64.StdEncoding.EncodeToString([]byte(config.APPKEY)), base64.StdEncoding.EncodeToString([]byte(config.CBURL))))
+	fmt.Println("After logging into your Schwab brokerage account, you will be redirected to an error4 message. Copy the final redirect URL and paste it here: ")
+	var urlInput string
+	fmt.Scanln(&urlInput)
+	authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
 	authCodeDecoded, err := url.QueryUnescape(authCodeEncoded)
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	// POST Request for Bearer/Refresh TOKENs
+	// oAuth Leg 2 - Access Token Creation
 	EncodedIDSecret := url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", authCodeDecoded))))
@@ -125,42 +177,18 @@ func oAuthInit() TOKEN {
 func oAuthRefresh() string {
 	var (
 		m                   sync.Mutex
-		tokens              TOKEN
 		accessTokenResponse AccessTokenResponse
 	)
 
 	m.Lock()
-
+	tokens := readDB()
 	config, err := utils.LoadConfig()
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	body, err := os.ReadFile(config.DBPATH)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	split := strings.Split(string(body), ",")
-	refreshAsInt, err := strconv.ParseInt(split[0], 10, 64)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	tokens.RefreshExpiration = time.Unix(refreshAsInt, 0)
-	tokens.Refresh = split[1]
-	bearerAsInt, err := strconv.ParseInt(split[2], 10, 64)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	tokens.BearerExpiration = time.Unix(bearerAsInt, 0)
-	tokens.Bearer = split[3]
-
+	// POST Request
 	EncodedIDSecret := url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh))))
@@ -210,33 +238,11 @@ func Handler(req *http.Request) (string, error) {
 	}
 
 	// Credit: https://golangtutorial.dev/tips/check-if-a-file-exists-or-not-in-go/
+	// Check if DBPATH exists; if it does, read in from file; if it does not, execuate oAuthInit()
 	if _, err := os.Stat(config.DBPATH); errors.Is(err, os.ErrNotExist) {
 		tokens = oAuthInit()
 	} else {
-		body, err := os.ReadFile(config.DBPATH)
-
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-
-		split := strings.Split(string(body), ",")
-		refreshAsInt, err := strconv.ParseInt(split[0], 10, 64)
-
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-
-		tokens.RefreshExpiration = time.Unix(refreshAsInt, 0)
-		tokens.Refresh = split[1]
-
-		bearerAsInt, err := strconv.ParseInt(split[0], 10, 64)
-
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-
-		tokens.BearerExpiration = time.Unix(bearerAsInt, 0)
-		tokens.Bearer = split[3]
+		tokens = readDB()
 	}
 
 	q := req.URL.Query()

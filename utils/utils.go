@@ -7,6 +7,7 @@ type Config struct {
 	SECRET   string `mapstructure:"SECRET"`
 	UTC_DIFF string `mapstructure:"UTC_DIFF"`
 	DBPATH   string `mapstructure:"DBPATH"`
+	CBURL    string `mapstructure:"CBURL"`
 }
 
 func LoadConfig() (config Config, err error) {
