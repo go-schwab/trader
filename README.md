@@ -18,12 +18,3 @@ built, maintained by [@samjtro](https://github.com/samjtro).
 ### quick start
 ### package details
 ### code samples
-
-## license notice
-
-Apache License v2.0
-Copyright The Apache Software Foundation
-
-This product includes software developed at The Apache Software Foundation (/).
-
-do what you want in private; in public, there are guidelines for proper reproduction & crediting.
