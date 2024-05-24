@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -119,7 +118,7 @@ func oAuthInit() TOKEN {
 	}
 
 	// oAuth Leg 1 - App Authorization
-	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", base64.StdEncoding.EncodeToString([]byte(config.APPKEY)), base64.StdEncoding.EncodeToString([]byte(config.CBURL))))
+	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", config.APPKEY, config.CBURL))
 	fmt.Println("After logging into your Schwab brokerage account, you will be redirected to an error4 message. Copy the final redirect URL and paste it here: ")
 	var urlInput string
 	fmt.Scanln(&urlInput)
