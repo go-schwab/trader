@@ -3,7 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-trade)](https://goreportcard.com/report/github.com/samjtro/go-trade)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Latest: [v0.8.5.6.2](https://github.com/samjtro/go-trade/tree/main) | Stable*: [v0.8.3](https://github.com/samjtro/go-trade/tree/stable)
+Stable*: [v0.8.3](https://github.com/samjtro/go-trade/tree/stable)
 - *(Suggested Pre-v1.0.0)
 
 [Roadmap to v1.0.0](https://github.com/samjtro/go-trade/blob/main/TODO.md)
