@@ -3,8 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-trade)](https://goreportcard.com/report/github.com/samjtro/go-trade)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Stable*: [v0.8.3](https://github.com/samjtro/go-trade/tree/stable)
-- *(Suggested Pre-v1.0.0)
+Stable Release: [v0.8.6.4](https://github.com/samjtro/go-trade/tree/stable)
 
 [Roadmap to v1.0.0](https://github.com/samjtro/go-trade/blob/main/TODO.md)
 
@@ -14,70 +13,17 @@ Stable*: [v0.8.3](https://github.com/samjtro/go-trade/tree/stable)
 
 built, maintained by [@samjtro](https://github.com/samjtro).
 
-## how do i use this?
+## what can i do with this?
 
-### initialization
-
-0. go to developer.schwab.com
-1. create config.env
-2. oAuth flow
-
+### quick start
+### package details
 ### code samples
 
-#### data package
+## license notice
 
-```
-quote, err := data.RealTime("AAPL")
+Apache License v2.0
+Copyright The Apache Software Foundation
 
-if err != nil {
-        panic(err)
-}
+This product includes software developed at The Apache Software Foundation (/).
 
-df, err := data.PriceHistory("AAPL", "month", "1", "daily", "1")
-
-if err != nil {
-        panic(err)
-}
-```
-
-#### instrument package
-
-```
-simple, err := instrument.Simple("AAPL")
-
-if err != nil {
-	panic(err)
-}
-
-fundamental, err := instrument.Fundamental("AAPL")
-
-if err != nil {
-	panic(err)
-}
-```
-
-#### movers package
-
-```
-movers, err := movers.Get("$DJI", "up", "percent")
-
-if err != nil {
-	panic(err)
-}
-```
-
-#### option package
-
-```
-single, err := option.Single("AAPL", "ALL", "ALL", "15", "2022-09-20")
-
-if err != nil {
-	panic(err)
-}
-```
-
-## what can i do with this project?
-
-like previously mentioned, the goal is for you to use this in a wide variety of capacities. do what you wish with this project, but...  
-
-see the license; it is permissive, there are guidelines for proper reproduction & crediting :) 
+do what you want in private; in public, there are guidelines for proper reproduction & crediting.
