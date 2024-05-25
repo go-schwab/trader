@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -193,7 +194,7 @@ func oAuthRefresh() string {
 	}
 
 	// POST Request
-	EncodedIDSecret := url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))
+	EncodedIDSecret := base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh))))
 
