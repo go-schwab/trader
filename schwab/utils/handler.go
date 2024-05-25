@@ -131,7 +131,7 @@ func oAuthInit() TOKEN {
 	}
 
 	// oAuth Leg 2 - Access Token Creation
-	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)))))
+	authStringLegTwo := fmt.Sprintf("Basic {%s}", base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)))))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", authCodeDecoded))))
 
