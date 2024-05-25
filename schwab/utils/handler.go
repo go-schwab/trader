@@ -120,7 +120,7 @@ func oAuthInit() TOKEN {
 
 	// oAuth Leg 1 - App Authorization
 	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", config.APPKEY, config.CBURL))
-	fmt.Println("After logging into your Schwab brokerage account, you will be redirected to an error4 message. Copy the final redirect URL and paste it here: ")
+	fmt.Printf("Log into your Schwab brokerage account. Copy Error404 URL and paste it here: ")
 	var urlInput string
 	fmt.Scanln(&urlInput)
 	authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
@@ -132,6 +132,7 @@ func oAuthInit() TOKEN {
 
 	// oAuth Leg 2 - Access Token Creation
 	authStringLegTwo := fmt.Sprintf("Basic %s:%s", base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(config.APPKEY))), config.SECRET)
+	fmt.Println(authStringLegTwo)
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", authCodeDecoded, config.CBURL))))
 
