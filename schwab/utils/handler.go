@@ -152,6 +152,7 @@ func oAuthInit() TOKEN {
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&accessTokenResponse)
+	fmt.Println(accessTokenResponse)
 
 	if err != nil {
 		log.Fatalf(err.Error())
