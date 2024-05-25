@@ -21,6 +21,12 @@ import (
 	"github.com/samjtro/go-trade/utils"
 )
 
+type AccessTokenPayload struct {
+	grant_type   string `json:"grant_type"`
+	code         string `json:"code"`
+	redirect_uri string `json:"redirect_uri"`
+}
+
 type AccessTokenResponse struct {
 	expires_in    int
 	token_type    string
@@ -131,9 +137,20 @@ func oAuthInit() TOKEN {
 	}
 
 	// oAuth Leg 2 - Access Token Creation
-	authStringLegTwo := fmt.Sprintf("Basic {%s}", base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)))))
+	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)))))
+
+	jsonPayload, err := json.Marshal(AccessTokenPayload{
+		grant_type:   "authorization_code",
+		code:         authCodeDecoded,
+		redirect_uri: config.CBURL,
+	})
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 	client := http.Client{}
-	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", authCodeDecoded))))
+	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(jsonPayload)))
 
 	if err != nil {
 		log.Fatalf(err.Error())
