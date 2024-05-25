@@ -150,12 +150,15 @@ func oAuthInit() TOKEN {
 	}
 
 	defer res.Body.Close()
-	fmt.Println(res.Body)
-	err = json.NewDecoder(res.Body).Decode(&accessTokenResponse)
+
+	// Credit: https://stackoverflow.com/questions/38673673/access-http-response-as-string-in-go
+	bodyBytes, err := io.ReadAll(res.Body)
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
+
+	fmt.Println(string(bodyBytes))
 
 	tokens.Refresh = accessTokenResponse.refresh_token
 	tokens.Bearer = accessTokenResponse.access_token
