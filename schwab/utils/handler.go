@@ -131,7 +131,7 @@ func oAuthInit() TOKEN {
 	}
 
 	// oAuth Leg 2 - Access Token Creation
-	EncodedIDSecret := base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))))
+	EncodedIDSecret := base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("Basic %s:%s", config.APPKEY, config.SECRET))))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=https://example_url.com/callback_example", authCodeDecoded))))
 
@@ -193,7 +193,7 @@ func oAuthRefresh() string {
 	}
 
 	// POST Request
-	EncodedIDSecret := base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))))
+	EncodedIDSecret := base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("Basic %s:%s", config.APPKEY, config.SECRET))))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh))))
 
