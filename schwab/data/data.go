@@ -1,7 +1,5 @@
 package data
 
-import "fmt"
-
 var (
 	Endpoint string = "https://api.schwabapi.com/marketdata/v1"
 
@@ -10,16 +8,16 @@ var (
 	Endpoint_quotes string = Endpoint + "/quotes"
 
 	// Price History
-	Endpoint_pricehistory string = fmt.Sprintf(Endpoint + "/%s/pricehistory") // Symbol
+	Endpoint_pricehistory string = Endpoint + "/%s/pricehistory" // Symbol
 
 	// Instruments
-	Endpoint_searchinstruments string = fmt.Sprintf(Endpoint + "/instruments")
+	Endpoint_searchinstruments string = Endpoint + "/instruments"
 
 	// Movers
-	Endpoint_movers string = fmt.Sprintf(Endpoint + "/movers/%s") // Index ID
+	Endpoint_movers string = Endpoint + "/movers/%s" // Index ID
 
 	// Options
-	Endpoint_option string = fmt.Sprintf(Endpoint + "/chains")
+	Endpoint_option string = Endpoint + "/chains"
 )
 
 // Real Time, Price History
