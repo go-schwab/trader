@@ -12,16 +12,17 @@ var (
 	// Price History
 	Endpoint_pricehistory string = fmt.Sprintf(Endpoint + "/%s/pricehistory") // Symbol
 
-	// Movers
-	Endpoint_movers string = fmt.Sprintf(Endpoint + "/movers/%s") // Index ID
-
 	// Instruments
 	Endpoint_searchinstruments string = fmt.Sprintf(Endpoint + "/instruments")
+
+	// Movers
+	Endpoint_movers string = fmt.Sprintf(Endpoint + "/movers/%s") // Index ID
 
 	// Options
 	Endpoint_option string = fmt.Sprintf(Endpoint + "/chains")
 )
 
+// Real Time, Price History
 type CANDLE struct {
 	Datetime string
 	Volume   float64
@@ -31,6 +32,7 @@ type CANDLE struct {
 	Lo       float64
 }
 
+// Real Time
 type QUOTE struct {
 	Datetime   string
 	Ticker     string
@@ -49,15 +51,7 @@ type QUOTE struct {
 	PE         float64
 }
 
-type MOVER struct {
-	TICKER      string
-	DESCRIPTION string
-	LAST        float64
-	VOLUME      float64
-	DIRECTION   string
-	CHANGE      float64
-}
-
+// Instruments
 type INSTRUMENT struct {
 	TICKER                 string
 	CUSIP                  string
@@ -103,6 +97,17 @@ type INSTRUMENT struct {
 	VOL_3MON               float64
 }
 
+// Movers
+type MOVER struct {
+	TICKER      string
+	DESCRIPTION string
+	LAST        float64
+	VOLUME      float64
+	DIRECTION   string
+	CHANGE      float64
+}
+
+// Options: WIP
 // type UNDERLYING struct {}
 
 type CONTRACT struct {

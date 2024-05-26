@@ -11,8 +11,8 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-// PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick.
-// It takes five parameters:
+// PriceHistory returns a []CANDLE; containing a series of candles with price volume & datetime info per candlestick.
+// It takes seven parameters:
 // ticker = "AAPL", etc.;
 // periodType = "day", "month", "year", "ytd" - default is "day";
 // period = the number of periods to show;
@@ -25,7 +25,9 @@ import (
 // "minute": 1,5,10,15,30 /
 // "daily": 1 /
 // "weekly": 1 /
-// "monthly": 1
+// "monthly": 1;
+// startDate =
+// endDate =
 func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]CANDLE, error) {
 	url := fmt.Sprintf(Endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
