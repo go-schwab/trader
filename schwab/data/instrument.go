@@ -7,13 +7,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-trade/schwab"
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
 )
 
 var (
-	endpoint_searchinstruments string = fmt.Sprintf(schwab.Endpoint + "/instruments")
+	endpoint_searchinstruments string = fmt.Sprintf(Endpoint + "/instruments")
 )
 
 // All fundamental information for a given asset.

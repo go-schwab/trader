@@ -8,48 +8,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/samjtro/go-trade/schwab"
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
 )
 
 var (
-	endpoint_quote  string = schwab.Endpoint + "/%s/quotes" // Symbol
-	endpoint_quotes string = schwab.Endpoint + "/quotes"
+	endpoint_quote  string = Endpoint + "/%s/quotes" // Symbol
+	endpoint_quotes string = Endpoint + "/quotes"
 )
 
-type CANDLE struct {
-	Datetime string
-	Open     float64
-	Hi       float64
-	Lo       float64
-	Close    float64
-	Volume   float64
-}
-
-// RealTime's native struct; returns various indicators related to the asset
-type QUOTE struct {
-	Datetime   string
-	Ticker     string
-	Mark       float64
-	Volume     float64
-	Volatility float64
-	Bid        float64
-	Ask        float64
-	Last       float64
-	Open       float64
-	Close      float64
-	Hi         float64
-	Lo         float64
-	Hi52       float64
-	Lo52       float64
-	PE         float64
-}
-
-// Quote returns a []CANDLE, the previous 7 candles.
+// Quote returns a []FRAME with the previous 7 candles.
 // It takes one paramter:
 // ticker = "AAPL", etc.
-func GetCandles(ticker string) ([]CANDLE, error) {
+func GetCandles(ticker string) ([]FRAME, error) {
 	url := fmt.Sprintf(endpoint_quote, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := schwabutils.Handler(req)
@@ -60,9 +31,7 @@ func GetCandles(ticker string) ([]CANDLE, error) {
 
 	var open, hi, lo, Close, volume float64
 	var datetime string
-	var candles []CANDLE
-
-	// Find a recursive way to do this
+	var df []FRAME
 	split := strings.Split(body, "},")
 
 	for _, x1 := range split {
@@ -103,7 +72,7 @@ func GetCandles(ticker string) ([]CANDLE, error) {
 			}
 		}
 
-		candles = append(candles, CANDLE{
+		df = append(df, FRAME{
 			Open:     open,
 			Hi:       hi,
 			Lo:       lo,
@@ -113,7 +82,7 @@ func GetCandles(ticker string) ([]CANDLE, error) {
 		})
 	}
 
-	return candles, nil
+	return df, nil
 }
 
 // Quote returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).

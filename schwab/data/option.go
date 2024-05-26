@@ -7,12 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-trade/schwab"
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-var endpoint_option string = fmt.Sprintf(schwab.Endpoint + "/chains")
+var endpoint_option string = fmt.Sprintf(Endpoint + "/chains")
 
 //type UNDERLYING struct {}
 

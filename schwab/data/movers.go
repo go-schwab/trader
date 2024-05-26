@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-trade/schwab"
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
 )
@@ -22,7 +21,7 @@ type MOVER struct {
 }
 
 var (
-	endpoint_movers string = fmt.Sprintf(schwab.Endpoint + "/movers/%s") // Index ID
+	endpoint_movers string = fmt.Sprintf(Endpoint + "/movers/%s") // Index ID
 )
 
 // Get returns a string; containing information on the desired index's movers per your desired direction and change type(percent or value),

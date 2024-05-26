@@ -7,25 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/samjtro/go-trade/schwab"
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
 )
 
 var (
-	endpoint_pricehistory string = fmt.Sprintf(schwab.Endpoint + "/%s/pricehistory") // Symbol
+	endpoint_pricehistory string = fmt.Sprintf(Endpoint + "/%s/pricehistory") // Symbol
 )
-
-// This is a Go implementation of the pandas "DataFrame" structure
-// Slices of FRAMEs form DataFrames, which can then be used in analysis
-type FRAME struct {
-	Datetime string
-	Volume   float64
-	Open     float64
-	Close    float64
-	Hi       float64
-	Lo       float64
-}
 
 // PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick.
 // It takes five parameters:
@@ -42,7 +30,7 @@ type FRAME struct {
 // "daily": 1 /
 // "weekly": 1 /
 // "monthly": 1
-func GetPriceHistory(ticker, periodType, period, frequencyType, frequency string) ([]FRAME, error) {
+func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]FRAME, error) {
 	url := fmt.Sprintf(endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
@@ -50,6 +38,8 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency string
 	q.Add("period", period)
 	q.Add("frequencyType", frequencyType)
 	q.Add("frequency", frequency)
+	q.Add("startDate", startDate)
+	q.Add("endDate", endDate)
 	req.URL.RawQuery = q.Encode()
 	body, err := schwabutils.Handler(req)
 
