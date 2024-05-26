@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,39 +9,6 @@ import (
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
 )
-
-var endpoint_option string = fmt.Sprintf(Endpoint + "/chains")
-
-//type UNDERLYING struct {}
-
-type CONTRACT struct {
-	TYPE                   string
-	SYMBOL                 string
-	STRIKE                 float64
-	EXCHANGE               string
-	EXPIRATION             float64
-	DAYS2EXPIRATION        float64
-	BID                    float64
-	ASK                    float64
-	LAST                   float64
-	MARK                   float64
-	BIDASK_SIZE            string
-	VOLATILITY             float64
-	DELTA                  float64
-	GAMMA                  float64
-	THETA                  float64
-	VEGA                   float64
-	RHO                    float64
-	OPEN_INTEREST          float64
-	TIME_VALUE             float64
-	THEORETICAL_VALUE      float64
-	THEORETICAL_VOLATILITY float64
-	PERCENT_CHANGE         float64
-	MARK_CHANGE            float64
-	MARK_PERCENT_CHANGE    float64
-	INTRINSIC_VALUE        float64
-	IN_THE_MONEY           bool //bool
-}
 
 // Single returns a []CONTRACT; containing a SINGLE option chain of your desired strike, type, etc.,
 // it takes four parameters:
@@ -61,7 +27,7 @@ type CONTRACT struct {
 // Lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01").
 // This returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the status of the contract ("ALL"), expiring before 2022-07-01
 func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CONTRACT, error) {
-	req, _ := http.NewRequest("GET", endpoint_option, nil)
+	req, _ := http.NewRequest("GET", Endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
 	q.Add("contractType", contractType)
@@ -309,7 +275,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 // Covered returns a string; containing covered option calls.
 // Not functional ATM.
 func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
-	req, _ := http.NewRequest("GET", endpoint_option, nil)
+	req, _ := http.NewRequest("GET", Endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "COVERED")
 	q.Add("symbol", ticker)
@@ -329,7 +295,7 @@ func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (str
 // Butterfly returns a string; containing Butterfly spread option calls.
 // Not functional ATM.
 func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
-	req, _ := http.NewRequest("GET", endpoint_option, nil)
+	req, _ := http.NewRequest("GET", Endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "BUTTERFLY")
 	q.Add("symbol", ticker)
@@ -350,7 +316,7 @@ func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (s
 // It takes nine parameters:
 // Not functional ATM.
 func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatility, underlyingPrice, interestRate, daysToExpiration string) (string, error) {
-	req, _ := http.NewRequest("GET", endpoint_option, nil)
+	req, _ := http.NewRequest("GET", Endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("strategy", "ANALYTICAL")
 	q.Add("symbol", ticker)

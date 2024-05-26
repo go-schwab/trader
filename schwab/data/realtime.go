@@ -12,16 +12,11 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-var (
-	endpoint_quote  string = Endpoint + "/%s/quotes" // Symbol
-	endpoint_quotes string = Endpoint + "/quotes"
-)
-
 // Quote returns a []FRAME with the previous 7 candles.
 // It takes one paramter:
 // ticker = "AAPL", etc.
-func GetCandles(ticker string) ([]FRAME, error) {
-	url := fmt.Sprintf(endpoint_quote, ticker)
+func GetCandles(ticker string) ([]CANDLE, error) {
+	url := fmt.Sprintf(Endpoint_quote, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := schwabutils.Handler(req)
 
@@ -31,7 +26,7 @@ func GetCandles(ticker string) ([]FRAME, error) {
 
 	var open, hi, lo, Close, volume float64
 	var datetime string
-	var df []FRAME
+	var candles []CANDLE
 	split := strings.Split(body, "},")
 
 	for _, x1 := range split {
@@ -72,7 +67,7 @@ func GetCandles(ticker string) ([]FRAME, error) {
 			}
 		}
 
-		df = append(df, FRAME{
+		candles = append(candles, CANDLE{
 			Open:     open,
 			Hi:       hi,
 			Lo:       lo,
@@ -82,7 +77,7 @@ func GetCandles(ticker string) ([]FRAME, error) {
 		})
 	}
 
-	return df, nil
+	return candles, nil
 }
 
 // Quote returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
@@ -90,7 +85,7 @@ func GetCandles(ticker string) ([]FRAME, error) {
 // ticker = "AAPL", etc.
 func GetQuote(tickers string) (QUOTE, error) {
 	dt := utils.Now(time.Now())
-	url := fmt.Sprintf(endpoint_quotes, tickers)
+	url := fmt.Sprintf(Endpoint_quotes, tickers)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := schwabutils.Handler(req)
 

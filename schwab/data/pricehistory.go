@@ -11,10 +11,6 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-var (
-	endpoint_pricehistory string = fmt.Sprintf(Endpoint + "/%s/pricehistory") // Symbol
-)
-
 // PriceHistory returns a []FRAME; containing a series of candles with price volume & datetime info per candlestick.
 // It takes five parameters:
 // ticker = "AAPL", etc.;
@@ -30,8 +26,8 @@ var (
 // "daily": 1 /
 // "weekly": 1 /
 // "monthly": 1
-func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]FRAME, error) {
-	url := fmt.Sprintf(endpoint_pricehistory, ticker)
+func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]CANDLE, error) {
+	url := fmt.Sprintf(Endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
 	q.Add("periodType", periodType)
@@ -44,10 +40,10 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 	body, err := schwabutils.Handler(req)
 
 	if err != nil {
-		return []FRAME{}, err
+		return []CANDLE{}, err
 	}
 
-	var df []FRAME
+	var candles []CANDLE
 	var open, hi, lo, Close, volume, datetime string
 	split := strings.Split(body, "{")
 	split = split[2:]
@@ -102,7 +98,7 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 			log.Fatalf(err.Error())
 		}
 
-		f := FRAME{
+		candle := CANDLE{
 			Datetime: utils.TrimL(datetime),
 			Volume:   volume,
 			Open:     open,
@@ -111,8 +107,8 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 			Lo:       lo,
 		}
 
-		df = append(df, f)
+		candles = append(candles, candle)
 	}
 
-	return df, nil
+	return candles, nil
 }

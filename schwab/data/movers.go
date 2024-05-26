@@ -11,26 +11,13 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-type MOVER struct {
-	TICKER      string
-	DESCRIPTION string
-	LAST        float64
-	VOLUME      float64
-	DIRECTION   string
-	CHANGE      float64
-}
-
-var (
-	endpoint_movers string = fmt.Sprintf(Endpoint + "/movers/%s") // Index ID
-)
-
 // Get returns a string; containing information on the desired index's movers per your desired direction and change type(percent or value),
 // it takes three parameters:
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"
 func GetMovers(index, direction, change string) ([]MOVER, error) {
-	url := fmt.Sprintf(endpoint_movers, index)
+	url := fmt.Sprintf(Endpoint_movers, index)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
 	q.Add("direction", direction)

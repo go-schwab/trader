@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,59 +10,9 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-var (
-	endpoint_searchinstruments string = fmt.Sprintf(Endpoint + "/instruments")
-)
-
-// All fundamental information for a given asset.
-type INSTRUMENT struct {
-	TICKER                 string
-	CUSIP                  string
-	DESCRIPTION            string
-	EXCHANGE               string
-	TYPE                   string
-	HI52                   float64
-	LO52                   float64
-	DIV_YIELD              float64
-	DIV_AMOUNT             float64
-	PE_RATIO               float64
-	PEG_RATIO              float64
-	PB_RATIO               float64
-	PR_RATIO               float64
-	PCF_RATIO              float64
-	GROSS_MARGIN_TTM       float64
-	GROSS_MARGIN_MRQ       float64
-	NET_PROFIT_MARGIN_TTM  float64
-	NET_PROFIT_MARGIN_MRQ  float64
-	OPERATING_MARGIN_TTM   float64
-	OPERATING_MARGIN_MRQ   float64
-	RETURN_ON_EQUITY       float64
-	RETURN_ON_ASSETS       float64
-	RETURN_ON_INVESTMENT   float64
-	QUICK_RATIO            float64
-	CURRENT_RATIO          float64
-	INTEREST_COVERAGE      float64
-	TOTAL_DEBT_TO_CAPITAL  float64
-	TOTAL_DEBT_TO_EQUITY   float64
-	EPS_TTM                float64
-	EPS_CHANGE_PERCENT_TTM float64
-	EPS_CHANGE_YR          float64
-	REV_CHANGE_YR          float64
-	REV_CHANGE_TTM         float64
-	REV_CHANGE_IN          float64
-	SHARES_OUTSTANDING     float64
-	MARKET_CAP_FLOAT       float64
-	MARKET_CAP             float64
-	BOOK_VALUE_PER_SHARE   float64
-	BETA                   float64
-	VOL_1DAY               float64
-	VOL_10DAY              float64
-	VOL_3MON               float64
-}
-
 // Search for an instrument by a specific symbol, return all fundamental asset information.
 func SearchInstrument(symbol string) (INSTRUMENT, error) {
-	req, _ := http.NewRequest("GET", endpoint_searchinstruments, nil)
+	req, _ := http.NewRequest("GET", Endpoint_searchinstruments, nil)
 	q := req.URL.Query()
 	q.Add("symbol", symbol)
 	q.Add("projection", "fundamental")
