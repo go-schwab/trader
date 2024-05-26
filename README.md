@@ -11,6 +11,8 @@ Stable Release: [v0.8.6.4](https://github.com/samjtro/go-trade/tree/stable)
 
 ## what is this?
 
+this project is in progress, it doesn't currently work. for a deprecated, but working, version of the TD-Ameritrade API, visit [go-tda](https://github.com/samjtro/go-tda).
+
 built, maintained by [@samjtro](https://github.com/samjtro).
 
 ## what can i do with this?
