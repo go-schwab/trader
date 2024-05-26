@@ -14,9 +14,18 @@ import (
 )
 
 var (
-	endpoint_quote string = schwab.Endpoint + "/%s/quotes" // Symbol
-	// endpoint_quotes string
+	endpoint_quote  string = schwab.Endpoint + "/%s/quotes" // Symbol
+	endpoint_quotes string = schwab.Endpoint + "/quotes"
 )
+
+type CANDLE struct {
+	Datetime string
+	Open     float64
+	Hi       float64
+	Lo       float64
+	Close    float64
+	Volume   float64
+}
 
 // RealTime's native struct; returns various indicators related to the asset
 type QUOTE struct {
@@ -37,12 +46,82 @@ type QUOTE struct {
 	PE         float64
 }
 
+// Quote returns a []CANDLE, the previous 7 candles.
+// It takes one paramter:
+// ticker = "AAPL", etc.
+func GetCandles(ticker string) ([]CANDLE, error) {
+	url := fmt.Sprintf(endpoint_quote, ticker)
+	req, _ := http.NewRequest("GET", url, nil)
+	body, err := schwabutils.Handler(req)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	var open, hi, lo, Close, volume float64
+	var datetime string
+	var candles []CANDLE
+
+	// Find a recursive way to do this
+	split := strings.Split(body, "},")
+
+	for _, x1 := range split {
+		for i2, x2 := range strings.Split(x1, "\"") {
+			switch x2 {
+			case "open":
+				open, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
+			case "high":
+				hi, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
+			case "low":
+				lo, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
+			case "close":
+				Close, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
+			case "volume":
+				volume, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+
+				if err != nil {
+					log.Fatalf(err.Error())
+				}
+			case "datetime":
+				datetime = utils.UnixToLocal(utils.TrimFL(split[i2+1]))
+			}
+		}
+
+		candles = append(candles, CANDLE{
+			Open:     open,
+			Hi:       hi,
+			Lo:       lo,
+			Close:    Close,
+			Volume:   volume,
+			Datetime: datetime,
+		})
+	}
+
+	return candles, nil
+}
+
 // Quote returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
 // It takes one parameter:
 // ticker = "AAPL", etc.
-func GetQuote(ticker string) (QUOTE, error) {
+func GetQuote(tickers string) (QUOTE, error) {
 	dt := utils.Now(time.Now())
-	url := fmt.Sprintf(endpoint_quote, ticker)
+	url := fmt.Sprintf(endpoint_quotes, tickers)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := schwabutils.Handler(req)
 
@@ -53,6 +132,7 @@ func GetQuote(ticker string) (QUOTE, error) {
 	var bid, ask, last, open, hi, lo, closeP, mark, volume, volatility, hi52, lo52, pe float64
 	split := strings.Split(body, "\"")
 
+	// Check for multiple tickers, iterate through them if need be
 	for i, x := range split {
 		switch x {
 		case "bidPrice":
@@ -164,7 +244,7 @@ func GetQuote(ticker string) (QUOTE, error) {
 
 	return QUOTE{
 		Datetime:   dt,
-		Ticker:     ticker,
+		Ticker:     tickers,
 		Mark:       mark,
 		Volume:     volume,
 		Volatility: volatility,
