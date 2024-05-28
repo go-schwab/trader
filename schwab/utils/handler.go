@@ -137,7 +137,7 @@ func oAuthInit() TOKEN {
 	}
 
 	// oAuth Leg 2 - Access Token Creation
-	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET)))))
+	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))))
 
 	jsonPayload, err := json.Marshal(AccessTokenPayload{
 		grant_type:   "authorization_code",
@@ -157,8 +157,8 @@ func oAuthInit() TOKEN {
 	}
 
 	req.Header = http.Header{
-		"Content-Type":  {"application/x-www-form-urlencoded"},
 		"Authorization": {authStringLegTwo},
+		"Content-Type":  {"application/x-www-form-urlencoded"},
 	}
 
 	res, err := client.Do(req)
