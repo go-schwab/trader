@@ -66,12 +66,6 @@ func oAuthInit() TOKEN {
 		log.Fatalf(err.Error())
 	}
 
-	err = os.WriteFile("~/.foo/bar.json", bodyBytes, 0666)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
 	err = json.Unmarshal(bodyBytes, &accessTokenResponse)
 
 	if err != nil {
@@ -82,8 +76,13 @@ func oAuthInit() TOKEN {
 	tokens.Bearer = accessTokenResponse.access_token
 	tokens.BearerExpiration = time.Now().Add(time.Minute * 30)
 	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
-	writeOutData := fmt.Sprintf("%d,%s,%d,%s", tokens.RefreshExpiration.Unix(), tokens.Refresh, tokens.BearerExpiration.Unix(), tokens.Bearer)
-	err = os.WriteFile("~/.foo/bar.json", []byte(writeOutData), 0755)
+	tokensJson, err := json.Marshal(tokens)
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	err = os.WriteFile("~/.foo/bar.json", tokensJson, 0755)
 
 	if err != nil {
 		log.Fatalf(err.Error())

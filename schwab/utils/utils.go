@@ -1,12 +1,12 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"runtime"
-	"strconv"
 	"strings"
 	"time"
 
@@ -38,31 +38,20 @@ type TOKEN struct {
 }
 
 func readDB() TOKEN {
+	var tokens TOKEN
 	body, err := os.ReadFile("~/.foo/bar.json")
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	split := strings.Split(string(body), ",")
-	refreshAsInt, err := strconv.ParseInt(split[0], 10, 64)
+	err = json.Unmarshal(body, &tokens)
 
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	bearerAsInt, err := strconv.ParseInt(split[2], 10, 64)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	return TOKEN{
-		RefreshExpiration: time.Unix(refreshAsInt, 0),
-		Refresh:           split[1],
-		BearerExpiration:  time.Unix(bearerAsInt, 0),
-		Bearer:            split[3],
-	}
+	return tokens
 }
 
 // Credit: https://go.dev/play/p/C2sZRYC15XN
