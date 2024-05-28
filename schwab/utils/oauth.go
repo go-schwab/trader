@@ -63,7 +63,7 @@ func oAuthInit() TOKEN {
 	tokensJson, err := json.Marshal(tokens)
 	utils.Check(err)
 
-	f, err := os.Create("~/.foo/bar.json")
+	f, err := os.OpenFile("~/.foo/bar.json", os.O_CREATE, 0666)
 	utils.Check(err)
 	defer f.Close()
 	_, err = f.Write(tokensJson)
