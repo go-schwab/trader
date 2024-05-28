@@ -65,6 +65,7 @@ func oAuthInit() TOKEN {
 
 	err = json.Unmarshal(bodyBytes, &accessTokenResponse)
 	utils.Check(err)
+	fmt.Println(accessTokenResponse)
 
 	tokens.Refresh = accessTokenResponse.refresh_token
 	tokens.Bearer = accessTokenResponse.access_token
