@@ -32,9 +32,6 @@ func Handler(req *http.Request) (string, error) {
 		tokens = readDB()
 	}
 
-	q := req.URL.Query()
-	req.URL.RawQuery = q.Encode()
-
 	if !time.Now().Before(tokens.BearerExpiration) {
 		req.Header = http.Header{
 			"Authorization": {fmt.Sprintf("Bearer %s", tokens.Bearer)},
