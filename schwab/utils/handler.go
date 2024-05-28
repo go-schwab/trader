@@ -9,6 +9,8 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/samjtro/go-trade/utils"
 )
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
@@ -24,7 +26,7 @@ func Handler(req *http.Request) (string, error) {
 
 	m.Lock()
 
-	if _, err := os.Stat("~/.foo/bar.json"); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(fmt.Sprintf("%s/.foo/bar.json", utils.HomeDir())); errors.Is(err, os.ErrNotExist) {
 		tokens = oAuthInit()
 	} else {
 		tokens = readDB()

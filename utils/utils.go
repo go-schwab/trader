@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"log"
+	"os/user"
 	"strconv"
 	"time"
 
@@ -13,6 +14,13 @@ func Check(err error) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
+}
+
+func HomeDir() string {
+	currentUser, err := user.Current()
+	Check(err)
+
+	return fmt.Sprintf("/home/%s", currentUser.Username)
 }
 
 func LoadConfig() (err error) {
