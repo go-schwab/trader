@@ -9,29 +9,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	APPKEY   string `mapstructure:"APPKEY"`
-	SECRET   string `mapstructure:"SECRET"`
-	UTC_DIFF string `mapstructure:"UTC_DIFF"`
-	DBPATH   string `mapstructure:"DBPATH"`
-	CBURL    string `mapstructure:"CBURL"`
-}
-
-func LoadConfig() (config Config, err error) {
+func LoadConfig() (err error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("env")
-	viper.AddConfigPath("$HOME/")
+	viper.AddConfigPath("$HOME/.foo/")
 	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
-
-	if err != nil {
-		return
-	}
-
-	err = viper.Unmarshal(&config)
-
-	return
+	return viper.ReadInConfig()
 }
 
 // Trim the FIRST character in the string
@@ -54,12 +38,6 @@ func TrimFL(s string) string {
 // This is the standard datetime format for quotes and dataframes across this library.
 // This function uses your local `$HOME/config.env` for generation of your local time. This requires setting the UTC_DIFF variable in the following format: `-06:00`
 func Now(t time.Time) string {
-	config, err := LoadConfig()
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
 	str := fmt.Sprintf("%d-%d-%dT%d:%d:%d%s",
 		t.Year(),
 		t.Month(),
@@ -67,7 +45,7 @@ func Now(t time.Time) string {
 		t.Hour(),
 		t.Minute(),
 		t.Second(),
-		config.UTC_DIFF)
+		viper.Get("UTC_DIFF"))
 
 	return str
 }
