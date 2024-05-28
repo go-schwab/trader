@@ -138,19 +138,9 @@ func oAuthInit() TOKEN {
 
 	// oAuth Leg 2 - Access Token Creation
 	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))))
-
-	jsonPayload, err := json.Marshal(AccessTokenPayload{
-		grant_type:   "authorization_code",
-		code:         authCodeDecoded,
-		redirect_uri: config.CBURL,
-	})
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
 	client := http.Client{}
-	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(jsonPayload)))
+	payload := fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", authCodeDecoded, config.CBURL)
+	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(payload)))
 
 	if err != nil {
 		log.Fatalf(err.Error())
