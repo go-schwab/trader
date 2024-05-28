@@ -159,7 +159,6 @@ func oAuthInit() TOKEN {
 
 	defer res.Body.Close()
 
-	// Credit: https://stackoverflow.com/questions/38673673/access-http-response-as-string-in-go
 	bodyBytes, err := io.ReadAll(res.Body)
 
 	if err != nil {
@@ -199,7 +198,7 @@ func oAuthRefresh() string {
 	}
 
 	// POST Request
-	EncodedIDSecret := base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(fmt.Sprintf("Basic %s:%s", config.APPKEY, config.SECRET))))
+	authStringRefresh := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", config.APPKEY, config.SECRET))))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh))))
 
@@ -208,8 +207,8 @@ func oAuthRefresh() string {
 	}
 
 	req.Header = http.Header{
+		"Authorization": {authStringRefresh},
 		"Content-Type":  {"application/x-www-form-urlencoded"},
-		"Authorization": {EncodedIDSecret},
 	}
 
 	res, err := client.Do(req)
@@ -247,8 +246,6 @@ func Handler(req *http.Request) (string, error) {
 		log.Fatalf(err.Error())
 	}
 
-	// Credit: https://golangtutorial.dev/tips/check-if-a-file-exists-or-not-in-go/
-	// Check if DBPATH exists; if it does, read in from file; if it does not, execuate oAuthInit()
 	if _, err := os.Stat(config.DBPATH); errors.Is(err, os.ErrNotExist) {
 		tokens = oAuthInit()
 	} else {
