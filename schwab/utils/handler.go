@@ -33,14 +33,11 @@ func Handler(req *http.Request) (string, error) {
 	}
 
 	if !time.Now().Before(tokens.BearerExpiration) {
-		req.Header = http.Header{
-			"Authorization": {fmt.Sprintf("Bearer %s", tokens.Bearer)},
-		}
-	} else {
-		newBearerToken := oAuthRefresh()
-		req.Header = http.Header{
-			"Authorization": {fmt.Sprintf("Bearer %s", newBearerToken)},
-		}
+		tokens.Bearer = oAuthRefresh()
+	}
+
+	req.Header = http.Header{
+		"Authorization": {fmt.Sprintf("Bearer %s", tokens.Bearer)},
 	}
 
 	client := http.Client{}
