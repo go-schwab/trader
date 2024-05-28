@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -21,26 +22,32 @@ func oAuthInit() TOKEN {
 		m                   sync.Mutex
 		tokens              TOKEN
 		accessTokenResponse AccessTokenResponse
+		authCode            []byte
 	)
 
 	m.Lock()
 
 	// oAuth Leg 1 - App Authorization
-	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", viper.Get("APPKEY"), viper.Get("CBURL")))
-	fmt.Printf("Log into your Schwab brokerage account. Copy Error404 URL and paste it here: ")
-	var urlInput string
-	fmt.Scanln(&urlInput)
-	authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
-	authCodeDecoded, err := url.QueryUnescape(authCodeEncoded)
-	utils.Check(err)
+	if _, err := os.Stat(fmt.Sprintf("%s/.foo/trade/code", utils.HomeDir())); errors.Is(err, os.ErrNotExist) {
+		openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", viper.Get("APPKEY"), viper.Get("CBURL")))
+		fmt.Printf("Log into your Schwab brokerage account. Copy Error404 URL and paste it here: ")
+		var urlInput string
+		fmt.Scanln(&urlInput)
+		authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
+		authCode, err := url.QueryUnescape(authCodeEncoded)
+		utils.Check(err)
 
-	err = os.WriteFile(fmt.Sprintf("%s/.foo/trade/code", utils.HomeDir()), []byte(authCodeDecoded), 0777)
-	utils.Check(err)
+		err = os.WriteFile(fmt.Sprintf("%s/.foo/trade/code", utils.HomeDir()), []byte(authCode), 0777)
+		utils.Check(err)
+	} else {
+		authCode, err = os.ReadFile(fmt.Sprintf("%s/.foo/trade/code", utils.HomeDir()))
+		utils.Check(err)
+	}
 
 	// oAuth Leg 2 - Access Token Creation
 	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", viper.Get("APPKEY"), viper.Get("SECRET")))))
 	client := http.Client{}
-	payload := fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", authCodeDecoded, viper.Get("CBURL"))
+	payload := fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", string(authCode), viper.Get("CBURL"))
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(payload)))
 	utils.Check(err)
 
