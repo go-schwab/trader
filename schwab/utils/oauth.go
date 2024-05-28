@@ -6,13 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"sync"
 	"time"
 
+	"github.com/samjtro/go-trade/utils"
 	"github.com/spf13/viper"
 )
 
@@ -32,20 +32,14 @@ func oAuthInit() TOKEN {
 	fmt.Scanln(&urlInput)
 	authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
 	authCodeDecoded, err := url.QueryUnescape(authCodeEncoded)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	// oAuth Leg 2 - Access Token Creation
 	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", viper.Get("APPKEY"), viper.Get("SECRET")))))
 	client := http.Client{}
 	payload := fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", authCodeDecoded, viper.Get("CBURL"))
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(payload)))
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	req.Header = http.Header{
 		"Authorization": {authStringLegTwo},
@@ -53,40 +47,29 @@ func oAuthInit() TOKEN {
 	}
 
 	res, err := client.Do(req)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
+	utils.Check(err)
 	defer res.Body.Close()
 
 	bodyBytes, err := io.ReadAll(res.Body)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	err = json.Unmarshal(bodyBytes, &accessTokenResponse)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	tokens.Refresh = accessTokenResponse.refresh_token
 	tokens.Bearer = accessTokenResponse.access_token
 	tokens.BearerExpiration = time.Now().Add(time.Minute * 30)
 	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
 	tokensJson, err := json.Marshal(tokens)
+	utils.Check(err)
 
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	f, err := os.OpenFile("~/.foo/bar.json", os.O_CREATE, 0644)
+	fmt.Println("Hi")
+	utils.Check(err)
+	fmt.Println("Hi")
 
-	err = os.WriteFile("~/.foo/bar.json", tokensJson, 0755)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	f.Write(tokensJson)
+	f.Close()
 
 	m.Unlock()
 	return tokens
@@ -101,14 +84,10 @@ func oAuthRefresh() string {
 	m.Lock()
 	tokens := readDB()
 
-	// POST Request
 	authStringRefresh := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", viper.Get("APPKEY"), viper.Get("SECRET")))))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", tokens.Refresh))))
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	req.Header = http.Header{
 		"Authorization": {authStringRefresh},
@@ -116,16 +95,10 @@ func oAuthRefresh() string {
 	}
 
 	res, err := client.Do(req)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	err = json.NewDecoder(res.Body).Decode(&accessTokenResponse)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	m.Unlock()
 	return accessTokenResponse.access_token

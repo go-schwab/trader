@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -15,10 +14,7 @@ import (
 
 func init() {
 	err := utils.LoadConfig()
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 }
 
 type AccessTokenResponse struct {
@@ -40,16 +36,10 @@ type TOKEN struct {
 func readDB() TOKEN {
 	var tokens TOKEN
 	body, err := os.ReadFile("~/.foo/bar.json")
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	err = json.Unmarshal(body, &tokens)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	utils.Check(err)
 
 	return tokens
 }
@@ -57,14 +47,18 @@ func readDB() TOKEN {
 // Credit: https://go.dev/play/p/C2sZRYC15XN
 func getStringInBetween(str string, start string, end string) (result string) {
 	s := strings.Index(str, start)
+
 	if s == -1 {
 		return
 	}
+
 	s += len(start)
 	e := strings.Index(str[s:], end)
+
 	if e == -1 {
 		return
 	}
+
 	return str[s : s+e]
 }
 
@@ -82,7 +76,6 @@ func openBrowser(url string) {
 	default:
 		err = fmt.Errorf("unsupported platform")
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	utils.Check(err)
 }

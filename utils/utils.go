@@ -9,6 +9,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+func Check(err error) {
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+}
+
 func LoadConfig() (err error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("env")
