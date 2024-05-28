@@ -35,7 +35,7 @@ type TOKEN struct {
 
 func readDB() TOKEN {
 	var tokens TOKEN
-	body, err := os.ReadFile(fmt.Sprintf("%s/.foo/bar.json", utils.HomeDir()))
+	body, err := os.ReadFile(fmt.Sprintf("%s/.foo/trade/bar.json", utils.HomeDir()))
 	utils.Check(err)
 
 	err = json.Unmarshal(body, &tokens)

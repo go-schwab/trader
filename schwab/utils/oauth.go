@@ -34,6 +34,9 @@ func oAuthInit() TOKEN {
 	authCodeDecoded, err := url.QueryUnescape(authCodeEncoded)
 	utils.Check(err)
 
+	err = os.WriteFile(fmt.Sprintf("%s/.foo/trade/code", utils.HomeDir()), []byte(authCodeDecoded), 0777)
+	utils.Check(err)
+
 	// oAuth Leg 2 - Access Token Creation
 	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", viper.Get("APPKEY"), viper.Get("SECRET")))))
 	client := http.Client{}
@@ -63,7 +66,7 @@ func oAuthInit() TOKEN {
 	tokensJson, err := json.Marshal(tokens)
 	utils.Check(err)
 
-	err = os.WriteFile(fmt.Sprintf("%s/.foo/bar.json", utils.HomeDir()), tokensJson, 0777)
+	err = os.WriteFile(fmt.Sprintf("%s/.foo/trade/bar.json", utils.HomeDir()), tokensJson, 0777)
 	utils.Check(err)
 
 	m.Unlock()

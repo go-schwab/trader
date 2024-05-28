@@ -26,7 +26,7 @@ func Handler(req *http.Request) (string, error) {
 
 	m.Lock()
 
-	if _, err := os.Stat(fmt.Sprintf("%s/.foo/bar.json", utils.HomeDir())); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(fmt.Sprintf("%s/.foo/trade/bar.json", utils.HomeDir())); errors.Is(err, os.ErrNotExist) {
 		tokens = oAuthInit()
 	} else {
 		tokens = readDB()
