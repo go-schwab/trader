@@ -60,7 +60,6 @@ func oAuthInit() TOKEN {
 
 	bodyBytes, err := io.ReadAll(res.Body)
 	utils.Check(err)
-	fmt.Println(string(bodyBytes))
 
 	tokens := parseAccessTokenResponse(string(bodyBytes))
 	tokensJson, err := json.Marshal(tokens)
@@ -97,10 +96,9 @@ func oAuthRefresh() string {
 
 	bodyBytes, err := io.ReadAll(res.Body)
 	utils.Check(err)
-	fmt.Println(string(bodyBytes))
 
-	// WIP: Working on new way to read access token response
+	newTokens := parseAccessTokenResponse(string(bodyBytes))
 
 	m.Unlock()
-	return ""
+	return newTokens.Bearer
 }
