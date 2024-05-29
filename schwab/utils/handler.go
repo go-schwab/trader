@@ -36,10 +36,7 @@ func Handler(req *http.Request) (string, error) {
 		tokens.Bearer = oAuthRefresh()
 	}
 
-	req.Header = http.Header{
-		"Authorization": {fmt.Sprintf("Bearer %s", tokens.Bearer)},
-	}
-
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", tokens.Bearer))
 	client := http.Client{}
 	resp, err := client.Do(req)
 
