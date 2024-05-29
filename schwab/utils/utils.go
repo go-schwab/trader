@@ -17,15 +17,6 @@ func init() {
 	utils.Check(err)
 }
 
-type AccessTokenResponse struct {
-	expires_in    int
-	token_type    string
-	scope         string
-	refresh_token string
-	access_token  string
-	id_token      string
-}
-
 type TOKEN struct {
 	RefreshExpiration time.Time
 	Refresh           string

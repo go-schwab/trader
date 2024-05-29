@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -11,7 +10,6 @@ import (
 	"net/url"
 	"os"
 	"sync"
-	"time"
 
 	"github.com/samjtro/go-trade/utils"
 	"github.com/spf13/viper"
@@ -19,10 +17,9 @@ import (
 
 func oAuthInit() TOKEN {
 	var (
-		m                   sync.Mutex
-		tokens              TOKEN
-		accessTokenResponse AccessTokenResponse
-		authCode            []byte
+		m        sync.Mutex
+		tokens   TOKEN
+		authCode []byte
 	)
 
 	m.Lock()
@@ -62,20 +59,17 @@ func oAuthInit() TOKEN {
 
 	bodyBytes, err := io.ReadAll(res.Body)
 	utils.Check(err)
+	fmt.Println(string(bodyBytes))
 
-	err = json.Unmarshal(bodyBytes, &accessTokenResponse)
-	utils.Check(err)
-	fmt.Println(accessTokenResponse)
-
-	tokens.Refresh = accessTokenResponse.refresh_token
-	tokens.Bearer = accessTokenResponse.access_token
+	/*tokens.Refresh =
+	tokens.Bearer =
 	tokens.BearerExpiration = time.Now().Add(time.Minute * 30)
 	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
 	tokensJson, err := json.Marshal(tokens)
 	utils.Check(err)
 
 	err = os.WriteFile(fmt.Sprintf("%s/.foo/trade/bar.json", utils.HomeDir()), tokensJson, 0777)
-	utils.Check(err)
+	utils.Check(err)*/
 
 	m.Unlock()
 	return tokens
@@ -83,8 +77,7 @@ func oAuthInit() TOKEN {
 
 func oAuthRefresh() string {
 	var (
-		m                   sync.Mutex
-		accessTokenResponse AccessTokenResponse
+		m sync.Mutex
 	)
 
 	m.Lock()
@@ -102,10 +95,14 @@ func oAuthRefresh() string {
 
 	res, err := client.Do(req)
 	utils.Check(err)
+	defer res.Body.Close()
 
-	err = json.NewDecoder(res.Body).Decode(&accessTokenResponse)
+	bodyBytes, err := io.ReadAll(res.Body)
 	utils.Check(err)
+	fmt.Println(string(bodyBytes))
+
+	// WIP: Working on new way to read access token response
 
 	m.Unlock()
-	return accessTokenResponse.access_token
+	return ""
 }
