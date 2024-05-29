@@ -43,9 +43,9 @@ func parseAccessTokenResponse(s string) TOKEN {
 	for _, x := range strings.Split(s, ",") {
 		for i1, x1 := range strings.Split(x, ":") {
 			if trimJSONElement(x1) == "refresh_token" {
-				token.Refresh = strings.Split(x, ":")[i1+1]
+				token.Refresh = trimJSONElement(strings.Split(x, ":")[i1+1])
 			} else if trimJSONElement(x1) == "access_token" {
-				token.Bearer = strings.Split(x, ":")[i1+1]
+				token.Bearer = trimJSONElement(strings.Split(x, ":")[i1+1])
 			}
 		}
 	}
