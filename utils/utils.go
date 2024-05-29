@@ -44,8 +44,11 @@ func TrimL(s string) string {
 
 // Trim the FIRST & LAST character in the string
 func TrimFL(s string) string {
-	str := s[:len(s)-1]
-	return str[1:]
+	return s[1 : len(s)-1]
+}
+
+func TrimFirstJSONElement(s string) string {
+	return s[2 : len(s)-1]
 }
 
 // Now returns a string; containing the current time in ISO 8601 format:

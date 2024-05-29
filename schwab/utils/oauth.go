@@ -61,10 +61,7 @@ func oAuthInit() TOKEN {
 	utils.Check(err)
 	fmt.Println(string(bodyBytes))
 
-	/*tokens.Refresh =
-	tokens.Bearer =
-	tokens.BearerExpiration = time.Now().Add(time.Minute * 30)
-	tokens.RefreshExpiration = time.Now().Add(time.Hour * 168)
+	/*tokens := ParseAccessTokenResponse(string(bodyBytes))
 	tokensJson, err := json.Marshal(tokens)
 	utils.Check(err)
 

@@ -12,16 +12,20 @@ import (
 	"github.com/samjtro/go-trade/utils"
 )
 
-func init() {
-	err := utils.LoadConfig()
-	utils.Check(err)
-}
-
 type TOKEN struct {
 	RefreshExpiration time.Time
 	Refresh           string
 	BearerExpiration  time.Time
 	Bearer            string
+}
+
+func init() {
+	err := utils.LoadConfig()
+	utils.Check(err)
+}
+
+func parseAccessTokenResponse(s string) TOKEN {
+	return TOKEN{}
 }
 
 func readDB() TOKEN {
