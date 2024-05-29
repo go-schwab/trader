@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -18,7 +19,6 @@ import (
 func oAuthInit() TOKEN {
 	var (
 		m        sync.Mutex
-		tokens   TOKEN
 		authCode string
 	)
 
@@ -62,12 +62,12 @@ func oAuthInit() TOKEN {
 	utils.Check(err)
 	fmt.Println(string(bodyBytes))
 
-	/*tokens := ParseAccessTokenResponse(string(bodyBytes))
+	tokens := parseAccessTokenResponse(string(bodyBytes))
 	tokensJson, err := json.Marshal(tokens)
 	utils.Check(err)
 
 	err = os.WriteFile(fmt.Sprintf("%s/.foo/trade/bar.json", utils.HomeDir()), tokensJson, 0777)
-	utils.Check(err)*/
+	utils.Check(err)
 
 	m.Unlock()
 	return tokens

@@ -24,8 +24,33 @@ func init() {
 	utils.Check(err)
 }
 
+func trimJSONElement(s string) string { return utils.TrimFL(s) }
+
+/*func trimFirstJSONElement(s string) string {
+	return s[2 : len(s)-1]
+}
+
+func trimLastJSONElement(s string) string {
+	return s[1 : len(s)-2]
+}*/
+
 func parseAccessTokenResponse(s string) TOKEN {
-	return TOKEN{}
+	token := TOKEN{
+		RefreshExpiration: time.Now().Add(time.Hour * 168),
+		BearerExpiration:  time.Now().Add(time.Minute * 30),
+	}
+
+	for _, x := range strings.Split(s, ",") {
+		for i1, x1 := range strings.Split(x, ":") {
+			if trimJSONElement(x1) == "refresh_token" {
+				token.Refresh = strings.Split(x, ":")[i1+1]
+			} else if trimJSONElement(x1) == "access_token" {
+				token.Bearer = strings.Split(x, ":")[i1+1]
+			}
+		}
+	}
+
+	return token
 }
 
 func readDB() TOKEN {
