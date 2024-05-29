@@ -19,7 +19,7 @@ func oAuthInit() TOKEN {
 	var (
 		m        sync.Mutex
 		tokens   TOKEN
-		authCode []byte
+		authCode string
 	)
 
 	m.Lock()
@@ -31,14 +31,15 @@ func oAuthInit() TOKEN {
 		var urlInput string
 		fmt.Scanln(&urlInput)
 		authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
-		authCode, err := url.QueryUnescape(authCodeEncoded)
+		authCode, err = url.QueryUnescape(authCodeEncoded)
 		utils.Check(err)
 
 		err = os.WriteFile(fmt.Sprintf("%s/.foo/trade/code", utils.HomeDir()), []byte(authCode), 0777)
 		utils.Check(err)
 	} else {
-		authCode, err = os.ReadFile(fmt.Sprintf("%s/.foo/trade/code", utils.HomeDir()))
+		authCodeBytes, err := os.ReadFile(fmt.Sprintf("%s/.foo/trade/code", utils.HomeDir()))
 		utils.Check(err)
+		authCode = string(authCodeBytes)
 	}
 
 	// oAuth Leg 2 - Access Token Creation
