@@ -45,6 +45,7 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 			}
 			fmt.Println(split2[0])
 			switch utils.TrimOneFirstOneLast(split2[0]) {
+			default:
 			case "volume":
 				mov.Volume, err = strconv.ParseFloat(split2[1], 64)
 				utils.Check(err)
