@@ -34,31 +34,49 @@ func LoadConfig() (err error) {
 
 // Trim one FIRST character in the string
 func TrimOneFirst(s string) string {
+	if len(s) < 1 {
+		return ""
+	}
 	return s[1:]
 }
 
 // Trim one LAST character in the string
 func TrimOneLast(s string) string {
+	if len(s) < 1 {
+		return ""
+	}
 	return s[:len(s)-1]
 }
 
 // Trim one FIRST & one LAST character in the string
 func TrimOneFirstOneLast(s string) string {
+	if len(s) < 1 {
+		return ""
+	}
 	return s[1 : len(s)-1]
 }
 
 // Trim two FIRST & one LAST character in the string
 func TrimTwoFirstOneLast(s string) string {
+	if len(s) < 1 {
+		return ""
+	}
 	return s[2 : len(s)-1]
 }
 
 // Trim one FIRST & two LAST character in the string
 func TrimOneFirstTwoLast(s string) string {
+	if len(s) < 1 {
+		return ""
+	}
 	return s[1 : len(s)-2]
 }
 
 // Trim one FIRST & two LAST character in the string
 func TrimOneFirstThreeLast(s string) string {
+	if len(s) < 1 {
+		return ""
+	}
 	return s[1 : len(s)-3]
 }
 
