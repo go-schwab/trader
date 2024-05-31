@@ -58,6 +58,7 @@ func Handler(req *http.Request) (string, error) {
 		log.Fatalf("Error %d - %s", errorCode, body)
 	}
 
+	fmt.Println(body)
 	m.Unlock()
 	return body, nil
 }

@@ -24,7 +24,6 @@ func GetCandles(ticker string) ([]CANDLE, error) {
 		log.Fatalf(err.Error())
 	}
 
-	fmt.Println(body)
 	var open, hi, lo, Close, volume float64
 	var datetime string
 	var candles []CANDLE
@@ -94,7 +93,6 @@ func GetQuote(tickers string) (QUOTE, error) {
 		return QUOTE{}, err
 	}
 
-	fmt.Println(body)
 	var bid, ask, last, open, hi, lo, closeP, mark, volume, volatility, hi52, lo52, pe float64
 	split := strings.Split(body, "\"")
 
