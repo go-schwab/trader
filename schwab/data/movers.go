@@ -31,9 +31,11 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 	var movers []MOVER
 	split0 := strings.Split(body, "[")
 	split := strings.Split(split0[1], "}")
+	lengthToCheckAgainst := len(split)
+	lengthToCheck := 1
 
 	// each mover
-	for i, x := range split {
+	for _, x := range split {
 		split1 := strings.Split(x, ",")
 		for _, x1 := range split1 {
 			split2 := strings.Split(x1, ":")
@@ -65,9 +67,14 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 				mov.NetPercentChange, err = strconv.ParseFloat(split2[1], 64)
 				utils.Check(err)
 			case "symbol":
-				mov.Symbol = utils.TrimOneFirstOneLast(split[i+1])
+				if lengthToCheck < lengthToCheckAgainst {
+					mov.Symbol = utils.TrimOneFirstOneLast(split2[1])
+				} else {
+					mov.Symbol = utils.TrimOneFirstFourLast(split2[1])
+				}
 			}
 			movers = append(movers, mov)
+			lengthToCheck++
 		}
 	}
 
