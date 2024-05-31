@@ -30,17 +30,15 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 
 	var movers []MOVER
 	split0 := strings.Split(body, "[")
-	split := strings.Split(split0[1], "{")
+	split := strings.Split(split0[1], "}")
 
 	// each mover
 	for i, x := range split {
 		fmt.Println(x)
 		split1 := strings.Split(x, ",")
-		fmt.Println(split1)
 		for _, x1 := range split1 {
 			split2 := strings.Split(x1, ":")
 			var mov MOVER
-			fmt.Println(split2)
 			switch utils.TrimOneFirstOneLast(split2[0]) {
 			case "description":
 				mov.Description = utils.TrimOneFirstOneLast(split2[1])
