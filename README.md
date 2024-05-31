@@ -1,3 +1,5 @@
+NOTICE: We'll be switching over to GPL3.0 upon the release of v1.0.0.
+
 # go-trade
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-trade.svg)](https://pkg.go.dev/github.com/samjtro/go-trade)
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-trade)](https://goreportcard.com/report/github.com/samjtro/go-trade)
@@ -11,7 +13,7 @@ Stable Release: [v0.8.7.1](https://github.com/samjtro/go-trade/tree/stable)
 
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
-## what is this?
+## What is this?
 
 This project is the successor to [go-tda](https://github.com/samjtro/go-tda), a project I made both as a learning experience, as well as an attempt to provide a counterweight to the primarily Python-based algotrading sphere. Golang is SO much better for algorithmic trading, and this package is an attempt to prove out that case.
 
@@ -19,9 +21,9 @@ This is WIP - I have gotten the Schwab oAuth Flow, and Handler function, functio
 
 If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. If your contribution breaks other functionality in the library, don't contribute it.
 
-## what can i do with this?
+## What can i do with this?
 
-### quick start
+### Quick start
 
 0. Go to developer.schwab.com, create an account.
 1. Create ~/.foo/trade
@@ -29,13 +31,13 @@ If you want to contribute - go for it! There is no contribution guide, just a si
 3. Follow the instructions to generate authcode, access tokens.
 4. $$$
 
-### package details
+### Package details
 
 #### schwab/data
 #### schwab/account
 #### utils
 
-### code samples
+### Code samples
 
 #### schwab/data
 
@@ -49,3 +51,19 @@ handle(err)
 priceHistory, err := data.GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate)
 handle(err)
 ```
+
+## Copyright notice
+
+Copyright 2022-2024 github.com/samjtro
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
