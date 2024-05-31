@@ -35,9 +35,11 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 	// each mover
 	for i, x := range split {
 		split1 := strings.Split(x, ",")
+		fmt.Println(split1)
 		for _, x1 := range split1 {
 			split2 := strings.Split(x1, ":")
 			var mov MOVER
+			fmt.Println(split2)
 			switch utils.TrimOneFirstOneLast(split2[0]) {
 			case "description":
 				mov.Description = utils.TrimOneFirstOneLast(split2[1])
