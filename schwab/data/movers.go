@@ -34,14 +34,14 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 
 	// each mover
 	for i, x := range split {
-		fmt.Println(x)
 		split1 := strings.Split(x, ",")
 		for _, x1 := range split1 {
 			split2 := strings.Split(x1, ":")
 			var mov MOVER
-			switch utils.TrimOneFirstOneLast(split2[0]) {
-			case "description":
+			if (split2[0] == "{\"description\"") || (split2[0] == ",{\"description\"") {
 				mov.Description = utils.TrimOneFirstOneLast(split2[1])
+			}
+			switch utils.TrimOneFirstOneLast(split2[0]) {
 			case "volume":
 				mov.Volume, err = strconv.ParseFloat(split2[1], 64)
 				utils.Check(err)
