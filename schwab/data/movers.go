@@ -30,6 +30,7 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 
 	var movers []MOVER
 	split0 := strings.Split(body, "[")
+	fmt.Println(split0[1])
 	split := strings.Split(split0[1], "{")
 
 	// each mover
