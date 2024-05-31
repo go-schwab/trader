@@ -41,6 +41,7 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 			if (split2[0] == "{\"description\"") || (split2[0] == ",{\"description\"") {
 				mov.Description = utils.TrimOneFirstOneLast(split2[1])
 			}
+			fmt.Println(split2[0])
 			switch utils.TrimOneFirstOneLast(split2[0]) {
 			case "volume":
 				mov.Volume, err = strconv.ParseFloat(split2[1], 64)
