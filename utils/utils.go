@@ -72,16 +72,8 @@ func TrimOneFirstTwoLast(s string) string {
 	return s[1 : len(s)-2]
 }
 
-// Trim one FIRST & two LAST character in the string
+// Trim one FIRST & three LAST character in the string
 func TrimOneFirstThreeLast(s string) string {
-	if len(s) < 1 {
-		return ""
-	}
-	return s[1 : len(s)-3]
-}
-
-// Trim one FIRST & two LAST character in the string
-func TrimOneFirstFourLast(s string) string {
 	if len(s) < 1 {
 		return ""
 	}

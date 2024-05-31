@@ -34,7 +34,6 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 	lengthToCheckAgainst := len(split)
 	lengthToCheck := 1
 
-	// each mover
 	for _, x := range split {
 		split1 := strings.Split(x, ",")
 		for _, x1 := range split1 {
@@ -43,37 +42,39 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 			if (split2[0] == "{\"description\"") || (split2[0] == ",{\"description\"") {
 				mov.Description = utils.TrimOneFirstOneLast(split2[1])
 			}
-			fmt.Println(split2[0])
-			switch utils.TrimOneFirstOneLast(split2[0]) {
-			default:
-			case "volume":
-				mov.Volume, err = strconv.ParseFloat(split2[1], 64)
-				utils.Check(err)
-			case "lastPrice":
-				mov.LastPrice, err = strconv.ParseFloat(split2[1], 64)
-				utils.Check(err)
-			case "netChange":
-				mov.NetChange, err = strconv.ParseFloat(split2[1], 64)
-				utils.Check(err)
-			case "marketShare":
-				mov.MarketShare, err = strconv.ParseFloat(split2[1], 64)
-				utils.Check(err)
-			case "totalVolume":
-				mov.TotalVolume, err = strconv.ParseFloat(split2[1], 64)
-				utils.Check(err)
-			case "trades":
-				mov.Trades, err = strconv.ParseFloat(split2[1], 64)
-				utils.Check(err)
-			case "netPercentChange":
-				mov.NetPercentChange, err = strconv.ParseFloat(split2[1], 64)
-				utils.Check(err)
-			case "symbol":
-				if lengthToCheck < lengthToCheckAgainst {
-					mov.Symbol = utils.TrimOneFirstOneLast(split2[1])
-				} else {
-					mov.Symbol = utils.TrimOneFirstFourLast(split2[1])
+			if lengthToCheckAgainst < lengthToCheck {
+				switch utils.TrimOneFirstOneLast(split2[0]) {
+				default:
+				case "volume":
+					mov.Volume, err = strconv.ParseFloat(split2[1], 64)
+					utils.Check(err)
+				case "lastPrice":
+					mov.LastPrice, err = strconv.ParseFloat(split2[1], 64)
+					utils.Check(err)
+				case "netChange":
+					mov.NetChange, err = strconv.ParseFloat(split2[1], 64)
+					utils.Check(err)
+				case "marketShare":
+					mov.MarketShare, err = strconv.ParseFloat(split2[1], 64)
+					utils.Check(err)
+				case "totalVolume":
+					mov.TotalVolume, err = strconv.ParseFloat(split2[1], 64)
+					utils.Check(err)
+				case "trades":
+					mov.Trades, err = strconv.ParseFloat(split2[1], 64)
+					utils.Check(err)
+				case "netPercentChange":
+					mov.NetPercentChange, err = strconv.ParseFloat(split2[1], 64)
+					utils.Check(err)
+				case "symbol":
+					if lengthToCheck < lengthToCheckAgainst {
+						mov.Symbol = utils.TrimOneFirstOneLast(split2[1])
+					} else {
+						mov.Symbol = utils.TrimOneFirstTwoLast(split2[1])
+					}
 				}
 			}
+			fmt.Println(mov)
 			movers = append(movers, mov)
 			lengthToCheck++
 		}
