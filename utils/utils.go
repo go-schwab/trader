@@ -32,19 +32,34 @@ func LoadConfig() (err error) {
 	return viper.ReadInConfig()
 }
 
-// Trim the FIRST character in the string
-func TrimF(s string) string {
+// Trim one FIRST character in the string
+func TrimOneFirst(s string) string {
 	return s[1:]
 }
 
-// Trim the LAST character in the string
-func TrimL(s string) string {
+// Trim one LAST character in the string
+func TrimOneLast(s string) string {
 	return s[:len(s)-1]
 }
 
-// Trim the FIRST & LAST character in the string
-func TrimFL(s string) string {
+// Trim one FIRST & one LAST character in the string
+func TrimOneFirstOneLast(s string) string {
 	return s[1 : len(s)-1]
+}
+
+// Trim two FIRST & one LAST character in the string
+func TrimTwoFirstOneLast(s string) string {
+	return s[2 : len(s)-1]
+}
+
+// Trim one FIRST & two LAST character in the string
+func TrimOneFirstTwoLast(s string) string {
+	return s[1 : len(s)-2]
+}
+
+// Trim one FIRST & two LAST character in the string
+func TrimOneFirstThreeLast(s string) string {
+	return s[1 : len(s)-3]
 }
 
 // Now returns a string; containing the current time in ISO 8601 format:

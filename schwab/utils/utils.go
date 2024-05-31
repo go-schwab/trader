@@ -24,7 +24,7 @@ func init() {
 	utils.Check(err)
 }
 
-func trimJSONElement(s string) string { return utils.TrimFL(s) }
+func trimJSONElement(s string) string { return utils.TrimOneFirstOneLast(s) }
 
 /*func trimFirstJSONElement(s string) string {
 	return s[2 : len(s)-1]

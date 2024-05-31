@@ -33,47 +33,47 @@ func GetCandles(ticker string) ([]CANDLE, error) {
 		for i2, x2 := range strings.Split(x1, "\"") {
 			switch x2 {
 			case "open":
-				open, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+				open, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
 
 				if err != nil {
 					log.Fatalf(err.Error())
 				}
 			case "high":
-				hi, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+				hi, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
 
 				if err != nil {
 					log.Fatalf(err.Error())
 				}
 			case "low":
-				lo, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+				lo, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
 
 				if err != nil {
 					log.Fatalf(err.Error())
 				}
 			case "close":
-				Close, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+				Close, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
 
 				if err != nil {
 					log.Fatalf(err.Error())
 				}
 			case "volume":
-				volume, err = strconv.ParseFloat(utils.TrimFL(split[i2+1]), 64)
+				volume, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
 
 				if err != nil {
 					log.Fatalf(err.Error())
 				}
 			case "datetime":
-				datetime = utils.UnixToLocal(utils.TrimFL(split[i2+1]))
+				datetime = utils.UnixToLocal(utils.TrimOneFirstOneLast(split[i2+1]))
 			}
 		}
 
 		candles = append(candles, CANDLE{
-			Open:     open,
-			Hi:       hi,
-			Lo:       lo,
-			Close:    Close,
-			Volume:   volume,
-			Datetime: datetime,
+			Open:   open,
+			Hi:     hi,
+			Lo:     lo,
+			Close:  Close,
+			Volume: volume,
+			Time:   datetime,
 		})
 	}
 
@@ -100,7 +100,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 	for i, x := range split {
 		switch x {
 		case "bidPrice":
-			bid1 := utils.TrimFL(split[i+1])
+			bid1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			bid, err = strconv.ParseFloat(bid1, 64)
 
@@ -108,7 +108,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "askPrice":
-			ask1 := utils.TrimFL(split[i+1])
+			ask1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			ask, err = strconv.ParseFloat(ask1, 64)
 
@@ -116,7 +116,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "lastPrice":
-			last1 := utils.TrimFL(split[i+1])
+			last1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			last, err = strconv.ParseFloat(last1, 64)
 
@@ -124,7 +124,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "openPrice":
-			open1 := utils.TrimFL(split[i+1])
+			open1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			open, err = strconv.ParseFloat(open1, 64)
 
@@ -132,7 +132,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "highPrice":
-			hi1 := utils.TrimFL(split[i+1])
+			hi1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			hi, err = strconv.ParseFloat(hi1, 64)
 
@@ -140,7 +140,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "lowPrice":
-			lo1 := utils.TrimFL(split[i+1])
+			lo1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			lo, err = strconv.ParseFloat(lo1, 64)
 
@@ -148,7 +148,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "closePrice":
-			closeP1 := utils.TrimFL(split[i+1])
+			closeP1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			closeP, err = strconv.ParseFloat(closeP1, 64)
 
@@ -156,7 +156,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "mark":
-			mark1 := utils.TrimFL(split[i+1])
+			mark1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			mark, err = strconv.ParseFloat(mark1, 64)
 
@@ -164,7 +164,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "totalVolume":
-			volume1 := utils.TrimFL(split[i+1])
+			volume1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			volume, err = strconv.ParseFloat(volume1, 64)
 
@@ -172,7 +172,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "volatility":
-			volatility1 := utils.TrimFL(split[i+1])
+			volatility1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			volatility, err = strconv.ParseFloat(volatility1, 64)
 
@@ -180,7 +180,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "52WkHigh":
-			hi521 := utils.TrimFL(split[i+1])
+			hi521 := utils.TrimOneFirstOneLast(split[i+1])
 
 			hi52, err = strconv.ParseFloat(hi521, 64)
 
@@ -188,7 +188,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "52WkLow":
-			lo521 := utils.TrimFL(split[i+1])
+			lo521 := utils.TrimOneFirstOneLast(split[i+1])
 
 			lo52, err = strconv.ParseFloat(lo521, 64)
 
@@ -196,7 +196,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 				log.Fatalf(err.Error())
 			}
 		case "peRatio":
-			pe1 := utils.TrimFL(split[i+1])
+			pe1 := utils.TrimOneFirstOneLast(split[i+1])
 
 			pe, err = strconv.ParseFloat(pe1, 64)
 
@@ -207,7 +207,7 @@ func GetQuote(tickers string) (QUOTE, error) {
 	}
 
 	return QUOTE{
-		Datetime:   dt,
+		Time:       dt,
 		Ticker:     tickers,
 		Mark:       mark,
 		Volume:     volume,

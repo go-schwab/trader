@@ -2,7 +2,6 @@ package data
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -30,58 +29,44 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 	}
 
 	var movers []MOVER
-	var ticker, desc, dir string
-	var chang, last, volume float64
-	split := strings.Split(body, "}")
+	split0 := strings.Split(body, "[")
+	split := strings.Split(split0[1], "{")
 
-	for _, x := range split {
-		split2 := strings.Split(x, "\"")
-
-		for i, x := range split2 {
-			switch x {
-			case "change":
-				chang1 := utils.TrimFL(split2[i+1])
-
-				chang, err = strconv.ParseFloat(chang1, 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+	// each mover
+	for i, x := range split {
+		split1 := strings.Split(x, ",")
+		for _, x1 := range split1 {
+			split2 := strings.Split(x1, ":")
+			var mov MOVER
+			switch utils.TrimOneFirstOneLast(split2[0]) {
 			case "description":
-				desc = split2[i+2]
-			case "direction":
-				dir = split2[i+2]
-			case "last":
-				last1 := utils.TrimFL(split2[i+1])
-
-				last, err = strconv.ParseFloat(last1, 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
-			case "symbol":
-				ticker = split2[i+2]
+				mov.Description = utils.TrimOneFirstOneLast(split2[1])
+			case "volume":
+				mov.Volume, err = strconv.ParseFloat(split2[1], 64)
+				utils.Check(err)
+			case "lastPrice":
+				mov.LastPrice, err = strconv.ParseFloat(split2[1], 64)
+				utils.Check(err)
+			case "netChange":
+				mov.NetChange, err = strconv.ParseFloat(split2[1], 64)
+				utils.Check(err)
+			case "marketShare":
+				mov.MarketShare, err = strconv.ParseFloat(split2[1], 64)
+				utils.Check(err)
 			case "totalVolume":
-				volume1 := utils.TrimF(split2[i+1])
-
-				volume, err = strconv.ParseFloat(volume1, 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				mov.TotalVolume, err = strconv.ParseFloat(split2[1], 64)
+				utils.Check(err)
+			case "trades":
+				mov.Trades, err = strconv.ParseFloat(split2[1], 64)
+				utils.Check(err)
+			case "netPercentChange":
+				mov.NetPercentChange, err = strconv.ParseFloat(split2[1], 64)
+				utils.Check(err)
+			case "symbol":
+				mov.Symbol = utils.TrimOneFirstOneLast(split[i+1])
 			}
+			movers = append(movers, mov)
 		}
-
-		mov := MOVER{
-			TICKER:      ticker,
-			DESCRIPTION: desc,
-			LAST:        last,
-			CHANGE:      chang,
-			DIRECTION:   dir,
-			VOLUME:      volume,
-		}
-
-		movers = append(movers, mov)
 	}
 
 	return movers, nil

@@ -59,7 +59,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 			case "exchangeName":
 				exchange = split2[i+2]
 			case "strikePrice":
-				strikePrice1 := utils.TrimFL(split2[i+1])
+				strikePrice1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				strikePrice, err = strconv.ParseFloat(strikePrice1, 64)
 
@@ -67,7 +67,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "expirationDate":
-				exp1 := utils.TrimFL(split2[i+1])
+				exp1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				exp, err = strconv.ParseFloat(exp1, 64)
 
@@ -75,7 +75,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "daysToExpiration":
-				d2e1 := utils.TrimFL(split2[i+1])
+				d2e1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				d2e, err = strconv.ParseFloat(d2e1, 64)
 
@@ -83,7 +83,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "bid":
-				bid1 := utils.TrimFL(split2[i+1])
+				bid1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				bid, err = strconv.ParseFloat(bid1, 64)
 
@@ -91,7 +91,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "ask":
-				ask1 := utils.TrimFL(split2[i+1])
+				ask1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				ask, err = strconv.ParseFloat(ask1, 64)
 
@@ -99,7 +99,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "last":
-				last1 := utils.TrimFL(split2[i+1])
+				last1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				last, err = strconv.ParseFloat(last1, 64)
 
@@ -107,7 +107,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "mark":
-				mark1 := utils.TrimFL(split2[i+1])
+				mark1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				mark, err = strconv.ParseFloat(mark1, 64)
 
@@ -117,7 +117,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 			case "bidAskSize":
 				bidAskSize = split2[i+2]
 			case "volatility":
-				volatility1 := utils.TrimFL(split2[i+1])
+				volatility1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				volatility, err = strconv.ParseFloat(volatility1, 64)
 
@@ -125,7 +125,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "delta":
-				delta1 := utils.TrimFL(split2[i+1])
+				delta1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				delta, err = strconv.ParseFloat(delta1, 64)
 
@@ -133,7 +133,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "gamma":
-				gamma1 := utils.TrimFL(split2[i+1])
+				gamma1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				gamma, err = strconv.ParseFloat(gamma1, 64)
 
@@ -141,7 +141,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "theta":
-				theta1 := utils.TrimFL(split2[i+1])
+				theta1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				theta, err = strconv.ParseFloat(theta1, 64)
 
@@ -149,7 +149,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "vega":
-				vega1 := utils.TrimFL(split2[i+1])
+				vega1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				vega, err = strconv.ParseFloat(vega1, 64)
 
@@ -157,7 +157,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "rho":
-				rho1 := utils.TrimFL(split2[i+1])
+				rho1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				rho, err = strconv.ParseFloat(rho1, 64)
 
@@ -165,7 +165,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "openInterest":
-				openInterest1 := utils.TrimFL(split2[i+1])
+				openInterest1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				openInterest, err = strconv.ParseFloat(openInterest1, 64)
 
@@ -173,7 +173,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "timeValue":
-				timeValue1 := utils.TrimFL(split2[i+1])
+				timeValue1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				timeValue, err = strconv.ParseFloat(timeValue1, 64)
 
@@ -181,7 +181,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "theoreticalOptionValue":
-				theoreticalValue1 := utils.TrimFL(split2[i+1])
+				theoreticalValue1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				theoreticalValue, err = strconv.ParseFloat(theoreticalValue1, 64)
 
@@ -189,7 +189,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "theoreticalVolatility":
-				theoreticalVolatility1 := utils.TrimFL(split2[i+1])
+				theoreticalVolatility1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				theoreticalVolatility, err = strconv.ParseFloat(theoreticalVolatility1, 64)
 
@@ -197,7 +197,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "percentChange":
-				percentChange1 := utils.TrimFL(split2[i+1])
+				percentChange1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				percentChange, err = strconv.ParseFloat(percentChange1, 64)
 
@@ -205,7 +205,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "markChange":
-				markChange1 := utils.TrimFL(split2[i+1])
+				markChange1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				markChange, err = strconv.ParseFloat(markChange1, 64)
 
@@ -213,7 +213,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "markPercentChange":
-				markPercentChange1 := utils.TrimFL(split2[i+1])
+				markPercentChange1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				markPercentChange, err = strconv.ParseFloat(markPercentChange1, 64)
 
@@ -221,7 +221,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "intrinsicValue":
-				intrinsicValue1 := utils.TrimFL(split2[i+1])
+				intrinsicValue1 := utils.TrimOneFirstOneLast(split2[i+1])
 
 				intrinsicValue, err = strconv.ParseFloat(intrinsicValue1, 64)
 
@@ -229,7 +229,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 					log.Fatalf(err.Error())
 				}
 			case "inTheMoney":
-				inTheMoney, err = strconv.ParseBool(utils.TrimFL(split2[i+1]))
+				inTheMoney, err = strconv.ParseBool(utils.TrimOneFirstOneLast(split2[i+1]))
 
 				if err != nil {
 					log.Fatalf(err.Error())

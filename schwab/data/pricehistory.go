@@ -56,17 +56,17 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 		for i, x2 := range split2 {
 			switch x2 {
 			case "open":
-				open = utils.TrimFL(split2[i+1])
+				open = utils.TrimOneFirstOneLast(split2[i+1])
 			case "high":
-				hi = utils.TrimFL(split2[i+1])
+				hi = utils.TrimOneFirstOneLast(split2[i+1])
 			case "low":
-				lo = utils.TrimFL(split2[i+1])
+				lo = utils.TrimOneFirstOneLast(split2[i+1])
 			case "close":
-				Close = utils.TrimFL(split2[i+1])
+				Close = utils.TrimOneFirstOneLast(split2[i+1])
 			case "volume":
-				volume = utils.TrimFL(split2[i+1])
+				volume = utils.TrimOneFirstOneLast(split2[i+1])
 			case "datetime":
-				datetime = utils.TrimFL(split2[i+1])
+				datetime = utils.TrimOneFirstOneLast(split2[i+1])
 			}
 		}
 
@@ -101,12 +101,12 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 		}
 
 		candle := CANDLE{
-			Datetime: utils.TrimL(datetime),
-			Volume:   volume,
-			Open:     open,
-			Close:    Close,
-			Hi:       hi,
-			Lo:       lo,
+			Time:   utils.TrimOneLast(datetime),
+			Volume: volume,
+			Open:   open,
+			Close:  Close,
+			Hi:     hi,
+			Lo:     lo,
 		}
 
 		candles = append(candles, candle)
