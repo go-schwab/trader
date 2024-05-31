@@ -11,3 +11,6 @@ var (
 	Endpoint_transactions string = Endpoint + "/accounts/%s/transactions"
 	Endpoint_transaction  string = Endpoint + "/accounts/%s/transactions/%s"
 )
+
+func SubmitLimitOrder()  {}
+func SubmitMarketOrder() {}
