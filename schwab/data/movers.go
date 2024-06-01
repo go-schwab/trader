@@ -43,7 +43,6 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 				mov.Description = utils.TrimOneFirstOneLast(split2[1])
 			}
 			if lengthToCheckAgainst < lengthToCheck {
-				fmt.Println(split2[1])
 				switch utils.TrimOneFirstOneLast(split2[0]) {
 				default:
 				case "volume":
