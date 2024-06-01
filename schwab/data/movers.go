@@ -36,9 +36,9 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 
 	for _, x := range split {
 		split1 := strings.Split(x, ",")
+		var mov MOVER
 		for _, x1 := range split1 {
 			split2 := strings.Split(x1, ":")
-			var mov MOVER
 			if (split2[0] == "{\"description\"") || (split2[0] == ",{\"description\"") {
 				mov.Description = utils.TrimOneFirstOneLast(split2[1])
 			}
@@ -75,7 +75,6 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 					}
 				}
 			}
-			fmt.Println(mov)
 			movers = append(movers, mov)
 			lengthToCheck++
 		}
