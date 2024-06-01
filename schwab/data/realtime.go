@@ -16,14 +16,12 @@ import (
 // It takes one paramter:
 // ticker = "AAPL", etc.
 func GetCandles(ticker string) ([]CANDLE, error) {
+	// Craft, send request
 	url := fmt.Sprintf(Endpoint_quote, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := schwabutils.Handler(req)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
+	utils.Check(err)
+	// Parse return -> []CANDLE
 	var open, hi, lo, Close, volume float64
 	var datetime string
 	var candles []CANDLE

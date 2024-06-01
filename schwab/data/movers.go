@@ -16,6 +16,7 @@ import (
 // direction = "up" or "down"
 // change = "percent" or "value"
 func GetMovers(index, direction, change string) ([]MOVER, error) {
+	// Craft, send request
 	url := fmt.Sprintf(Endpoint_movers, index)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
@@ -23,17 +24,13 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 	q.Add("change", change)
 	req.URL.RawQuery = q.Encode()
 	body, err := schwabutils.Handler(req)
-
-	if err != nil {
-		return []MOVER{}, err
-	}
-
+	utils.Check(err)
+	// Parse return -> []MOVER
 	var movers []MOVER
 	split0 := strings.Split(body, "[")
 	split := strings.Split(split0[1], "}")
 	lengthToCheckAgainst := len(split)
 	lengthToCheck := 1
-
 	for _, x := range split {
 		split1 := strings.Split(x, ",")
 		var mov MOVER
