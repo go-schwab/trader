@@ -42,7 +42,7 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 			if (split2[0] == "{\"description\"") || (split2[0] == ",{\"description\"") {
 				mov.Description = utils.TrimOneFirstOneLast(split2[1])
 			}
-			if len(split2[0]) > 0 {
+			if len(split2[0]) > 2 {
 				switch utils.TrimOneFirstOneLast(split2[0]) {
 				default:
 				case "volume":
