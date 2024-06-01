@@ -23,41 +23,36 @@ func Handler(req *http.Request) (string, error) {
 		m      sync.Mutex
 		tokens TOKEN
 	)
-
 	m.Lock()
-
-	if _, err := os.Stat(fmt.Sprintf("%s/.foo/trade/bar.json", utils.HomeDir())); errors.Is(err, os.ErrNotExist) {
+	// Check if program has been run before by verifying the existence of /home/{user}/.go-trade
+	if _, err := os.Stat(fmt.Sprintf("%s/.go-trade", utils.HomeDir())); errors.Is(err, os.ErrNotExist) {
 		tokens = oAuthInit()
 	} else {
 		tokens = readDB()
 	}
-
+	// Check if bearer token is still valid
 	if !time.Now().Before(tokens.BearerExpiration) {
 		tokens.Bearer = oAuthRefresh()
 	}
-
+	// Craft, send request
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", tokens.Bearer))
 	client := http.Client{}
 	resp, err := client.Do(req)
-
 	if err != nil {
 		return "", err
 	}
-
 	defer resp.Body.Close()
-
+	// Grab return body
 	errorCode := resp.StatusCode
 	bodyBytes, err := io.ReadAll(resp.Body)
-	body := string(bodyBytes)
-
 	if err != nil {
 		return "", err
 	}
-
+	body := string(bodyBytes)
 	if errorCode < 200 || errorCode > 300 {
 		log.Fatalf("Error %d - %s", errorCode, body)
 	}
-
+	// For tracing, delete the below line when done with structs
 	fmt.Println(body)
 	m.Unlock()
 	return body, nil

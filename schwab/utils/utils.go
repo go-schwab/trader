@@ -24,8 +24,6 @@ func init() {
 	utils.Check(err)
 }
 
-func trimJSONElement(s string) string { return utils.TrimOneFirstOneLast(s) }
-
 /*func trimFirstJSONElement(s string) string {
 	return s[2 : len(s)-1]
 }
@@ -34,6 +32,7 @@ func trimLastJSONElement(s string) string {
 	return s[1 : len(s)-2]
 }*/
 
+// oAuthInit() helper func, parse access token response
 func parseAccessTokenResponse(s string) TOKEN {
 	token := TOKEN{
 		RefreshExpiration: time.Now().Add(time.Hour * 168),
@@ -42,10 +41,10 @@ func parseAccessTokenResponse(s string) TOKEN {
 
 	for _, x := range strings.Split(s, ",") {
 		for i1, x1 := range strings.Split(x, ":") {
-			if trimJSONElement(x1) == "refresh_token" {
-				token.Refresh = trimJSONElement(strings.Split(x, ":")[i1+1])
-			} else if trimJSONElement(x1) == "access_token" {
-				token.Bearer = trimJSONElement(strings.Split(x, ":")[i1+1])
+			if utils.TrimOneFirstOneLast(x1) == "refresh_token" {
+				token.Refresh = utils.TrimOneFirstOneLast(strings.Split(x, ":")[i1+1])
+			} else if utils.TrimOneFirstOneLast(x1) == "access_token" {
+				token.Bearer = utils.TrimOneFirstOneLast(strings.Split(x, ":")[i1+1])
 			}
 		}
 	}
@@ -53,9 +52,10 @@ func parseAccessTokenResponse(s string) TOKEN {
 	return token
 }
 
+// Read in tokens from JSON db
 func readDB() TOKEN {
 	var tokens TOKEN
-	body, err := os.ReadFile(fmt.Sprintf("%s/.foo/trade/bar.json", utils.HomeDir()))
+	body, err := os.ReadFile(fmt.Sprintf("%s/.go-trade/bar.json", utils.HomeDir()))
 	utils.Check(err)
 
 	err = json.Unmarshal(body, &tokens)
