@@ -74,6 +74,7 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 					}
 				}
 			}
+			fmt.Println(mov)
 			movers = append(movers, mov)
 			lengthToCheck++
 		}
