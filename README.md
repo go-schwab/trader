@@ -13,6 +13,28 @@ Stable Release: [v0.8.7.1](https://github.com/samjtro/go-trade/tree/stable)
 
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
+## Roadmap to v 1.0.0
+
+- [ ] Migrate working functionality to Schwab
+    * [x] oAuth Flow (Retrieve, store tokens; refresh)
+    * [x] Endpoints
+    * [ ] Structs
+        * [x] movers.go
+        * [ ] data.go
+        * [ ] instrument.go
+        * [ ] option.go
+        * [ ] pricehistory.go
+        * [ ] realtime.go
+- [ ] Account and Trading API
+    * [ ] account.go
+        * [ ] Transaction History
+        * [ ] User Info & Prefs
+        * [ ] Watchlist
+    * [ ] trade.go
+        * [ ] Trading
+- [ ] Performance Testing
+- [ ] Finish test package & integrate CI for new PRs
+
 ## What is this?
 
 This project is the successor to [go-tda](https://github.com/samjtro/go-tda), a project I made both as a learning experience, as well as an attempt to provide a counterweight to the primarily Python-based algotrading sphere. Golang is SO much better for algorithmic trading, and this package is an attempt to prove out that case.
