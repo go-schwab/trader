@@ -122,22 +122,22 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 			sharesOutstanding, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "marketCapFloat":
-			marketCapFloat, err = strconv.ParseFloat(marketCapFloat1, 64)
+			marketCapFloat, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "marketCap":
-			marketCap, err = strconv.ParseFloat(marketCap1, 64)
+			marketCap, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "bookValuePerShare":
-			bookVPS, err = strconv.ParseFloat(bookVPS1, 64)
+			bookVPS, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "beta":
-			beta, err = strconv.ParseFloat(beta1, 64)
+			beta, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "vol1DayAvg":
-			vol1, err = strconv.ParseFloat(vol11, 64)
+			vol1, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "vol10DayAvg":
-			vol10, err = strconv.ParseFloat(vol101, 64)
+			vol10, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "vol3MonthAvg":
 			vol3, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(utils.TrimOneLast(split[i+1])), 64)
