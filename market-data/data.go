@@ -38,23 +38,41 @@ type Candle struct {
 	Lo     float64 `json:"low"`
 }
 
-// WIP
 type Quote struct {
-	Time       string  `json:""`
-	Ticker     string  `json:""`
-	Mark       float64 `json:""`
-	Volume     float64 `json:""`
-	Volatility float64 `json:""`
-	Bid        float64 `json:""`
-	Ask        float64 `json:""`
-	Last       float64 `json:""`
-	Open       float64 `json:""`
-	Close      float64 `json:""`
-	Hi         float64 `json:""`
-	Lo         float64 `json:""`
-	Hi52       float64 `json:""`
-	Lo52       float64 `json:""`
-	PE         float64 `json:""`
+	AssetMainType           string  `json:"assetMainType"`
+	AssetSubType            string  `json:"assetSubType"`
+	QuoteType               string  `json:"quoteType"`
+	RealTime                string  `json:"realTime"`
+	SSID                    int     `json:"ssid"`
+	Symbol                  string  `json:"symbol"`
+	Hi52                    float64 `json:"52WeekHigh"`
+	Lo52                    float64 `json:"52WeekLow"`
+	AskMICID                string  `json:"askMICId"`
+	Ask                     float64 `json:"askPrice"`
+	AskSize                 int     `json:"askSize"`
+	AskTime                 int     `json:"askTime"`
+	BidMICID                string  `json:"bidMICId"`
+	Bid                     float64 `json:"bidPrice"`
+	BidSize                 int     `json:"bidSize"`
+	BidTime                 int     `json:"bidTime"`
+	Close                   float64 `json:"closePrice"`
+	Hi                      float64 `json:"highPrice"`
+	LastMICID               string  `json:"lastMICId"`
+	LastPrice               float64 `json:"lastPrice"`
+	LastSize                int     `json:"lastSize"`
+	Lo                      float64 `json:"lowPrice"`
+	Mark                    float64 `json:"mark"`
+	MarkChange              float64 `json:"markChange"`
+	MarkPercentChange       float64 `json:"markPercentChange"`
+	NetChange               float64 `json:"netChange"`
+	NetPercentChange        float64 `json:"netPercentChange"`
+	Open                    float64 `json:"open"`
+	PostMarketChange        float64 `json:"postMarketChange"`
+	PostMarketPercentChange float64 `json:"postMarketPercentChange"`
+	QuoteTime               int     `json:"quoteTime"`
+	SecurityStatus          string  `json:"securityStatus"`
+	TotalVolume             int     `json:"totalVolume"`
+	TradeTime               int     `json:"tradeTime"`
 }
 
 type SimpleInstrument struct {
@@ -65,6 +83,7 @@ type SimpleInstrument struct {
 	AssetType   string `json:"assetType"`
 }
 
+// Change this to reflect ordering of schwab return
 type FundamentalInstrument struct {
 	Symbol                  string  `json:"symbol"`
 	Cusip                   string  `json:"cusip"`
@@ -140,9 +159,8 @@ type Screener struct {
 	NetPercentChange float64 `json:"netPercentChange"`
 }
 
-// WIP: Options
-type Underlying struct{}
-
+// WIP: type Underlying struct{}
+// WIP:
 type Contract struct {
 	TYPE                   string  `json:""`
 	SYMBOL                 string  `json:""`
@@ -223,23 +241,23 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 	return candles, nil
 }
 
+// WIP: func GetQuotes(symbols string) Quote, error) {}
+
 // Quote returns a Quote; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
 // It takes one parameter:
 // ticker = "AAPL", etc.
-func GetQuotes(symbols string) (Quote, error) {
+func GetQuote(symbol string) (Quote, error) {
 	req, err := http.NewRequest("GET", endpointQuotes, nil)
 	utils.Check(err)
 	q := req.URL.Query()
-	q.Add("symbols", symbols)
+	q.Add("symbols", symbol)
 	q.Add("fields", "quote")
 	req.URL.RawQuery = q.Encode()
 	body, err := utils.Handler(req)
 	utils.Check(err)
 	var quote Quote
-	fmt.Println(body)
-	/*err = json.Unmarshal([]byte(body), &quote)
+	err = json.Unmarshal([]byte(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), "")), &quote)
 	utils.Check(err)
-	quote.Time = utils.Now(time.Now())*/
 	return quote, err
 }
 
