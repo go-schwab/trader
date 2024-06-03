@@ -50,7 +50,7 @@ type Quote struct {
 }
 
 type FundamentalInstrument struct {
-	Symbol                  string  `json:"synbol"`
+	Symbol                  string  `json:"symbol"`
 	Cusip                   string  `json:"cusip"`
 	Description             string  `json:"description"`
 	Exchange                string  `json:"exchange"`
