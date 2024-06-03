@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	utils "github.com/samjtro/go-schwab-traderapi/utils"
 )
@@ -21,8 +20,7 @@ var (
 	endpointPriceHistory string = endpoint + "/%s/pricehistory" // Symbol
 
 	// Instruments
-	endpointSearchInstruments string = endpoint + "/instruments"
-	endpointSearchInstrument  string = endpointSearchInstruments + "/%s" // Cusip
+	endpointSearchInstrument string = endpoint + "/instruments"
 
 	// Movers
 	endpointMovers string = endpoint + "/movers/%s" // Index ID
@@ -228,28 +226,37 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 // Quote returns a Quote; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
 // It takes one parameter:
 // ticker = "AAPL", etc.
-func GetQuotes(tickers string) (Quote, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf(endpointQuotes, tickers), nil)
+func GetQuotes(symbols string) (Quote, error) {
+	req, err := http.NewRequest("GET", endpointQuotes, nil)
 	utils.Check(err)
+	q := req.URL.Query()
+	q.Add("symbols", symbols)
+	q.Add("fields", "quote")
+	req.URL.RawQuery = q.Encode()
 	body, err := utils.Handler(req)
 	utils.Check(err)
-	// WIP
 	var quote Quote
-	err = json.Unmarshal([]byte(body), &quote)
+	fmt.Println(body)
+	/*err = json.Unmarshal([]byte(body), &quote)
 	utils.Check(err)
-	quote.Time = utils.Now(time.Now())
+	quote.Time = utils.Now(time.Now())*/
 	return quote, err
 }
 
 // SearchInstrumentSimple returns instrument's simples.
 // It takes one param:
-func SearchInstrumentSimple(cusip string) (SimpleInstrument, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf(endpointSearchInstrument, cusip), nil)
+func SearchInstrumentSimple(symbols string) (SimpleInstrument, error) {
+	req, err := http.NewRequest("GET", endpointSearchInstrument, nil)
 	utils.Check(err)
+	q := req.URL.Query()
+	q.Add("symbol", symbols)
+	q.Add("projection", "symbol-search")
+	req.URL.RawQuery = q.Encode()
 	body, err := utils.Handler(req)
 	utils.Check(err)
 	var instrument SimpleInstrument
-	err = json.Unmarshal([]byte(body), &instrument)
+	split0 := strings.Split(body, "[")
+	err = json.Unmarshal([]byte(split0[1][:len(split0)-2]), &instrument)
 	utils.Check(err)
 	return instrument, nil
 }
@@ -257,7 +264,7 @@ func SearchInstrumentSimple(cusip string) (SimpleInstrument, error) {
 // SearchInstrumentFundamental returns instrument's fundamentals.
 // It takes one param:
 func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
-	req, err := http.NewRequest("GET", endpointSearchInstruments, nil)
+	req, err := http.NewRequest("GET", endpointSearchInstrument, nil)
 	utils.Check(err)
 	q := req.URL.Query()
 	q.Add("symbol", symbol)
