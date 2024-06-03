@@ -9,6 +9,12 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
+// SearchInstrumentSimple returns instrument's simples.
+// It takes on param:
+func SearchInstrumentSimple(symbol string) {
+
+}
+
 // SearchInstrumentFundamental returns instrument's fundamentals.
 // It takes one param:
 func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
