@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
 )
 
 // SearchInstrumentSimple returns instrument's simples.
-// It takes on param:
+// It takes one param:
 func SearchInstrumentSimple(cusip string) (SimpleInstrument, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(Endpoint_searchInstrument, cusip), nil)
 	utils.Check(err)
@@ -34,7 +35,8 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 	body, err := schwabutils.Handler(req)
 	utils.Check(err)
 	var instrument FundamentalInstrument
-	err = json.Unmarshal([]byte(body), &instrument)
+	stringToParse := fmt.Sprintf("[%s]", strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2])
+	err = json.Unmarshal([]byte(stringToParse), &instrument)
 	utils.Check(err)
 	return instrument, nil
 }
