@@ -16,8 +16,8 @@ import (
 // direction = "up" or "down"
 // change = "percent" or "value"
 func GetMovers(index, direction, change string) ([]Screener, error) {
-	url := fmt.Sprintf(Endpoint_movers, index)
-	req, _ := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(Endpoint_movers, index), nil)
+	utils.Check(err)
 	q := req.URL.Query()
 	q.Add("direction", direction)
 	q.Add("change", change)

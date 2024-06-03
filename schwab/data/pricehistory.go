@@ -1,10 +1,9 @@
 package data
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
-	"strings"
 
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
@@ -28,9 +27,8 @@ import (
 // startDate =
 // endDate =
 func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
-	var candles []Candle
-	url := fmt.Sprintf(Endpoint_priceHistory, ticker)
-	req, _ := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(Endpoint_priceHistory, ticker), nil)
+	utils.Check(err)
 	q := req.URL.Query()
 	q.Add("periodType", periodType)
 	q.Add("period", period)
@@ -41,34 +39,9 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 	req.URL.RawQuery = q.Encode()
 	body, err := schwabutils.Handler(req)
 	utils.Check(err)
-	split := strings.Split(body, "{")
-	split = split[2:]
-	for _, x := range split {
-		var candle Candle
-		split2 := strings.Split(x, "\"")
-		for i, x2 := range split2 {
-			switch x2 {
-			case "open":
-				candle.Open, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
-				utils.Check(err)
-			case "high":
-				candle.Hi, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
-				utils.Check(err)
-			case "low":
-				candle.Lo, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
-				utils.Check(err)
-			case "close":
-				candle.Close, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
-				utils.Check(err)
-			case "volume":
-				candle.Volume, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
-				utils.Check(err)
-			case "datetime":
-				candle.Time = utils.TrimOneLast(utils.TrimOneFirstOneLast(split2[i+1]))
-			}
-		}
-		candles = append(candles, candle)
-	}
-
+	var candles []Candle
+	fmt.Println(body)
+	err = json.Unmarshal([]byte(body), &candles)
+	utils.Check(err)
 	return candles, nil
 }

@@ -6,34 +6,29 @@ NOTICE: We'll be switching over to GPL3.0 upon the release of v1.0.0.
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
 Stable Release: [v0.8.7.1](https://github.com/samjtro/go-trade/tree/stable)
-
-[Roadmap to v1.0.0](https://github.com/samjtro/go-trade/blob/main/TODO.md)
-
-[Changelog](https://github.com/samjtro/go-tradtradee/blob/main/CHANGELOG.md)
-
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## Roadmap to v 1.0.0
 
-- [ ] Migrate working functionality to Schwab
+- [ ] v0.9.0: Migrate working functionality to Schwab
     * [x] oAuth Flow (Retrieve, store tokens; refresh)
     * [x] Endpoints
-    * [ ] Structs
+    * [ ] Fully Functional: Funcs, Structs, Etc.
         * [x] movers.go
-        * [ ] data.go
-        * [ ] instrument.go
+        * [x] data.go
+        * [x] instrument.go
         * [ ] option.go
         * [ ] pricehistory.go
         * [ ] realtime.go
-- [ ] Account and Trading API
+- [ ] v0.9.5: Account and Trading API
     * [ ] account.go
         * [ ] Transaction History
         * [ ] User Info & Prefs
         * [ ] Watchlist
     * [ ] trade.go
         * [ ] Trading
-- [ ] Performance Testing
-- [ ] Finish test package & integrate CI for new PRs
+- [ ] v0.9.7: Performance Testing
+- [ ] v0.9.9: Finish test package & integrate CI for new PRs
 
 ## What is this?
 
