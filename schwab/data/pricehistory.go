@@ -2,7 +2,6 @@ package data
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,7 +10,7 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-// PriceHistory returns a []CANDLE; containing a series of candles with price volume & datetime info per candlestick.
+// PriceHistory returns a series of candles with price volume & datetime info per candlestick.
 // It takes seven parameters:
 // ticker = "AAPL", etc.;
 // periodType = "day", "month", "year", "ytd" - default is "day";
@@ -28,7 +27,9 @@ import (
 // "monthly": 1;
 // startDate =
 // endDate =
-func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]CANDLE, error) {
+func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
+	// Craft, send request
+	var candles []Candle
 	url := fmt.Sprintf(Endpoint_pricehistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
@@ -40,75 +41,34 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 	q.Add("endDate", endDate)
 	req.URL.RawQuery = q.Encode()
 	body, err := schwabutils.Handler(req)
-
-	if err != nil {
-		return []CANDLE{}, err
-	}
-
-	var candles []CANDLE
-	var open, hi, lo, Close, volume, datetime string
+	utils.Check(err)
+	// Parse return
 	split := strings.Split(body, "{")
 	split = split[2:]
-
 	for _, x := range split {
+		var candle Candle
 		split2 := strings.Split(x, "\"")
-
 		for i, x2 := range split2 {
 			switch x2 {
 			case "open":
-				open = utils.TrimOneFirstOneLast(split2[i+1])
+				candle.Open, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
+				utils.Check(err)
 			case "high":
-				hi = utils.TrimOneFirstOneLast(split2[i+1])
+				candle.Hi, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
+				utils.Check(err)
 			case "low":
-				lo = utils.TrimOneFirstOneLast(split2[i+1])
+				candle.Lo, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
+				utils.Check(err)
 			case "close":
-				Close = utils.TrimOneFirstOneLast(split2[i+1])
+				candle.Close, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
+				utils.Check(err)
 			case "volume":
-				volume = utils.TrimOneFirstOneLast(split2[i+1])
+				candle.Volume, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split2[i+1]), 64)
+				utils.Check(err)
 			case "datetime":
-				datetime = utils.TrimOneFirstOneLast(split2[i+1])
+				candle.Time = utils.TrimOneLast(utils.TrimOneFirstOneLast(split2[i+1]))
 			}
 		}
-
-		volume, err := strconv.ParseFloat(volume, 64)
-
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-
-		open, err := strconv.ParseFloat(open, 64)
-
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-
-		Close, err := strconv.ParseFloat(Close, 64)
-
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-
-		hi, err := strconv.ParseFloat(hi, 64)
-
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-
-		lo, err := strconv.ParseFloat(lo, 64)
-
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-
-		candle := CANDLE{
-			Time:   utils.TrimOneLast(datetime),
-			Volume: volume,
-			Open:   open,
-			Close:  Close,
-			Hi:     hi,
-			Lo:     lo,
-		}
-
 		candles = append(candles, candle)
 	}
 

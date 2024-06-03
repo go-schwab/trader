@@ -10,12 +10,12 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-// Get returns a string; containing information on the desired index's movers per your desired direction and change type(percent or value),
-// it takes three parameters:
+// GetMovers returns information on the desired index's movers per your desired direction and change type(percent or value),
+// It takes three params:
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"
-func GetMovers(index, direction, change string) ([]MOVER, error) {
+func GetMovers(index, direction, change string) ([]Screener, error) {
 	// Craft, send request
 	url := fmt.Sprintf(Endpoint_movers, index)
 	req, _ := http.NewRequest("GET", url, nil)
@@ -25,15 +25,15 @@ func GetMovers(index, direction, change string) ([]MOVER, error) {
 	req.URL.RawQuery = q.Encode()
 	body, err := schwabutils.Handler(req)
 	utils.Check(err)
-	// Parse return -> []MOVER
-	var movers []MOVER
+	// Parse return
+	var movers []Screener
 	split0 := strings.Split(body, "[")
 	split := strings.Split(split0[1], "}")
 	lengthToCheckAgainst := len(split)
 	lengthToCheck := 1
 	for _, x := range split {
 		split1 := strings.Split(x, ",")
-		var mov MOVER
+		var mov Screener
 		for _, x1 := range split1 {
 			split2 := strings.Split(x1, ":")
 			if (split2[0] == "{\"description\"") || (split2[0] == ",{\"description\"") {

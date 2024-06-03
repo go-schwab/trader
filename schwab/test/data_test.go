@@ -8,7 +8,7 @@ import (
 )
 
 func TestQuote(t *testing.T) {
-	quote, err := data.GetQuote("AAPL")
+	quote, err := data.GetQuotes("AAPL")
 
 	if err != nil {
 		t.Fatalf(err.Error())

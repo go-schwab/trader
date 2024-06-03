@@ -9,7 +9,10 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
+// SearchInstrumentFundamental returns instrument's fundamentals.
+// It takes one param:
 func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
+	// Craft, send request
 	var cusip, desc, exchange, Type string
 	var hi52, lo52, divAmount, divYield, pe, peg, pb, pr, pcf, gmTTM, gmMRQ, npmTTM, npmMRQ, omTTM, omMRQ, roe, roa, roi, qRatio, cRatio, interestCoverage, debtCapital, debtEquity, epsTTM, epsPercentTTM, epsChangeYR, revChangeYR, revChangeTTM, revChangeIn, sharesOutstanding, marketCapFloat, marketCap, bookVPS, beta, vol1, vol10, vol3 float64
 	req, err := http.NewRequest("GET", Endpoint_searchinstruments, nil)
@@ -19,6 +22,7 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 	q.Add("projection", "fundamental")
 	req.URL.RawQuery = q.Encode()
 	body, err := schwabutils.Handler(req)
+	// Parse return
 	utils.Check(err)
 	split := strings.Split(body, "\"")
 	for i, x := range split {

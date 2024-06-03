@@ -7,7 +7,7 @@ import (
 )
 
 func TestInstrument(t *testing.T) {
-	_, err := data.SearchInstrument("AAPL")
+	_, err := data.SearchInstrumentFundamental("AAPL")
 
 	if err != nil {
 		t.Fatalf(err.Error())

@@ -26,7 +26,11 @@ import (
 // toDate = Only return expirations before this date. Valid ISO-8601 formats are: yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ssz.
 // Lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01").
 // This returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the status of the contract ("ALL"), expiring before 2022-07-01
-func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CONTRACT, error) {
+func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]Contract, error) {
+	var chain []Contract
+	var Type, symbol, exchange, bidAskSize string
+	var strikePrice, exp, d2e, bid, ask, last, mark, volatility, delta, gamma, theta, vega, rho, openInterest, timeValue, theoreticalValue, theoreticalVolatility, percentChange, markChange, markPercentChange, intrinsicValue float64
+	var inTheMoney bool
 	req, _ := http.NewRequest("GET", Endpoint_option, nil)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
@@ -36,17 +40,8 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 	q.Add("toDate", toDate)
 	req.URL.RawQuery = q.Encode()
 	body, err := schwabutils.Handler(req)
-
-	if err != nil {
-		return []CONTRACT{}, err
-	}
-
-	var chain []CONTRACT
-	var Type, symbol, exchange, bidAskSize string
-	var strikePrice, exp, d2e, bid, ask, last, mark, volatility, delta, gamma, theta, vega, rho, openInterest, timeValue, theoreticalValue, theoreticalVolatility, percentChange, markChange, markPercentChange, intrinsicValue float64
-	var inTheMoney bool
+	utils.Check(err)
 	split := strings.Split(body, "}],")
-
 	for _, x := range split {
 		split2 := strings.Split(x, "\"")
 
@@ -237,7 +232,7 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]CO
 			}
 		}
 
-		contract := CONTRACT{
+		contract := Contract{
 			TYPE:                   Type,
 			SYMBOL:                 symbol,
 			STRIKE:                 strikePrice,

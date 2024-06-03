@@ -2,7 +2,6 @@ package data
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,215 +11,105 @@ import (
 	utils "github.com/samjtro/go-trade/utils"
 )
 
-// Quote returns a []FRAME with the previous 7 candles.
+// GetCandles returns a []Candle with the previous 7 candles.
 // It takes one paramter:
 // ticker = "AAPL", etc.
-func GetCandles(ticker string) ([]CANDLE, error) {
+func GetCandles(ticker string) ([]Candle, error) {
+	var candles []Candle
 	// Craft, send request
 	url := fmt.Sprintf(Endpoint_quote, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	body, err := schwabutils.Handler(req)
 	utils.Check(err)
-	// Parse return -> []CANDLE
-	var open, hi, lo, Close, volume float64
-	var datetime string
-	var candles []CANDLE
+	// Parse return
 	split := strings.Split(body, "},")
-
 	for _, x1 := range split {
+		var candle Candle
 		for i2, x2 := range strings.Split(x1, "\"") {
 			switch x2 {
 			case "open":
-				open, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				candle.Open, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
+				utils.Check(err)
 			case "high":
-				hi, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				candle.Hi, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
+				utils.Check(err)
 			case "low":
-				lo, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				candle.Lo, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
+				utils.Check(err)
 			case "close":
-				Close, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				candle.Close, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
+				utils.Check(err)
 			case "volume":
-				volume, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
-
-				if err != nil {
-					log.Fatalf(err.Error())
-				}
+				candle.Volume, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i2+1]), 64)
+				utils.Check(err)
 			case "datetime":
-				datetime = utils.UnixToLocal(utils.TrimOneFirstOneLast(split[i2+1]))
+				candle.Time = utils.UnixToLocal(utils.TrimOneFirstOneLast(split[i2+1]))
 			}
 		}
-
-		candles = append(candles, CANDLE{
-			Open:   open,
-			Hi:     hi,
-			Lo:     lo,
-			Close:  Close,
-			Volume: volume,
-			Time:   datetime,
-		})
+		candles = append(candles, candle)
 	}
-
 	return candles, nil
 }
 
-// Quote returns a QUOTE; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
+// Quote returns a Quote; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
 // It takes one parameter:
 // ticker = "AAPL", etc.
-func GetQuote(tickers string) (QUOTE, error) {
-	dt := utils.Now(time.Now())
+func GetQuotes(tickers string) (Quote, error) {
+	var quote Quote
+	// Craft, send request
+	quote.Time = utils.Now(time.Now())
 	url := fmt.Sprintf(Endpoint_quotes, tickers)
-	req, _ := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
+	utils.Check(err)
 	body, err := schwabutils.Handler(req)
-
-	if err != nil {
-		return QUOTE{}, err
-	}
-
-	var bid, ask, last, open, hi, lo, closeP, mark, volume, volatility, hi52, lo52, pe float64
+	utils.Check(err)
+	// Parse return
 	split := strings.Split(body, "\"")
-
-	// Check for multiple tickers, iterate through them if need be
+	// WIP: Split, iterate thru tickers
 	for i, x := range split {
 		switch x {
 		case "bidPrice":
-			bid1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			bid, err = strconv.ParseFloat(bid1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Bid, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "askPrice":
-			ask1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			ask, err = strconv.ParseFloat(ask1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Ask, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "lastPrice":
-			last1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			last, err = strconv.ParseFloat(last1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Last, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "openPrice":
-			open1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			open, err = strconv.ParseFloat(open1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Open, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "highPrice":
-			hi1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			hi, err = strconv.ParseFloat(hi1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Hi, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "lowPrice":
-			lo1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			lo, err = strconv.ParseFloat(lo1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Lo, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "closePrice":
-			closeP1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			closeP, err = strconv.ParseFloat(closeP1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Close, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "mark":
-			mark1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			mark, err = strconv.ParseFloat(mark1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Mark, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "totalVolume":
-			volume1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			volume, err = strconv.ParseFloat(volume1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Volume, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "volatility":
-			volatility1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			volatility, err = strconv.ParseFloat(volatility1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Volatility, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "52WkHigh":
-			hi521 := utils.TrimOneFirstOneLast(split[i+1])
-
-			hi52, err = strconv.ParseFloat(hi521, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Hi52, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "52WkLow":
-			lo521 := utils.TrimOneFirstOneLast(split[i+1])
-
-			lo52, err = strconv.ParseFloat(lo521, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.Lo52, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		case "peRatio":
-			pe1 := utils.TrimOneFirstOneLast(split[i+1])
-
-			pe, err = strconv.ParseFloat(pe1, 64)
-
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			quote.PE, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
+			utils.Check(err)
 		}
 	}
-
-	return QUOTE{
-		Time:       dt,
-		Ticker:     tickers,
-		Mark:       mark,
-		Volume:     volume,
-		Volatility: volatility,
-		Bid:        bid,
-		Ask:        ask,
-		Last:       last,
-		Open:       open,
-		Close:      closeP,
-		Hi:         hi,
-		Lo:         lo,
-		Hi52:       hi52,
-		Lo52:       lo52,
-		PE:         pe,
-	}, nil
+	return quote, nil
 }
 
 // func GetQuotes() []QUOTE {}
