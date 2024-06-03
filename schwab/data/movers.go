@@ -27,7 +27,7 @@ func GetMovers(index, direction, change string) ([]Screener, error) {
 	utils.Check(err)
 	// Parse return
 	var movers []Screener
-	stringToParse := fmt.Sprintf("{%s}", strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2])
+	stringToParse := fmt.Sprintf("[%s]", strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2])
 	fmt.Println(stringToParse)
 	err = json.Unmarshal([]byte(stringToParse), &movers)
 	utils.Check(err)
