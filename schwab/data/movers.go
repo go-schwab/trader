@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	schwabutils "github.com/samjtro/go-trade/schwab/utils"
 	utils "github.com/samjtro/go-trade/utils"
@@ -26,7 +27,8 @@ func GetMovers(index, direction, change string) ([]Screener, error) {
 	utils.Check(err)
 	// Parse return
 	var movers []Screener
-	err = json.Unmarshal([]byte(body), &movers)
+	split0 := strings.Split(body, "[")
+	err = json.Unmarshal([]byte(split0[1][:len(split0[1])-2]), &movers)
 	utils.Check(err)
 	return movers, nil
 }
