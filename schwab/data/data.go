@@ -119,15 +119,15 @@ type SimpleInstrument struct {
 }
 
 type Screener struct {
-	Symbol           string
-	Description      string
-	Volume           float64
-	LastPrice        float64
-	NetChange        float64
-	MarketShare      float64
-	TotalVolume      float64
-	Trades           float64
-	NetPercentChange float64
+	Symbol           string  `json:"symbol"`
+	Description      string  `json:"description"`
+	Volume           float64 `json:"volume"`
+	LastPrice        float64 `json:"lastPrice"`
+	NetChange        float64 `json:"netChange"`
+	MarketShare      float64 `json:"marketShare"`
+	TotalVolume      float64 `json:"totalVolume"`
+	Trades           float64 `json:"trades"`
+	NetPercentChange float64 `json:"netPercentChange"`
 }
 
 // WIP: Options
