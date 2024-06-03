@@ -256,11 +256,7 @@ func GetQuote(symbol string) (Quote, error) {
 	body, err := utils.Handler(req)
 	utils.Check(err)
 	var quote Quote
-	split0 := strings.Split(body, fmt.Sprintf("\"%s\":", symbol))
-	split := strings.Split(split0[1], "\"quote\":{")
-	stringToParse := strings.Join(split, "")
-	fmt.Println(stringToParse)
-	err = json.Unmarshal([]byte(stringToParse), &quote)
+	err = json.Unmarshal([]byte(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), "")[:len(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), ""))-2]), &quote)
 	utils.Check(err)
 	return quote, err
 }
