@@ -37,9 +37,7 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 	var instrument FundamentalInstrument
 	split0 := strings.Split(body, "[{\"fundamental\":")[1]
 	split := strings.Split(split0, "}")
-	fmt.Println(split)
-	/*stringToParse := fmt.Sprintf("%s}", split0[:len(split0)-2])
-	err = json.Unmarshal([]byte(stringToParse), &instrument)
-	utils.Check(err)*/
+	err = json.Unmarshal([]byte(fmt.Sprintf("%s}", strings.Join(split[:1], ""))), &instrument)
+	utils.Check(err)
 	return instrument, nil
 }
