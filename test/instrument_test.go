@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/samjtro/go-trade/schwab/data"
+	data "github.com/samjtro/go-trade/market-data"
 )
 
 func TestInstrument(t *testing.T) {

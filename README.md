@@ -1,4 +1,4 @@
-NOTICE: We'll be switching over to GPL3.0 upon the release of v1.0.0.
+NOTICE: We'll be switching over to GPL2.0 upon the release of v1.0.0.
 
 # go-trade
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-trade.svg)](https://pkg.go.dev/github.com/samjtro/go-trade)
@@ -7,6 +7,48 @@ NOTICE: We'll be switching over to GPL3.0 upon the release of v1.0.0.
 
 Stable Release: [v0.8.7.1](https://github.com/samjtro/go-trade/tree/stable)
 Built, maintained by [@samjtro](https://github.com/samjtro)
+
+## What is this?
+
+A pure-go-native* hook for the Schwab Trader API. This is WIP, changing very rapidly. ATM, a list of working functionality is provided in the code samples below. I tried to maintain a CHANGELOG, but this was fruitless as I barely have the time to be doing as much work as I already am doing on this project.
+
+This project is the successor to [go-tda](https://github.com/samjtro/go-tda), a project I made both as a learning experience, as well as an attempt to provide a counterweight to the primarily Python-based algotrading sphere. Golang is SO much better for algorithmic trading, and this package is an attempt to prove out that case.
+
+If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. If your contribution breaks other functionality in the library, don't contribute it.
+
+*spf13/viper will be gone by v1.0.0
+
+## What can i do with this?
+
+### Quick start
+
+0. Go to developer.schwab.com, create an account
+1. go get github.com/samjtro/go-trade
+2. Follow the code samples below
+
+### Package details
+
+#### market-data
+#### accounts-trading
+#### utils
+
+### Code samples
+
+#### market-data
+
+```
+import (
+    schwab "github.com/samjtro/go-trade"
+)
+
+movers, err := schwab.GetMovers("$index")
+handle(err)
+
+fundamental, err := schwab.SearchInstrumentFundamental("symbol")
+handle(err)
+```
+
+#### accounts-trading
 
 ## Roadmap to v 1.0.0
 
@@ -29,45 +71,6 @@ Built, maintained by [@samjtro](https://github.com/samjtro)
         * [ ] Trading
 - [ ] v0.9.7: Performance Testing
 - [ ] v0.9.9: Finish test package & integrate CI for new PRs
-
-## What is this?
-
-This project is the successor to [go-tda](https://github.com/samjtro/go-tda), a project I made both as a learning experience, as well as an attempt to provide a counterweight to the primarily Python-based algotrading sphere. Golang is SO much better for algorithmic trading, and this package is an attempt to prove out that case.
-
-This is WIP - I have gotten the Schwab oAuth Flow, and Handler function, functional. I need to migrate the custom structs I created for TDA over to their Schwab counterparts now, and clean up a lot of the garbage that was leftover.
-
-If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. If your contribution breaks other functionality in the library, don't contribute it.
-
-## What can i do with this?
-
-### Quick start
-
-0. Go to developer.schwab.com, create an account.
-1. Create ~/.foo/trade
-2. go get github.com/samjtro/go-trade
-3. Follow the instructions to generate authcode, access tokens.
-4. $$$
-
-### Package details
-
-#### schwab/data
-#### schwab/account
-#### utils
-
-### Code samples
-
-#### schwab/data
-
-```
-candles, err := data.GetCandles(ticker)
-handle(err)
-
-quote, err := data.GetQuote(ticker)
-handle(err)
-
-priceHistory, err := data.GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate)
-handle(err)
-```
 
 ## Copyright notice
 
