@@ -52,6 +52,8 @@ func Handler(req *http.Request) (string, error) {
 	if errorCode < 200 || errorCode > 300 {
 		log.Fatalf("Error %d - %s", errorCode, body)
 	}
+	// WIP
+	fmt.Println(body)
 	m.Unlock()
 	return body, nil
 }
