@@ -28,9 +28,8 @@ import (
 // startDate =
 // endDate =
 func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
-	// Craft, send request
 	var candles []Candle
-	url := fmt.Sprintf(Endpoint_pricehistory, ticker)
+	url := fmt.Sprintf(Endpoint_priceHistory, ticker)
 	req, _ := http.NewRequest("GET", url, nil)
 	q := req.URL.Query()
 	q.Add("periodType", periodType)
@@ -42,7 +41,6 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 	req.URL.RawQuery = q.Encode()
 	body, err := schwabutils.Handler(req)
 	utils.Check(err)
-	// Parse return
 	split := strings.Split(body, "{")
 	split = split[2:]
 	for _, x := range split {

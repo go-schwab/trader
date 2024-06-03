@@ -8,10 +8,11 @@ var (
 	Endpoint_quotes string = Endpoint + "/quotes"
 
 	// Price History
-	Endpoint_pricehistory string = Endpoint + "/%s/pricehistory" // Symbol
+	Endpoint_priceHistory string = Endpoint + "/%s/pricehistory" // Symbol
 
 	// Instruments
-	Endpoint_searchinstruments string = Endpoint + "/instruments"
+	Endpoint_searchInstruments string = Endpoint + "/instruments"
+	Endpoint_searchInstrument  string = Endpoint_searchInstruments + "/%s" // Cusip
 
 	// Movers
 	Endpoint_movers string = Endpoint + "/movers/%s" // Index ID
@@ -21,101 +22,102 @@ var (
 )
 
 type Candle struct {
-	Time   string
-	Volume float64
-	Open   float64
-	Close  float64
-	Hi     float64
-	Lo     float64
+	Time   string  `json:"datetime"`
+	Volume float64 `json:"volume"`
+	Open   float64 `json:"open"`
+	Close  float64 `json:"close"`
+	Hi     float64 `json:"high"`
+	Lo     float64 `json:"low"`
 }
 
+// WIP
 type Quote struct {
-	Time       string
-	Ticker     string
-	Mark       float64
-	Volume     float64
-	Volatility float64
-	Bid        float64
-	Ask        float64
-	Last       float64
-	Open       float64
-	Close      float64
-	Hi         float64
-	Lo         float64
-	Hi52       float64
-	Lo52       float64
-	PE         float64
+	Time       string  `json:""`
+	Ticker     string  `json:""`
+	Mark       float64 `json:""`
+	Volume     float64 `json:""`
+	Volatility float64 `json:""`
+	Bid        float64 `json:""`
+	Ask        float64 `json:""`
+	Last       float64 `json:""`
+	Open       float64 `json:""`
+	Close      float64 `json:""`
+	Hi         float64 `json:""`
+	Lo         float64 `json:""`
+	Hi52       float64 `json:""`
+	Lo52       float64 `json:""`
+	PE         float64 `json:""`
 }
 
 type FundamentalInstrument struct {
-	Symbol                  string
-	Cusip                   string
-	Description             string
-	Exchange                string
-	Type                    string
-	Hi52                    float64
-	Lo52                    float64
-	DivYield                float64
-	DivAmount               float64
-	DividendDate            string
-	PE                      float64
-	PEG                     float64
-	PB                      float64
-	PR                      float64
-	PCF                     float64
-	GrossMarginTTM          float64
-	NetProfitMarginTTM      float64
-	OperatingMarginTTM      float64
-	GrossMarginMRQ          float64
-	NetProfitMarginMRQ      float64
-	OperatingMarginMRQ      float64
-	ROE                     float64
-	ROA                     float64
-	ROI                     float64
-	QuickRatio              float64
-	CurrentRatio            float64
-	InterestCoverage        float64
-	TotalDebtToCapital      float64
-	LTDebtToEquity          float64
-	TotalDebtToEquity       float64
-	EPSTTM                  float64
-	EPSChangePercentTTM     float64
-	EPSChangeYear           float64
-	EPSChange               float64
-	RevenueChangeYear       float64
-	RevenueChangeTTM        float64
-	RevenueChangeIn         float64
-	SharesOutstanding       float64
-	MarketCapFloat          float64
-	MarketCap               float64
-	BookValuePerShare       float64
-	ShortIntToFloat         float64
-	ShortIntDayToCover      float64
-	DividendGrowthRate3Year float64
-	DividendPayAmount       float64
-	DividendPayDate         string
-	Beta                    float64
-	Vol1DayAverage          float64
-	Vol10DayAverage         float64
-	Vol3MonthAverage        float64
-	Avg1DayVolume           float64
-	Avg10DaysVolume         float64
-	Avg3MonthVolume         float64
-	DeclarationDate         string
-	DividendFrequency       float64
-	EPS                     float64
-	DTNVolume               float64
-	NextDividendPayDate     string
-	NextDividendDate        string
-	FundLeverageFactor      float64
+	Symbol                  string  `json:"synbol"`
+	Cusip                   string  `json:"cusip"`
+	Description             string  `json:"description"`
+	Exchange                string  `json:"exchange"`
+	Type                    string  `json:"assetType"`
+	Hi52                    float64 `json:"high52"`
+	Lo52                    float64 `json:"low52"`
+	DividendYield           float64 `json:"dividendYield"`
+	DividendAmount          float64 `json:"dividendAmount"`
+	DividendDate            string  `json:"dividendDate"`
+	PE                      float64 `json:"peRatio"`
+	PEG                     float64 `json:"pegRatio"`
+	PB                      float64 `json:"pbRatio"`
+	PR                      float64 `json:"prRatio"`
+	PCF                     float64 `json:"pcfRatio"`
+	GrossMarginTTM          float64 `json:"grossMarginTTM"`
+	NetProfitMarginTTM      float64 `json:"netMarginTTM"`
+	OperatingMarginTTM      float64 `json:"operatingMarginTTM"`
+	GrossMarginMRQ          float64 `json:"grossMarginMRQ"`
+	NetProfitMarginMRQ      float64 `json:"netMarginMRQ"`
+	OperatingMarginMRQ      float64 `json:"operatingMarginMRQ"`
+	ROE                     float64 `json:"returnOnEquity"`
+	ROA                     float64 `json:"returnOnAssets"`
+	ROI                     float64 `json:"returnOnInvestment"`
+	QuickRatio              float64 `json:"quickRatio"`
+	CurrentRatio            float64 `json:"currentRatio"`
+	InterestCoverage        float64 `json:"interestCoverage"`
+	TotalDebtToCapital      float64 `json:"totalDebtToCapital"`
+	LTDebtToEquity          float64 `json:"ltDebtToEquity"`
+	TotalDebtToEquity       float64 `json:"totalDebtToEquity"`
+	EPSTTM                  float64 `json:"epsTTM"`
+	EPSChangePercentTTM     float64 `json:"epsChangePercentTTM"`
+	EPSChangeYear           float64 `json:"epsChangeYear"`
+	EPSChange               float64 `json:"epsChange"`
+	RevenueChangeYear       float64 `json:"revChangeYear"`
+	RevenueChangeTTM        float64 `json:"revChangeTTM"`
+	RevenueChangeIn         float64 `json:"revChangeIn"`
+	SharesOutstanding       float64 `json:"sharesOutstanding"`
+	MarketCapFloat          float64 `json:"marketCapFloat"`
+	MarketCap               float64 `json:"marketCap"`
+	BookValuePerShare       float64 `json:"bookValuePerShare"`
+	ShortIntToFloat         float64 `json:"shortIntToFloat"`
+	ShortIntDayToCover      float64 `json:"shortIntDayToCover"`
+	DividendGrowthRate3Year float64 `json:"dividendGrowthRate3Year"`
+	DividendPayAmount       float64 `json:"dividendPayAmount"`
+	DividendPayDate         string  `json:"dividendPayDate"`
+	Beta                    float64 `json:"beta"`
+	Vol1DayAverage          float64 `json:"vol1DayAvg"`
+	Vol10DayAverage         float64 `json:"vol10DayAvg"`
+	Vol3MonthAverage        float64 `json:"vol3MonthAvg"`
+	Avg1DayVolume           float64 `json:"avg1DayVolume"`
+	Avg10DaysVolume         float64 `json:"avg10DaysVolume"`
+	Avg3MonthVolume         float64 `json:"avg3MonthVolume"`
+	DeclarationDate         string  `json:"declarationDate"`
+	DividendFrequency       float64 `json:"dividendFreq"`
+	EPS                     float64 `json:"eps"`
+	DTNVolume               float64 `json:"dtnVolume"`
+	NextDividendPayDate     string  `json:"nextDividendPayDate"`
+	NextDividendDate        string  `json:"nextDividendDate"`
+	FundLeverageFactor      float64 `json:"fundLeverageFactor"`
 }
 
 type SimpleInstrument struct {
-	Cusip       string
-	Symbol      string
-	Description string
-	Exchange    string
-	AssetType   string
+	Cusip       string `json:"cusip"`
+	Symbol      string `json:"symbol"`
+	Description string `json:"description"`
+	Exchange    string `json:"exchange"`
+	AssetType   string `json:"assetType"`
 }
 
 type Screener struct {
@@ -131,34 +133,33 @@ type Screener struct {
 }
 
 // WIP: Options
-type Underlying struct {
-}
+type Underlying struct{}
 
 type Contract struct {
-	TYPE                   string
-	SYMBOL                 string
-	STRIKE                 float64
-	EXCHANGE               string
-	EXPIRATION             float64
-	DAYS2EXPIRATION        float64
-	BID                    float64
-	ASK                    float64
-	LAST                   float64
-	MARK                   float64
-	BIDASK_SIZE            string
-	VOLATILITY             float64
-	DELTA                  float64
-	GAMMA                  float64
-	THETA                  float64
-	VEGA                   float64
-	RHO                    float64
-	OPEN_INTEREST          float64
-	TIME_VALUE             float64
-	THEORETICAL_VALUE      float64
-	THEORETICAL_VOLATILITY float64
-	PERCENT_CHANGE         float64
-	MARK_CHANGE            float64
-	MARK_PERCENT_CHANGE    float64
-	INTRINSIC_VALUE        float64
-	IN_THE_MONEY           bool //bool
+	TYPE                   string  `json:""`
+	SYMBOL                 string  `json:""`
+	STRIKE                 float64 `json:""`
+	EXCHANGE               string  `json:""`
+	EXPIRATION             float64 `json:""`
+	DAYS2EXPIRATION        float64 `json:""`
+	BID                    float64 `json:""`
+	ASK                    float64 `json:""`
+	LAST                   float64 `json:""`
+	MARK                   float64 `json:""`
+	BIDASK_SIZE            string  `json:""`
+	VOLATILITY             float64 `json:""`
+	DELTA                  float64 `json:""`
+	GAMMA                  float64 `json:""`
+	THETA                  float64 `json:""`
+	VEGA                   float64 `json:""`
+	RHO                    float64 `json:""`
+	OPEN_INTEREST          float64 `json:""`
+	TIME_VALUE             float64 `json:""`
+	THEORETICAL_VALUE      float64 `json:""`
+	THEORETICAL_VOLATILITY float64 `json:""`
+	PERCENT_CHANGE         float64 `json:""`
+	MARK_CHANGE            float64 `json:""`
+	MARK_PERCENT_CHANGE    float64 `json:""`
+	INTRINSIC_VALUE        float64 `json:""`
+	IN_THE_MONEY           bool    `json:""`
 }
