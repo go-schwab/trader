@@ -47,7 +47,7 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 			instrument.DivYield, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "dividendDate":
-			instrument.DividendDate = utils.TrimOneFirstOneLast(split[i+1])
+			instrument.DividendDate = utils.TrimOneFirstOneLast(split[i+2])
 		case "peRatio":
 			instrument.PE, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
@@ -154,7 +154,7 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 			instrument.DividendPayAmount, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "dividendPayDate":
-			instrument.DividendPayDate = utils.TrimOneFirstOneLast(split[i+1])
+			instrument.DividendPayDate = utils.TrimOneFirstOneLast(split[i+2])
 		case "beta":
 			instrument.Beta, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
@@ -177,7 +177,7 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 			instrument.Avg3MonthVolume, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "declarationDate":
-			instrument.DeclarationDate = utils.TrimOneFirstOneLast(split[i+1])
+			instrument.DeclarationDate = utils.TrimOneFirstOneLast(split[i+2])
 		case "dividendFreq":
 			instrument.DividendFrequency, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
@@ -188,9 +188,9 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 			instrument.DTNVolume, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
 		case "nextDividendPayDate":
-			instrument.NextDividendPayDate = utils.TrimOneFirstOneLast(split[i+1])
+			instrument.NextDividendPayDate = utils.TrimOneFirstOneLast(split[i+2])
 		case "nextDividendDate":
-			instrument.NextDividendDate = utils.TrimOneFirstOneLast(split[i+1])
+			instrument.NextDividendDate = utils.TrimOneFirstOneLast(split[i+2])
 		case "fundLeverageFactor":
 			instrument.FundLeverageFactor, err = strconv.ParseFloat(utils.TrimOneFirstOneLast(split[i+1]), 64)
 			utils.Check(err)
