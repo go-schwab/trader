@@ -35,8 +35,11 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 	body, err := schwabutils.Handler(req)
 	utils.Check(err)
 	var instrument FundamentalInstrument
-	stringToParse := fmt.Sprintf("[%s]", strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2])
+	split0 := strings.Split(body, "[{\"fundamental\":")[1]
+	split := strings.Split(split0, "}")
+	fmt.Println(split)
+	/*stringToParse := fmt.Sprintf("%s}", split0[:len(split0)-2])
 	err = json.Unmarshal([]byte(stringToParse), &instrument)
-	utils.Check(err)
+	utils.Check(err)*/
 	return instrument, nil
 }
