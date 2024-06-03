@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	utils "github.com/samjtro/go-trade/utils"
+	utils "github.com/samjtro/go-schwab-traderapi/utils"
 )
 
 var (

@@ -1,11 +1,11 @@
 NOTICE: We'll be switching over to GPL2.0 upon the release of v1.0.0.
 
 # go-trade
-[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-trade.svg)](https://pkg.go.dev/github.com/samjtro/go-trade)
-[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-trade)](https://goreportcard.com/report/github.com/samjtro/go-trade)
+[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-schwab-traderapi.svg)](https://pkg.go.dev/github.com/samjtro/go-schwab-traderapi)
+[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-schwab-traderapi)](https://goreportcard.com/report/github.com/samjtro/go-schwab-traderapi)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Stable Release: [v0.8.7.1](https://github.com/samjtro/go-trade/tree/stable)
+Stable Release: [v0.8.7.1](https://github.com/samjtro/go-schwab-traderapi/tree/stable)
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## What is this?
@@ -23,7 +23,7 @@ If you want to contribute - go for it! There is no contribution guide, just a si
 ### Quick start
 
 0. Go to developer.schwab.com, create an account
-1. go get github.com/samjtro/go-trade
+1. go get github.com/samjtro/go-schwab-traderapi
 2. Follow the code samples below
 
 ### Package details

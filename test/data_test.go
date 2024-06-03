@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	data "github.com/samjtro/go-trade/market-data"
+	data "github.com/samjtro/go-schwab-traderapi/market-data"
 )
 
 func TestQuote(t *testing.T) {

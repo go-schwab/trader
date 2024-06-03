@@ -1,4 +1,4 @@
-module github.com/samjtro/go-trade
+module github.com/samjtro/go-schwab-traderapi
 
 go 1.22.3
 
