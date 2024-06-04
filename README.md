@@ -22,9 +22,16 @@ If you want to contribute - go for it! There is no contribution guide, just a si
 
 ### Quick start
 
-0. Go to developer.schwab.com, create an account
-1. go get github.com/samjtro/go-schwab-traderapi
-2. Follow the code samples below
+0. Go to developer.schwab.com, create an account, create an app, get app credentials from https://developer.schwab.com/dashboard/apps
+1. mkdir ~/.trade; vim ~/.trade/config.env
+```
+APPKEY=KEY0 // App Key
+SECRET=KEY1 // App Secret
+CBURL=https://127.0.0.1 // App Callback URL
+UTCDIFF=+0:00 // Your difference from UTC time, e.g. MT is -06:00
+```
+2. go get github.com/samjtro/go-schwab-traderapi
+3. Follow the code samples below
 
 ### Package details
 
@@ -38,7 +45,7 @@ If you want to contribute - go for it! There is no contribution guide, just a si
 
 ```
 import (
-    schwab "github.com/samjtro/go-trade"
+    schwab "github.com/samjtro/go-schwab-traderapi"
 )
 
 df, err := data.GetPriceHistory("AAPL", "month", "1", "daily", "1", "", "")
