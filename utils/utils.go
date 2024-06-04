@@ -56,7 +56,7 @@ func parseAccessTokenResponse(s string) TOKEN {
 // Read in tokens from JSON db
 func readDB() TOKEN {
 	var tokens TOKEN
-	body, err := os.ReadFile(fmt.Sprintf("%s/.go-trade/bar.json", HomeDir()))
+	body, err := os.ReadFile(fmt.Sprintf("%s/.trade/bar.json", HomeDir()))
 	Check(err)
 	err = json.Unmarshal(body, &tokens)
 	Check(err)
