@@ -135,13 +135,13 @@ type FundamentalInstrument struct {
 	Vol1DayAverage          float64 `json:"vol1DayAvg"`
 	Vol10DayAverage         float64 `json:"vol10DayAvg"`
 	Vol3MonthAverage        float64 `json:"vol3MonthAvg"`
-	Avg1DayVolume           float64 `json:"avg1DayVolume"`
-	Avg10DaysVolume         float64 `json:"avg10DaysVolume"`
-	Avg3MonthVolume         float64 `json:"avg3MonthVolume"`
+	Avg1DayVolume           int     `json:"avg1DayVolume"`
+	Avg10DaysVolume         int     `json:"avg10DaysVolume"`
+	Avg3MonthVolume         int     `json:"avg3MonthVolume"`
 	DeclarationDate         string  `json:"declarationDate"`
-	DividendFrequency       float64 `json:"dividendFreq"`
+	DividendFrequency       int     `json:"dividendFreq"`
 	EPS                     float64 `json:"eps"`
-	DTNVolume               float64 `json:"dtnVolume"`
+	DTNVolume               int     `json:"dtnVolume"`
 	NextDividendPayDate     string  `json:"nextDividendPayDate"`
 	NextDividendDate        string  `json:"nextDividendDate"`
 	FundLeverageFactor      float64 `json:"fundLeverageFactor"`
