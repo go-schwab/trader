@@ -236,9 +236,8 @@ func GetPriceHistory(symbol, periodType, period, frequencyType, frequency, start
 	body, err := utils.Handler(req)
 	utils.Check(err)
 	var candles []Candle
-	fmt.Println(body)
-	/*err = json.Unmarshal([]byte(body), &candles)
-	utils.Check(err)*/
+	err = json.Unmarshal([]byte(strings.Split(strings.Split(body, "[")[1], "]")[0]), &candles)
+	utils.Check(err)
 	return candles, nil
 }
 
