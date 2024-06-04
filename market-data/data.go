@@ -17,7 +17,7 @@ var (
 	endpointQuotes string = endpoint + "/quotes"
 
 	// Price History
-	endpointPriceHistory string = endpoint + "/%s/pricehistory" // Symbol
+	endpointPriceHistory string = endpoint + "/pricehistory"
 
 	// Instruments
 	endpointSearchInstrument string = endpoint + "/instruments"
