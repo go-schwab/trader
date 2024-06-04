@@ -108,7 +108,7 @@ func HomeDir() string {
 func LoadConfig() (err error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("env")
-	viper.AddConfigPath("$HOME/.foo/trade/")
+	viper.AddConfigPath("$HOME/.trade/")
 	viper.AutomaticEnv()
 	return viper.ReadInConfig()
 }

@@ -23,7 +23,7 @@ func Handler(req *http.Request) (string, error) {
 	)
 	m.Lock()
 	// Check if program has been run before by verifying the existence of /home/{user}/.go-trade
-	if _, err := os.Stat(fmt.Sprintf("%s/.go-trade", HomeDir())); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(fmt.Sprintf("%s/.trade", HomeDir())); errors.Is(err, os.ErrNotExist) {
 		tokens = oAuthInit()
 	} else {
 		tokens = readDB()

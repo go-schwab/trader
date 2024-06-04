@@ -18,7 +18,7 @@ func oAuthInit() TOKEN {
 	var m sync.Mutex
 	m.Lock()
 	// Create /home/{user}/.go-trade
-	err := os.Mkdir(fmt.Sprintf("%s/.go-trade", HomeDir()), os.ModePerm)
+	err := os.Mkdir(fmt.Sprintf("%s/.trade", HomeDir()), os.ModePerm)
 	Check(err)
 	// oAuth Leg 1 - Authorization Code
 	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", viper.Get("APPKEY"), viper.Get("CBURL")))
@@ -47,7 +47,7 @@ func oAuthInit() TOKEN {
 	tokens := parseAccessTokenResponse(string(bodyBytes))
 	tokensJson, err := json.Marshal(tokens)
 	Check(err)
-	err = os.WriteFile(fmt.Sprintf("%s/.go-trade/bar.json", HomeDir()), tokensJson, 0777)
+	err = os.WriteFile(fmt.Sprintf("%s/.trade/bar.json", HomeDir()), tokensJson, 0777)
 	Check(err)
 	m.Unlock()
 	return tokens
