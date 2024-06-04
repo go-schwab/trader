@@ -190,58 +190,6 @@ type Contract struct {
 	IN_THE_MONEY           bool    `json:""`
 }
 
-// GetCandles returns a []Candle with the previous 7 candles.
-// It takes one paramter:
-// ticker = "AAPL", etc.
-func GetCandles(ticker string) ([]Candle, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf(endpointQuote, ticker), nil)
-	utils.Check(err)
-	body, err := utils.Handler(req)
-	utils.Check(err)
-	var candles []Candle
-	fmt.Println(body)
-	/*err = json.Unmarshal([]byte(body), &candles)
-	utils.Check(err)*/
-	return candles, nil
-}
-
-// PriceHistory returns a series of candles with price volume & datetime info per candlestick.
-// It takes seven parameters:
-// ticker = "AAPL", etc.;
-// periodType = "day", "month", "year", "ytd" - default is "day";
-// period = the number of periods to show;
-// frequencyType = the type of frequency with which each candle is formed; valid fTypes by pType;
-// "day": "minute" /
-// "month": "daily", "weekly" /
-// "year": "daily", "weekly", "monthly" /
-// "ytd": "daily", "weekly";
-// frequency = the number of the frequencyType included in each candle; valid freqs by fType
-// "minute": 1,5,10,15,30 /
-// "daily": 1 /
-// "weekly": 1 /
-// "monthly": 1;
-// startDate =
-// endDate =
-func GetPriceHistory(symbol, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
-	req, err := http.NewRequest("GET", endpointPriceHistory, nil)
-	utils.Check(err)
-	q := req.URL.Query()
-	q.Add("symbol", symbol)
-	q.Add("periodType", periodType)
-	q.Add("period", period)
-	q.Add("frequencyType", frequencyType)
-	q.Add("frequency", frequency)
-	q.Add("startDate", startDate)
-	q.Add("endDate", endDate)
-	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
-	utils.Check(err)
-	var candles []Candle
-	err = json.Unmarshal([]byte(fmt.Sprintf("[%s]", strings.Split(strings.Split(body, "[")[1], "]")[0])), &candles)
-	utils.Check(err)
-	return candles, nil
-}
-
 // WIP: func GetQuotes(symbols string) Quote, error) {}
 
 // Quote returns a Quote; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
@@ -296,6 +244,43 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 	err = json.Unmarshal([]byte(fmt.Sprintf("%s}", strings.Join(split[:2], ""))), &instrument)
 	utils.Check(err)
 	return instrument, nil
+}
+
+// PriceHistory returns a series of candles with price volume & datetime info per candlestick.
+// It takes seven parameters:
+// ticker = "AAPL", etc.;
+// periodType = "day", "month", "year", "ytd" - default is "day";
+// period = the number of periods to show;
+// frequencyType = the type of frequency with which each candle is formed; valid fTypes by pType;
+// "day": "minute" /
+// "month": "daily", "weekly" /
+// "year": "daily", "weekly", "monthly" /
+// "ytd": "daily", "weekly";
+// frequency = the number of the frequencyType included in each candle; valid freqs by fType
+// "minute": 1,5,10,15,30 /
+// "daily": 1 /
+// "weekly": 1 /
+// "monthly": 1;
+// startDate =
+// endDate =
+func GetPriceHistory(symbol, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
+	req, err := http.NewRequest("GET", endpointPriceHistory, nil)
+	utils.Check(err)
+	q := req.URL.Query()
+	q.Add("symbol", symbol)
+	q.Add("periodType", periodType)
+	q.Add("period", period)
+	q.Add("frequencyType", frequencyType)
+	q.Add("frequency", frequency)
+	q.Add("startDate", startDate)
+	q.Add("endDate", endDate)
+	req.URL.RawQuery = q.Encode()
+	body, err := utils.Handler(req)
+	utils.Check(err)
+	var candles []Candle
+	err = json.Unmarshal([]byte(fmt.Sprintf("[%s]", strings.Split(strings.Split(body, "[")[1], "]")[0])), &candles)
+	utils.Check(err)
+	return candles, nil
 }
 
 // GetMovers returns information on the desired index's movers per your desired direction and change type(percent or value),
