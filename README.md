@@ -41,21 +41,39 @@ import (
     schwab "github.com/samjtro/go-trade"
 )
 
-movers, err := schwab.GetMovers("$index")
-handle(err)
+df, err := data.GetPriceHistory("AAPL", "month", "1", "daily", "1", "", "")
 
-fundamental, err := schwab.SearchInstrumentFundamental("symbol")
-handle(err)
+if err != nil {
+	panic(err)
+}
+
+quote0, err := data.GetQuote("AAPL")
+
+if err != nil {
+	panic(err)
+}
+
+simple, err := data.SearchInstrumentSimple("AAPL")
+
+if err != nil {
+	panic(err)
+}
+
+fundamental, err := data.SearchInstrumentFundamental("AAPL")
+
+if err != nil {
+	panic(err)
+}
 ```
 
 #### accounts-trading
 
 ## Roadmap to v 1.0.0
 
-- [ ] v0.9.0: Migrate working functionality to Schwab
+- [x] v0.9.0: Migrate working functionality to Schwab
     * [x] oAuth Flow (Retrieve, store tokens; refresh)
     * [x] Endpoints
-    * [ ] Fully Functional: Funcs, Structs, Etc.
+    * [x] Fully Functional: Funcs, Structs, Etc.
         * [x] movers
         * [x] data
         * [x] instrument
