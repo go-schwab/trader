@@ -5,7 +5,7 @@ NOTICE: We'll be switching over to GPL2.0 upon the release of v1.0.0.
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-schwab-traderapi)](https://goreportcard.com/report/github.com/samjtro/go-schwab-traderapi)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Stable Release: [v0.8.7.1](https://github.com/samjtro/go-schwab-traderapi/tree/stable)
+Stable Release: [v0.9.0](https://github.com/samjtro/go-schwab-traderapi/tree/stable)
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## What is this?
