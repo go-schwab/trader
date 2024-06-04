@@ -42,7 +42,7 @@ type Quote struct {
 	AssetMainType           string  `json:"assetMainType"`
 	AssetSubType            string  `json:"assetSubType"`
 	QuoteType               string  `json:"quoteType"`
-	RealTime                string  `json:"realTime"`
+	RealTime                bool    `json:"realTime"`
 	SSID                    int     `json:"ssid"`
 	Symbol                  string  `json:"symbol"`
 	Hi52                    float64 `json:"52WeekHigh"`
