@@ -236,9 +236,9 @@ func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, start
 	utils.Check(err)
 	var candles []Candle
 	fmt.Println(body)
-	err = json.Unmarshal([]byte(body), &candles)
+	/*err = json.Unmarshal([]byte(body), &candles)
 	utils.Check(err)
-	return candles, nil
+	return candles, nil*/
 }
 
 // WIP: func GetQuotes(symbols string) Quote, error) {}

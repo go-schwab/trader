@@ -56,12 +56,12 @@ handle(err)
     * [x] oAuth Flow (Retrieve, store tokens; refresh)
     * [x] Endpoints
     * [ ] Fully Functional: Funcs, Structs, Etc.
-        * [x] movers.go
-        * [x] data.go
-        * [x] instrument.go
-        * [ ] option.go
-        * [ ] pricehistory.go
-        * [ ] realtime.go
+        * [x] movers
+        * [x] data
+        * [x] instrument
+        * [ ] option
+        * [ ] pricehistory
+        * [x] realtime
 - [ ] v0.9.5: Account and Trading API
     * [ ] account.go
         * [ ] Transaction History
