@@ -31,7 +31,7 @@ var (
 
 type Candle struct {
 	Time   int     `json:"datetime"`
-	Volume float64 `json:"volume"`
+	Volume int     `json:"volume"`
 	Open   float64 `json:"open"`
 	Close  float64 `json:"close"`
 	Hi     float64 `json:"high"`
