@@ -221,10 +221,11 @@ func GetCandles(ticker string) ([]Candle, error) {
 // "monthly": 1;
 // startDate =
 // endDate =
-func GetPriceHistory(ticker, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf(endpointPriceHistory, ticker), nil)
+func GetPriceHistory(symbol, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
+	req, err := http.NewRequest("GET", endpointPriceHistory, nil)
 	utils.Check(err)
 	q := req.URL.Query()
+	q.Add("symbol", symbol)
 	q.Add("periodType", periodType)
 	q.Add("period", period)
 	q.Add("frequencyType", frequencyType)
