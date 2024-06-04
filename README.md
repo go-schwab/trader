@@ -59,8 +59,7 @@ handle(err)
         * [x] movers
         * [x] data
         * [x] instrument
-        * [ ] option
-        * [ ] pricehistory
+        * [x] pricehistory
         * [x] realtime
 - [ ] v0.9.5: Account and Trading API
     * [ ] account.go
@@ -71,6 +70,7 @@ handle(err)
         * [ ] Trading
 - [ ] v0.9.7: Performance Testing
 - [ ] v0.9.9: Finish test package & integrate CI for new PRs
+- [ ] v1.1.0: Finish option
 
 ## Copyright notice
 

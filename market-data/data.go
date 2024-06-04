@@ -30,7 +30,7 @@ var (
 )
 
 type Candle struct {
-	Time   string  `json:"datetime"`
+	Time   int     `json:"datetime"`
 	Volume float64 `json:"volume"`
 	Open   float64 `json:"open"`
 	Close  float64 `json:"close"`
@@ -199,8 +199,9 @@ func GetCandles(ticker string) ([]Candle, error) {
 	body, err := utils.Handler(req)
 	utils.Check(err)
 	var candles []Candle
-	err = json.Unmarshal([]byte(body), &candles)
-	utils.Check(err)
+	fmt.Println(body)
+	/*err = json.Unmarshal([]byte(body), &candles)
+	utils.Check(err)*/
 	return candles, nil
 }
 
@@ -236,9 +237,8 @@ func GetPriceHistory(symbol, periodType, period, frequencyType, frequency, start
 	body, err := utils.Handler(req)
 	utils.Check(err)
 	var candles []Candle
-	fmt.Println(strings.Split(strings.Split(body, "[")[1], "]")[0])
-	/*err = json.Unmarshal([]byte(strings.Split(strings.Split(body, "[")[1], "]")[0]), &candles)
-	utils.Check(err)*/
+	err = json.Unmarshal([]byte(strings.Split(strings.Split(body, "[")[1], "]")[0]), &candles)
+	utils.Check(err)
 	return candles, nil
 }
 
