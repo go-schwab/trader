@@ -273,8 +273,7 @@ func SearchInstrumentSimple(symbols string) (SimpleInstrument, error) {
 	body, err := utils.Handler(req)
 	utils.Check(err)
 	var instrument SimpleInstrument
-	fmt.Println(strings.Split(body, "[")[1][:len(strings.Split(body, "["))-2])
-	err = json.Unmarshal([]byte(strings.Split(body, "[")[1][:len(strings.Split(body, "["))-2]), &instrument)
+	err = json.Unmarshal([]byte(strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2]), &instrument)
 	utils.Check(err)
 	return instrument, nil
 }
