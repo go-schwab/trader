@@ -88,7 +88,7 @@ func openBrowser(url string) {
 	case "darwin":
 		err = exec.Command("open", url).Start()
 	default:
-		err = fmt.Errorf("unsupported platform")
+		log.Fatalf("Unsupported platform.")
 	}
 	Check(err)
 }
@@ -102,7 +102,18 @@ func Check(err error) {
 func HomeDir() string {
 	currentUser, err := user.Current()
 	Check(err)
-	return fmt.Sprintf("/home/%s", currentUser.Username)
+	var homedir string
+	switch runtime.GOOS {
+	case "linux":
+		homedir = "/home/" + currentUser.Username
+	case "windows":
+		homedir = "C:\\Users\\" + currentUser.Username
+	case "darwin":
+		homedir = "/users/" + currentUser.Username
+	default:
+		log.Fatalf("Unsupported platform.")
+	}
+	return homedir
 }
 
 func LoadConfig() (err error) {
