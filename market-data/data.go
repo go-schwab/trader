@@ -150,12 +150,12 @@ type FundamentalInstrument struct {
 type Screener struct {
 	Symbol           string  `json:"symbol"`
 	Description      string  `json:"description"`
-	Volume           float64 `json:"volume"`
+	Volume           int     `json:"volume"`
 	LastPrice        float64 `json:"lastPrice"`
 	NetChange        float64 `json:"netChange"`
 	MarketShare      float64 `json:"marketShare"`
-	TotalVolume      float64 `json:"totalVolume"`
-	Trades           float64 `json:"trades"`
+	TotalVolume      int     `json:"totalVolume"`
+	Trades           int     `json:"trades"`
 	NetPercentChange float64 `json:"netPercentChange"`
 }
 

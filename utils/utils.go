@@ -8,23 +8,22 @@ import (
 	"os/exec"
 	"os/user"
 	"runtime"
-	"strconv"
 	"strings"
 	"time"
 
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	err := godotenv.Load("config.env")
+	Check(err)
+}
 
 type TOKEN struct {
 	RefreshExpiration time.Time
 	Refresh           string
 	BearerExpiration  time.Time
 	Bearer            string
-}
-
-func init() {
-	err := LoadConfig()
-	Check(err)
 }
 
 /*func trimFirstJSONElement(s string) string {
@@ -116,14 +115,6 @@ func HomeDir() string {
 	return homedir
 }
 
-func LoadConfig() (err error) {
-	viper.SetConfigName("config")
-	viper.SetConfigType("env")
-	viper.AddConfigPath("$HOME/.trade/")
-	viper.AutomaticEnv()
-	return viper.ReadInConfig()
-}
-
 // Trim one FIRST character in the string
 func TrimOneFirst(s string) string {
 	if len(s) < 1 {
@@ -170,24 +161,4 @@ func TrimOneFirstThreeLast(s string) string {
 		return ""
 	}
 	return s[1 : len(s)-3]
-}
-
-// Now returns a string; containing the current time in ISO 8601 format:
-// This is the standard datetime format for quotes and dataframes across this library.
-// This function uses your local `$HOME/config.env` for generation of your local time. This requires setting the UTC_DIFF variable in the following format: `-06:00`
-func Now(t time.Time) string {
-	return fmt.Sprintf("%d-%d-%dT%d:%d:%d%s",
-		t.Year(),
-		t.Month(),
-		t.Day(),
-		t.Hour(),
-		t.Minute(),
-		t.Second(),
-		viper.Get("UTC_DIFF"))
-}
-
-func UnixToLocal(timestamp string) string {
-	i, err := strconv.ParseInt(timestamp, 10, 64)
-	Check(err)
-	return Now(time.Unix(i, 0))
 }
