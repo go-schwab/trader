@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	utils "github.com/samjtro/go-schwab-traderapi/utils"
+	utils "github.com/samjtro/schwab-go/utils"
 )
 
 var (

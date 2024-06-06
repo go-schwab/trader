@@ -1,5 +1,3 @@
-NOTICE: We'll be switching over to GPL2.0 upon the release of v1.0.0.
-
 # go-trade
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-schwab-traderapi.svg)](https://pkg.go.dev/github.com/samjtro/go-schwab-traderapi)
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-schwab-traderapi)](https://goreportcard.com/report/github.com/samjtro/go-schwab-traderapi)
@@ -45,7 +43,7 @@ UTCDIFF=+0:00 // Your difference from UTC time, e.g. MT is -06:00
 
 ```
 import (
-    schwab "github.com/samjtro/go-schwab-traderapi"
+    schwab "github.com/samjtro/schwab-go"
 )
 
 df, err := data.GetPriceHistory("AAPL", "month", "1", "daily", "1", "", "")
