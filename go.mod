@@ -1,6 +1,8 @@
 module github.com/samjtro/schwab-go
 
-go 1.19
+go 1.22.3
+
+toolchain go1.22.4
 
 require (
 	github.com/samjtro/go-schwab-traderapi v0.9.0
