@@ -1,9 +1,9 @@
 # go-trade
-[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/go-schwab-traderapi.svg)](https://pkg.go.dev/github.com/samjtro/go-schwab-traderapi)
-[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/go-schwab-traderapi)](https://goreportcard.com/report/github.com/samjtro/go-schwab-traderapi)
+[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/schwab-go.svg)](https://pkg.go.dev/github.com/samjtro/schwab-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab-go)](https://goreportcard.com/report/github.com/samjtro/schwab-go)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Stable Release: [v0.9.0.3](https://github.com/samjtro/go-schwab-traderapi/tree/stable)
+Stable Release: [v0.9.0.6](https://github.com/samjtro/schwab-go/tree/stable)
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## What is this?
@@ -12,7 +12,7 @@ Other Schwab API hooks attempt to do way too much. This is basically all you nee
 
 **You set it up once, and forget about it.**
 
-Because of it's simplicity, it's lightning fast. Don't trust us; try it out for yourself!
+Because of it's simplicity, it's lightning fast. Try it out for yourself - sample code below.
 
 This project is the successor to [go-tda](https://github.com/samjtro/go-tda), a project I made both as a learning experience, as well as an attempt to provide a counterweight to the primarily Python-based algotrading sphere. Golang is SO much better for algorithmic trading, and this package is an attempt to prove out that case.
 
@@ -22,7 +22,7 @@ If you want to contribute - go for it! There is no contribution guide, just a si
 
 ### Quick start
 
-0. Go to `developer.schwab.com`, create an account, create an app, get app credentials from `https://developer.schwab.com/dashboard/apps`
+0. Go to developer.schwab.com, create an account, create an app, get app credentials from https://developer.schwab.com/dashboard/apps
 1. create `config.env` in your project directory, formatted as such:
 ```
 APPKEY=KEY0 // App Key
