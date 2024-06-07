@@ -1,13 +1,11 @@
-package test
+package schwab
 
 import (
 	"testing"
-
-	schwab "github.com/samjtro/schwab-go/schwab"
 )
 
 func TestMarketDataAPI(t *testing.T) {
-	agent := schwab.Initiate()
+	agent := Initiate()
 
 	_, err := agent.GetQuote("AAPL")
 
