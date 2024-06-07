@@ -3,10 +3,11 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab)](https://goreportcard.com/report/github.com/samjtro/schwab)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Stable Release: [v0.9.1](https://github.com/samjtro/schwab/tree/stable)
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## What is this?
+
+This project is WIP: The Market Data API is functional, and I am working on Accounts & Trading now.
 
 Go is much faster than Python, has a far more robust standard library, and is compiled. Therefore, it should be the standard for algorithmic trading; yet it is not. This project is my attempt to create a countweight to the primarily Python-based algotrading scene.
 

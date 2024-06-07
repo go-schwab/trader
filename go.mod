@@ -1,4 +1,4 @@
-module github.com/samjtro/schwab-go
+module github.com/samjtro/schwab
 
 go 1.22.4
 
