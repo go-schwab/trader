@@ -1,3 +1,6 @@
+// The fastest unofficial Schwab TraderAPI wrapper
+// Copyright (C) 2024 Samuel Troyer <github.com/samjtro>
+// See the GNU General Public License for more details
 package schwab
 
 var (

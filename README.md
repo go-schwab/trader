@@ -1,7 +1,7 @@
 # schwab
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/schwab.svg)](https://pkg.go.dev/github.com/samjtro/schwab)
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab)](https://goreportcard.com/report/github.com/samjtro/schwab)
-[![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPLv2-green)](LICENSE)
 
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
@@ -93,18 +93,3 @@ Output:
 - [ ] v0.9.9: Finish test package & integrate CI for new PRs
 - [ ] v1.1.0: Finish option
 
-## Copyright notice
-
-Copyright 2022-2024 github.com/samjtro
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
