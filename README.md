@@ -1,20 +1,19 @@
-# go-trade
-[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/schwab-go.svg)](https://pkg.go.dev/github.com/samjtro/schwab-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab-go)](https://goreportcard.com/report/github.com/samjtro/schwab-go)
+# schwab
+[![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/schwab.svg)](https://pkg.go.dev/github.com/samjtro/schwab)
+[![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab)](https://goreportcard.com/report/github.com/samjtro/schwab)
 [![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
 
-Stable Release: [v0.9.0.6](https://github.com/samjtro/schwab-go/tree/stable)
+Stable Release: [v0.9.1](https://github.com/samjtro/schwab/tree/stable)
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## What is this?
 
-Go is so much faster than Python, has a far more robust standard library, and is compiled. Therefore, it should be the standard for algorithmic trading; yet it is not. This project is my attempt to create a countweight to the primarily Python-based algotrading scene.
+Go is much faster than Python, has a far more robust standard library, and is compiled. Therefore, it should be the standard for algorithmic trading; yet it is not. This project is my attempt to create a countweight to the primarily Python-based algotrading scene.
 
 Why should you use this library?
 
-1. It's fast. Really fast.
-2. Super easy to setup, and auto-refreshing on both the Bearer Token & Authentication Code.
-3. Did I mention it's really fast?
+1. It's fast. Really fast. Average request time is ~200ms, while the lighter requests average ~140ms.
+2. Super easy to setup. Plus, both the Bearer Token & Authentication Codes auto-refresh.
 
 If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. All contributions should be tested via `go test` before submission.
 
@@ -29,7 +28,7 @@ APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
-2. `go get github.com/samjtro/schwab-go`
+2. `go get github.com/samjtro/schwab`
 
 ### Code samples
 
@@ -37,7 +36,7 @@ CBURL=https://127.0.0.1 // App Callback URL
 
 ```
 import (
-    "github.com/samjtro/schwab-go/schwab"
+    "github.com/samjtro/schwab"
 )
 
 agent := schwab.Initiate()
