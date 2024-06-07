@@ -8,15 +8,15 @@ Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## What is this?
 
-Other Schwab API hooks attempt to do way too much. This is basically all you need and nothing you don't; APIs are separated as packages, and each function is routed through utils/handler; meaning there's no need for additional agents, etc.
+Go is so much faster than Python, has a far more robust standard library, and is compiled. Therefore, it should be the standard for algorithmic trading; yet it is not. This project is my attempt to create a countweight to the primarily Python-based algotrading scene.
 
-**You set it up once, and forget about it.**
+Why should you use this library?
 
-Because of it's simplicity, it's lightning fast. Try it out for yourself - sample code below.
+1. It's fast. Really fast.
+2. Super easy to setup, and auto-refreshing on both the Bearer Token & Authentication Code.
+3. Did I mention it's really fast?
 
-This project is the successor to [go-tda](https://github.com/samjtro/go-tda), a project I made both as a learning experience, as well as an attempt to provide a counterweight to the primarily Python-based algotrading sphere. Golang is SO much better for algorithmic trading, and this package is an attempt to prove out that case.
-
-If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. If your contribution breaks other functionality in the library, don't contribute it.
+If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. All contributions should be tested via `go test` before submission.
 
 ## What can i do with this?
 
@@ -37,19 +37,21 @@ CBURL=https://127.0.0.1 // App Callback URL
 
 ```
 import (
-    schwab "github.com/samjtro/schwab-go"
+    "github.com/samjtro/schwab-go/schwab"
 )
 
-df, err := data.GetPriceHistory("AAPL", "month", "1", "daily", "1", "", "")
+agent := schwab.Initiate()
+
+df, err := agent.GetPriceHistory("AAPL", "month", "1", "daily", "1", "", "")
 check(err)
 
-quote, err := data.GetQuote("AAPL")
+quote, err := agent.GetQuote("AAPL")
 check(err)
 
-simple, err := data.SearchInstrumentSimple("AAPL")
+simple, err := agent.SearchInstrumentSimple("AAPL")
 check(err)
 
-fundamental, err := data.SearchInstrumentFundamental("AAPL")
+fundamental, err := agent.SearchInstrumentFundamental("AAPL")
 check(err)
 
 fmt.Println(df)

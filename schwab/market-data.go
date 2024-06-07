@@ -1,12 +1,11 @@
-package data
+package schwab
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
 
-	utils "github.com/samjtro/schwab-go/utils"
+	"github.com/bytedance/sonic"
 )
 
 var (
@@ -195,54 +194,54 @@ type Contract struct {
 // Quote returns a Quote; containing a real time quote of the desired stock's performance with a number of different indicators (including volatility, volume, price, fundamentals & more).
 // It takes one parameter:
 // ticker = "AAPL", etc.
-func GetQuote(symbol string) (Quote, error) {
+func (agent *Agent) GetQuote(symbol string) (Quote, error) {
 	req, err := http.NewRequest("GET", endpointQuotes, nil)
-	utils.Check(err)
+	check(err)
 	q := req.URL.Query()
 	q.Add("symbols", symbol)
 	q.Add("fields", "quote")
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
-	utils.Check(err)
+	body, err := agent.Handler(req)
+	check(err)
 	var quote Quote
-	err = json.Unmarshal([]byte(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), "")[:len(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), ""))-2]), &quote)
-	utils.Check(err)
+	err = sonic.Unmarshal([]byte(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), "")[:len(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), ""))-2]), &quote)
+	check(err)
 	return quote, err
 }
 
 // SearchInstrumentSimple returns instrument's simples.
 // It takes one param:
-func SearchInstrumentSimple(symbols string) (SimpleInstrument, error) {
+func (agent *Agent) SearchInstrumentSimple(symbols string) (SimpleInstrument, error) {
 	req, err := http.NewRequest("GET", endpointSearchInstrument, nil)
-	utils.Check(err)
+	check(err)
 	q := req.URL.Query()
 	q.Add("symbol", symbols)
 	q.Add("projection", "symbol-search")
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
-	utils.Check(err)
+	body, err := agent.Handler(req)
+	check(err)
 	var instrument SimpleInstrument
-	err = json.Unmarshal([]byte(strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2]), &instrument)
-	utils.Check(err)
+	err = sonic.Unmarshal([]byte(strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2]), &instrument)
+	check(err)
 	return instrument, nil
 }
 
 // SearchInstrumentFundamental returns instrument's fundamentals.
 // It takes one param:
-func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
+func (agent *Agent) SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 	req, err := http.NewRequest("GET", endpointSearchInstrument, nil)
-	utils.Check(err)
+	check(err)
 	q := req.URL.Query()
 	q.Add("symbol", symbol)
 	q.Add("projection", "fundamental")
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
-	utils.Check(err)
+	body, err := agent.Handler(req)
+	check(err)
 	var instrument FundamentalInstrument
 	split0 := strings.Split(body, "[{\"fundamental\":")[1]
 	split := strings.Split(split0, "}")
-	err = json.Unmarshal([]byte(fmt.Sprintf("%s}", strings.Join(split[:2], ""))), &instrument)
-	utils.Check(err)
+	err = sonic.Unmarshal([]byte(fmt.Sprintf("%s}", strings.Join(split[:2], ""))), &instrument)
+	check(err)
 	return instrument, nil
 }
 
@@ -263,9 +262,9 @@ func SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 // "monthly": 1;
 // startDate =
 // endDate =
-func GetPriceHistory(symbol, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
+func (agent *Agent) GetPriceHistory(symbol, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
 	req, err := http.NewRequest("GET", endpointPriceHistory, nil)
-	utils.Check(err)
+	check(err)
 	q := req.URL.Query()
 	q.Add("symbol", symbol)
 	q.Add("periodType", periodType)
@@ -275,11 +274,11 @@ func GetPriceHistory(symbol, periodType, period, frequencyType, frequency, start
 	q.Add("startDate", startDate)
 	q.Add("endDate", endDate)
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
-	utils.Check(err)
+	body, err := agent.Handler(req)
+	check(err)
 	var candles []Candle
-	err = json.Unmarshal([]byte(fmt.Sprintf("[%s]", strings.Split(strings.Split(body, "[")[1], "]")[0])), &candles)
-	utils.Check(err)
+	err = sonic.Unmarshal([]byte(fmt.Sprintf("[%s]", strings.Split(strings.Split(body, "[")[1], "]")[0])), &candles)
+	check(err)
 	return candles, nil
 }
 
@@ -288,19 +287,19 @@ func GetPriceHistory(symbol, periodType, period, frequencyType, frequency, start
 // index = "$DJI", "$SPX.X", or "$COMPX"
 // direction = "up" or "down"
 // change = "percent" or "value"
-func GetMovers(index, direction, change string) ([]Screener, error) {
+func (agent *Agent) GetMovers(index, direction, change string) ([]Screener, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointMovers, index), nil)
-	utils.Check(err)
+	check(err)
 	q := req.URL.Query()
 	q.Add("direction", direction)
 	q.Add("change", change)
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
-	utils.Check(err)
+	body, err := agent.Handler(req)
+	check(err)
 	var movers []Screener
 	stringToParse := fmt.Sprintf("[%s]", strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2])
-	err = json.Unmarshal([]byte(stringToParse), &movers)
-	utils.Check(err)
+	err = sonic.Unmarshal([]byte(stringToParse), &movers)
+	check(err)
 	return movers, nil
 }
 
@@ -320,9 +319,9 @@ func GetMovers(index, direction, change string) ([]Screener, error) {
 // toDate = Only return expirations before this date. Valid ISO-8601 formats are: yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ssz.
 // Lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01").
 // This returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the status of the contract ("ALL"), expiring before 2022-07-01
-func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]Contract, error) {
+func (agent *Agent) Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]Contract, error) {
 	req, err := http.NewRequest("GET", endpointOptions, nil)
-	utils.Check(err)
+	check(err)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
 	q.Add("contractType", contractType)
@@ -330,17 +329,16 @@ func Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]Co
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
 	req.URL.RawQuery = q.Encode()
-	body, err := utils.Handler(req)
-	utils.Check(err)
+	body, err := agent.Handler(req)
+	check(err)
 	var chain []Contract
 	// WIP
-	err = json.Unmarshal([]byte(body), &chain)
-	utils.Check(err)
+	err = sonic.Unmarshal([]byte(body), &chain)
+	check(err)
 	return chain, nil
 }
 
-// Covered returns a string; containing covered option calls.
-// Not functional ATM.
+/* Covered returns a string; containing covered option calls.
 func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
 	req, _ := http.NewRequest("GET", endpointOptions, nil)
 	q := req.URL.Query()
@@ -357,7 +355,6 @@ func Covered(ticker, contractType, strikeRange, strikeCount, toDate string) (str
 }
 
 // Butterfly returns a string; containing Butterfly spread option calls.
-// Not functional ATM.
 func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (string, error) {
 	req, _ := http.NewRequest("GET", endpointOptions, nil)
 	q := req.URL.Query()
@@ -375,7 +372,6 @@ func Butterfly(ticker, contractType, strikeRange, strikeCount, toDate string) (s
 
 // ANALYTICAL returns a string; allows you to control additional parameters for theoretical value calculations:
 // It takes nine parameters:
-// Not functional ATM.
 func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatility, underlyingPrice, interestRate, daysToExpiration string) (string, error) {
 	req, _ := http.NewRequest("GET", endpointOptions, nil)
 	q := req.URL.Query()
@@ -396,11 +392,11 @@ func Analytical(ticker, contractType, strikeRange, strikeCount, toDate, volatili
 	return body, nil
 }
 
-// func Vertical() string {}
-// func Calendar() string {}
-// func Strangle() string {}
-// func Straddle() string {}
-// func Condor() string {}
-// func Diagonal() string {}
-// func Collar() string {}
-// func Roll() string {}
+func Vertical() string {}
+func Calendar() string {}
+func Strangle() string {}
+func Straddle() string {}
+func Condor() string {}
+func Diagonal() string {}
+func Collar() string {}
+func Roll() string {}*/
