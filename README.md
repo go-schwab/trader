@@ -5,9 +5,31 @@
 
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
+## Roadmap to v 1.0.0
+
+- [x] Current Release: v0.0.1: Migrate working functionality to Schwab
+    * [x] oAuth Flow (Retrieve, store tokens; refresh)
+    * [x] Endpoints
+    * [x] Markets and Data API - Full Access (minus option chains)
+        * [x] movers
+        * [x] data
+        * [x] instrument
+        * [x] pricehistory
+        * [x] realtime
+- [ ] v0.5.0: Account and Trading API - Full Access
+    * [ ] account.go
+        * [x] Account Numbers, Account Info
+        * [ ] Transaction History
+        * [ ] User Info & Prefs
+        * [ ] Watchlist
+    * [ ] trade.go
+        * [ ] Trading
+- [ ] v0.9.0: Performance testing
+- [ ] v1.0.0: Finish option chains
+
 ## What is this?
 
-This project is WIP: The Market Data API is functional, and I am working on Accounts & Trading now. Use v0.0.1 before v1.0.0 is released.
+This project is WIP: The Market Data API is functional, and I am working on Accounts & Trading now.
 
 Go is much faster than Python, has a far more robust standard library, and is compiled. Therefore, it should be the standard for algorithmic trading; yet it is not. This project is my attempt to create a countweight to the primarily Python-based algotrading scene.
 
@@ -70,26 +92,3 @@ Output:
 ```
 
 #### accounts-trading
-
-## Roadmap to v 1.0.0
-
-- [x] v0.9.0: Migrate working functionality to Schwab
-    * [x] oAuth Flow (Retrieve, store tokens; refresh)
-    * [x] Endpoints
-    * [x] Fully Functional: Funcs, Structs, Etc.
-        * [x] movers
-        * [x] data
-        * [x] instrument
-        * [x] pricehistory
-        * [x] realtime
-- [ ] v0.9.5: Account and Trading API
-    * [ ] account.go
-        * [ ] Transaction History
-        * [ ] User Info & Prefs
-        * [ ] Watchlist
-    * [ ] trade.go
-        * [ ] Trading
-- [ ] v0.9.7: Performance Testing
-- [ ] v0.9.9: Finish test package & integrate CI for new PRs
-- [ ] v1.1.0: Finish option
-

@@ -4,8 +4,9 @@
 package schwab
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/bytedance/sonic"
 )
 
 var (
@@ -158,21 +159,45 @@ type ProjectedBalance struct {
 	OptionBuyingPower                float64
 }
 
+// Get encrypted account numbers for trading
 func (agent *Agent) GetAccountNumbers() ([]AccountNumbers, error) {
 	req, err := http.NewRequest("GET", endpointAccountNumbers, nil)
 	check(err)
 	body, err := agent.Handler(req)
 	check(err)
 	var accountNumbers []AccountNumbers
-	err = json.Unmarshal([]byte(body), &accountNumbers)
+	err = sonic.Unmarshal([]byte(body), &accountNumbers)
 	check(err)
 	return accountNumbers, nil
 }
 
-func GetAccounts() []Account { return []Account{} }
+// WIP:
+func (agent *Agent) GetAccounts() string {
+	req, err := http.NewRequest("GET", endpointAccounts, nil)
+	check(err)
+	body, err := agent.Handler(req)
+	check(err)
+	/*var accounts []Account
+	split0 := strings.Split(body, "securitiesAccount: ")
+	if len(split0[1:]) > 1 {
+		count := 0
+		for i, x := range split0 {
+			var account Account
+			if count == 0 {
+				err = sonic.Unmarshal(x)
+			}
 
+			count++
+		}
+	}
+	check(err)*/
+	return body
+}
+
+/* TODO
 func GetAccount() Account { return Account{} }
 
 func SubmitLimitOrder() {}
 
 func SubmitMarketOrder() {}
+*/

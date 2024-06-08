@@ -13,4 +13,7 @@ func TestAccountsTradingAPI(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 	fmt.Println(an)
+
+	ac := agent.GetAccounts()
+	fmt.Println(ac)
 }
