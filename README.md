@@ -7,7 +7,7 @@ Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## What is this?
 
-This project is WIP: The Market Data API is functional, and I am working on Accounts & Trading now.
+This project is WIP: The Market Data API is functional, and I am working on Accounts & Trading now. Use v0.0.1 before v1.0.0 is released.
 
 Go is much faster than Python, has a far more robust standard library, and is compiled. Therefore, it should be the standard for algorithmic trading; yet it is not. This project is my attempt to create a countweight to the primarily Python-based algotrading scene.
 
@@ -29,7 +29,7 @@ APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
-2. `go get github.com/samjtro/schwab`
+2. `go get github.com/samjtro/schwab@v0.0.1`
 
 ### Code samples
 
