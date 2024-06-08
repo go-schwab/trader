@@ -14,6 +14,9 @@ func TestAccountsTradingAPI(t *testing.T) {
 	}
 	fmt.Println(an)
 
-	ac := agent.GetAccounts()
+	ac, err := agent.GetAccounts()
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
 	fmt.Println(ac)
 }

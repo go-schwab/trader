@@ -34,10 +34,9 @@ type AccountNumbers struct {
 	HashValue     string
 }
 
-// WIP: Need to figure out where to use f64/i32; not entirely sure from the docs
 type Account struct {
+	Type                    string
 	AccountNumber           string
-	HashValue               string
 	RoundTrips              int
 	IsDayTrader             bool
 	IsClosingOnlyRestricted bool
@@ -46,6 +45,7 @@ type Account struct {
 	InitialBalances         InitialBalance
 	CurrentBalances         CurrentBalance
 	ProjectedBalances       ProjectedBalance
+	AggregatedBalance       AggregatedBalance
 }
 
 type Position struct {
@@ -95,7 +95,7 @@ type InitialBalance struct {
 	LiquidationValue                 float64
 	LongMarginValue                  float64
 	LongOptionMarketValue            float64
-	LongStockCall                    float64
+	LongStockValue                   float64
 	MaintenanceCall                  float64
 	MaintenanceRequirement           float64
 	Margin                           float64
@@ -115,7 +115,7 @@ type InitialBalance struct {
 	AccountValue                     float64
 }
 
-type CurrentBalance struct {
+/*type CurrentBalance struct {
 	AvailableFunds                   float64
 	AvailableFundsNonMarginableTrade float64
 	BuyingPower                      float64
@@ -135,6 +135,15 @@ type CurrentBalance struct {
 	IsInCall                         float64
 	StockBuyingPower                 float64
 	OptionBuyingPower                float64
+}*/
+
+type CurrentBalance struct {
+	AccruedInterest       float64
+	CashBalance           float64
+	CashReceipts          float64
+	LongOptionMarketValue float64
+	LiquidationValue      float64
+	SMA                   float64
 }
 
 type ProjectedBalance struct {
@@ -159,6 +168,11 @@ type ProjectedBalance struct {
 	OptionBuyingPower                float64
 }
 
+type AggregatedBalance struct {
+	CurrentLiquidationValue float64
+	LiquidationValue        float64
+}
+
 // Get encrypted account numbers for trading
 func (agent *Agent) GetAccountNumbers() ([]AccountNumbers, error) {
 	req, err := http.NewRequest("GET", endpointAccountNumbers, nil)
@@ -172,26 +186,28 @@ func (agent *Agent) GetAccountNumbers() ([]AccountNumbers, error) {
 }
 
 // WIP:
-func (agent *Agent) GetAccounts() string {
+func (agent *Agent) GetAccounts() ([]Account, error) {
 	req, err := http.NewRequest("GET", endpointAccounts, nil)
 	check(err)
 	body, err := agent.Handler(req)
 	check(err)
-	/*var accounts []Account
-	split0 := strings.Split(body, "securitiesAccount: ")
+	var accounts []Account
+	/*split0 := strings.Split(body, "securitiesAccount: ")
 	if len(split0[1:]) > 1 {
 		count := 0
 		for i, x := range split0 {
 			var account Account
 			if count == 0 {
-				err = sonic.Unmarshal(x)
-			}
+				err = sonic.Unmarshal(x, &account)
+			} else if count == len(split0[1:])
 
 			count++
 		}
 	}
 	check(err)*/
-	return body
+	err = sonic.Unmarshal([]byte(body), accounts)
+	check(err)
+	return accounts, nil
 }
 
 /* TODO
