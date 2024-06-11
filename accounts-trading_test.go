@@ -14,7 +14,13 @@ func TestAccountsTradingAPI(t *testing.T) {
 	}
 	fmt.Println(an)
 
-	ac, err := agent.GetAccounts()
+	aca, err := agent.GetAccounts()
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	fmt.Println(aca)
+
+	ac, err := agent.GetAccount(an[0].HashValue)
 	if err != nil {
 		t.Fatalf(err.Error())
 	}

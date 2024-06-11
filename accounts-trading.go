@@ -4,6 +4,7 @@
 package schwab
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/bytedance/sonic"
@@ -28,6 +29,53 @@ var (
 	endpointTransactions string = accountEndpoint + "/accounts/%s/transactions"
 	endpointTransaction  string = accountEndpoint + "/accounts/%s/transactions/%s"
 )
+
+type Transaction struct {
+	ActivityID     int `json:"ActivityId"`
+	Time           string
+	User           User
+	Description    string
+	AccountNumber  string
+	Type           string
+	Status         string
+	SubAccount     string
+	TradeDate      string
+	SettlementDate string
+	PositionId     int
+	OrderId        int
+	NetAmount      int
+	ActivityType   string
+	TransferItems  TransferItems
+}
+
+type User struct {
+	CdDomainId     string
+	Login          string
+	Type           string
+	UserId         int
+	SystemUserName string
+	FirstName      string
+	LastName       string
+	BrokerRepCode  string
+}
+
+type TransferItems struct {
+	Instrument     TransactionInstrument
+	Amount         int
+	Cost           int
+	Price          int
+	FeeType        string
+	PositionEffect string
+}
+
+type TransactionInstrument struct {
+	Cusip        string
+	Symbol       string
+	Description  string
+	InstrumentId int
+	NetChange    int
+	Type         string
+}
 
 type AccountNumbers struct {
 	AccountNumber string
@@ -185,35 +233,44 @@ func (agent *Agent) GetAccountNumbers() ([]AccountNumbers, error) {
 	return accountNumbers, nil
 }
 
-// WIP:
+// Get all accounts associated with the user logged in
 func (agent *Agent) GetAccounts() ([]Account, error) {
 	req, err := http.NewRequest("GET", endpointAccounts, nil)
 	check(err)
 	body, err := agent.Handler(req)
 	check(err)
 	var accounts []Account
-	/*split0 := strings.Split(body, "securitiesAccount: ")
-	if len(split0[1:]) > 1 {
-		count := 0
-		for i, x := range split0 {
-			var account Account
-			if count == 0 {
-				err = sonic.Unmarshal(x, &account)
-			} else if count == len(split0[1:])
-
-			count++
-		}
-	}
-	check(err)*/
-	err = sonic.Unmarshal([]byte(body), accounts)
+	err = sonic.Unmarshal([]byte(body), &accounts)
 	check(err)
 	return accounts, nil
 }
 
-/* TODO
-func GetAccount() Account { return Account{} }
+// Get account by encrypted account id
+func (agent *Agent) GetAccount(id string) (Account, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf(endpointAccount, id), nil)
+	check(err)
+	body, err := agent.Handler(req)
+	check(err)
+	var account Account
+	err = sonic.Unmarshal([]byte(body), &account)
+	check(err)
+	return account, nil
+}
+
+// Get all transactions for the user logged in
+//func (agent *Agent) GetTransactions() ([]Transaction, error) {}
+
+func (agent *Agent) GetTransaction(accountNumber, transactionId string) (Transaction, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf(endpointTransaction, accountNumber, transactionId), nil)
+	check(err)
+	body, err := agent.Handler(req)
+	check(err)
+	var transaction Transaction
+	err = sonic.Unmarshal([]byte(body), &transaction)
+	check(err)
+	return transaction, nil
+}
 
 func SubmitLimitOrder() {}
 
 func SubmitMarketOrder() {}
-*/
