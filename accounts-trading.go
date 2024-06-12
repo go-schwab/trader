@@ -30,6 +30,72 @@ var (
 	endpointTransaction  string = accountEndpoint + "/accounts/%s/transactions/%s"
 )
 
+type Order struct {
+	Session                  string
+	Duration                 string
+	OrderType                string
+	CancelTime               string
+	ComplexOrderStrategyType string
+	Quantity                 int
+	FilledQuantity           int
+	RemainingQuantity        int
+	RequestedDestination     string
+	DestinationLinkName      string
+	ReleaseTime              string
+	StopPrice                int
+	StopPriceLinkBasis       string
+	StopPriceLinkType        string
+	StopPriceOffset          int
+	StopType                 string
+	Price                    string
+	TaxLotMethod             string
+	OrderLegCollection       []OrderLeg
+	ActivationPrice          int
+	SpecialInstruction       string
+	OrderStrategyType        string
+	OrderId                  int
+	Cancelable               bool
+	Editable                 bool
+	Status                   string
+	EnteredTime              string
+	CloseTime                string
+	Tag                      string
+	AccountNumber            int
+	OrderActivityCollection  []OrderActivity
+	ReplacingOrderCollection string
+	ChildOrderStrategies     string
+	StatusDescription        string
+}
+
+type OrderActivity struct {
+	ActivityType           string
+	ExecutionType          string
+	Quantity               int
+	OrderRemainingQuantity int
+	ExecutionLegs          []ExecutionLeg
+}
+
+type ExecutionLeg struct {
+	LegId             int
+	Price             int
+	Quantity          int
+	MismarkedQuantity int
+	InstrumentId      int
+	Time              string
+}
+
+type OrderLeg struct {
+	OrderLegType   string
+	LegId          int
+	Instrument     InstrumentRef
+	Instruction    string
+	PositionEffect string
+	Quantity       int
+	QuantityType   string
+	DivCapGains    string
+	ToSymbol       string
+}
+
 type Transaction struct {
 	ActivityID     int `json:"ActivityId"`
 	Time           string
@@ -60,7 +126,7 @@ type User struct {
 }
 
 type TransferItems struct {
-	Instrument     TransactionInstrument
+	Instrument     InstrumentRef
 	Amount         int
 	Cost           int
 	Price          int
@@ -68,7 +134,7 @@ type TransferItems struct {
 	PositionEffect string
 }
 
-type TransactionInstrument struct {
+type InstrumentRef struct {
 	Cusip        string
 	Symbol       string
 	Description  string
@@ -219,6 +285,41 @@ type ProjectedBalance struct {
 type AggregatedBalance struct {
 	CurrentLiquidationValue float64
 	LiquidationValue        float64
+}
+
+// fromEnteredTime, toEnteredTime format:
+// yyyy-MM-ddTHH:mm:ss.SSSZ
+func (agent *Agent) GetAccountOrders(accountNumber, fromEnteredTime, toEnteredTime string) ([]Order, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf(endpointAccountOrders, accountNumber), nil)
+	check(err)
+	q := req.URL.Query()
+	q.Add("fromEnteredTime", fromEnteredTime)
+	q.Add("toEnteredTime", toEnteredTime)
+	req.URL.RawQuery = q.Encode()
+	body, err := agent.Handler(req)
+	check(err)
+	var orders []Order
+	err = sonic.Unmarshal([]byte(body), &orders)
+	check(err)
+	return orders, nil
+}
+
+// fromEnteredTime, toEnteredTime format:
+// yyyy-MM-ddTHH:mm:ss.SSSZ
+func (agent *Agent) GetAllOrders(fromEnteredTime, toEnteredTime string) ([]Order, error) {
+	req, err := http.NewRequest("GET", endpointOrders, nil)
+	check(err)
+	q := req.URL.Query()
+	q.Add("fromEnteredTime", fromEnteredTime)
+	q.Add("toEnteredTime", toEnteredTime)
+	req.URL.RawQuery = q.Encode()
+	body, err := agent.Handler(req)
+	check(err)
+	var orders []Order
+	/*err = sonic.Unmarshal([]byte(body), &orders)
+	check(err)*/
+	fmt.Println(body)
+	return orders, nil
 }
 
 // Get encrypted account numbers for trading
