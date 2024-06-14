@@ -120,11 +120,12 @@ instrument := InstrumentRef{
 	Symbol: "HLTH",
 	Type:   "EQUITY",
 }
-newMarketOrder := CreateMarketOrder(Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Leg(OrderLeg{
+leg0 := OrderLeg{
 	Instruction: "BUY",
 	Quantity:    1,
 	Instrument:  instrument,
-}))
+}
+newMarketOrder := CreateMarketOrder(Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Leg(leg0))
 err = agent.Submit(an[0].HashValue, newMarketOrder)
 check(err)
 ```
