@@ -1,9 +1,10 @@
 // The fastest unofficial Schwab TraderAPI wrapper
-// Copyright (C) 2024 Samuel Troyer <github.com/samjtro>
+// Copyright (C) 2024 Samuel Troyer <samjtro.com>
 // See the GNU General Public License for more details
 package schwab
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 
@@ -286,6 +287,62 @@ type AggregatedBalance struct {
 	CurrentLiquidationValue float64
 	LiquidationValue        float64
 }
+
+type OrderComposition func(order *Order)
+
+func CreateLimitOrder(price string, opts ...OrderComposition) *Order {
+	order := &Order{OrderType: "LIMIT", Price: price}
+	for _, opt := range opts {
+		opt(order)
+	}
+	return order
+}
+
+func CreateMarketOrder(opts ...OrderComposition) *Order {
+	order := &Order{OrderType: "MARKET"}
+	for _, opt := range opts {
+		opt(order)
+	}
+	return order
+}
+
+func Session(session string) OrderComposition {
+	return func(order *Order) {
+		order.Session = session
+	}
+}
+
+func Duration(duration string) OrderComposition {
+	return func(order *Order) {
+		order.Duration = duration
+	}
+}
+
+func Strategy(strategy string) OrderComposition {
+	return func(order *Order) {
+		order.OrderStrategyType = strategy
+	}
+}
+
+func Leg(leg OrderLeg) OrderComposition {
+	return func(order *Order) {
+		order.OrderLegCollection = append(order.OrderLegCollection, leg)
+	}
+}
+
+func (agent *Agent) Submit(hashValue string, order *Order) error {
+	orderJson, err := sonic.Marshal(order)
+	check(err)
+	req, err := http.NewRequest("POST", fmt.Sprintf(endpointAccountOrders, hashValue), bytes.NewBuffer(orderJson))
+	check(err)
+	req.Header.Set("Content-Type", "application/json")
+	_, err := agent.Handler(req)
+	check(err)
+	return nil
+}
+
+//TODO:
+//func (agent *Agent) GetOrder(accountNumber, orderID string) (Order, error) {}
 
 // fromEnteredTime, toEnteredTime format:
 // yyyy-MM-ddTHH:mm:ss.SSSZ

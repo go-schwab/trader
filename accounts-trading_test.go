@@ -34,4 +34,19 @@ func TestAccountsTradingAPI(t *testing.T) {
 	}
 
 	fmt.Println(orders)
+
+	instrument := InstrumentRef{
+		Symbol: "HLTH",
+		Type:   "EQUITY",
+	}
+	newMarketOrder := CreateMarketOrder(Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Leg(OrderLeg{
+		Instruction: "BUY",
+		Quantity:    1,
+		Instrument:  instrument,
+	}))
+	err = agent.Submit(an[0].HashValue, newMarketOrder)
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
 }

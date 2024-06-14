@@ -17,12 +17,11 @@ Built, maintained by [@samjtro](https://github.com/samjtro)
         * [x] pricehistory
         * [x] realtime
 - [ ] v0.5.0: Account and Trading API - Full Access
-    * [ ] account.go
+    * [x] account
         * [x] Account Numbers, Account Info
-        * [ ] Transaction History
-        * [ ] User Info & Prefs
-        * [ ] Watchlist
-    * [ ] trade.go
+        * [x] Transaction History
+        * [x] User Info & Prefs
+    * [ ] trade
         * [ ] Trading
 - [ ] v0.9.0: Performance testing
 - [ ] v1.0.0: Finish option chains
@@ -92,3 +91,40 @@ Output:
 ```
 
 #### accounts-trading
+
+account functionality:
+
+```
+agent := Initiate()
+
+an, err := agent.GetAccountNumbers()
+check(err)
+fmt.Println(an)
+
+aca, err := agent.GetAccounts()
+check(err)
+fmt.Println(aca)
+
+ac, err := agent.GetAccount(an[0].HashValue)
+check(err)
+fmt.Println(ac)
+
+orders, err := agent.GetAllOrders("2023-06-12T00:00:00.000Z", "2024-06-12T00:00:00.000Z")
+check(err)
+```
+
+create an order - trading functionality:
+
+```
+instrument := InstrumentRef{
+	Symbol: "HLTH",
+	Type:   "EQUITY",
+}
+newMarketOrder := CreateMarketOrder(Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Leg(OrderLeg{
+	Instruction: "BUY",
+	Quantity:    1,
+	Instrument:  instrument,
+}))
+err = agent.Submit(an[0].HashValue, newMarketOrder)
+check(err)
+```

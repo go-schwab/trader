@@ -263,9 +263,30 @@ func (agent *Agent) Handler(req *http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	body := string(bodyBytes)
-	if errorCode < 200 || errorCode > 300 {
-		log.Fatalf("Error %d - %s", errorCode, body)
+	if errorCode == 401 {
+		err = os.RemoveAll(fmt.Sprintf("%s/.trade", homeDir()))
+		check(err)
+		agent = Initiate()
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", agent.tokens.Bearer))
+		resp, err = client.Do(req)
+		if err != nil {
+			return "", err
+		}
+		if resp.StatusCode == 401 {
+			log.Fatalf("[ERR] Invalid Agent. Please remove your ~/.trade directory and reinitiate.")
+		}
+		defer resp.Body.Close()
+		bodyBytes, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return "", err
+		}
+		if resp.StatusCode < 200 || resp.StatusCode > 300 {
+			log.Fatalf("Error %d - %s", resp.StatusCode, string(bodyBytes))
+		}
+		return string(bodyBytes), nil
 	}
-	return body, nil
+	if errorCode < 200 || errorCode > 300 {
+		log.Fatalf("Error %d - %s", errorCode, string(bodyBytes))
+	}
+	return string(bodyBytes), nil
 }
