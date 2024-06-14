@@ -288,8 +288,10 @@ type AggregatedBalance struct {
 	LiquidationValue        float64
 }
 
+// Helper for order creation
 type OrderComposition func(order *Order)
 
+// Create a new Limit order
 func CreateLimitOrder(price string, opts ...OrderComposition) *Order {
 	order := &Order{OrderType: "LIMIT", Price: price}
 	for _, opt := range opts {
@@ -298,6 +300,7 @@ func CreateLimitOrder(price string, opts ...OrderComposition) *Order {
 	return order
 }
 
+// Create a new Market order
 func CreateMarketOrder(opts ...OrderComposition) *Order {
 	order := &Order{OrderType: "MARKET"}
 	for _, opt := range opts {
@@ -306,37 +309,42 @@ func CreateMarketOrder(opts ...OrderComposition) *Order {
 	return order
 }
 
+// Set Session
 func Session(session string) OrderComposition {
 	return func(order *Order) {
 		order.Session = session
 	}
 }
 
+// Set Duration
 func Duration(duration string) OrderComposition {
 	return func(order *Order) {
 		order.Duration = duration
 	}
 }
 
+// Set OrderStrategyType
 func Strategy(strategy string) OrderComposition {
 	return func(order *Order) {
 		order.OrderStrategyType = strategy
 	}
 }
 
+// Add an OrderLeg to OrderLegCollection
 func Leg(leg OrderLeg) OrderComposition {
 	return func(order *Order) {
 		order.OrderLegCollection = append(order.OrderLegCollection, leg)
 	}
 }
 
+// WIP: Submit order for the specified encrypted account ID
 func (agent *Agent) Submit(hashValue string, order *Order) error {
 	orderJson, err := sonic.Marshal(order)
 	check(err)
 	req, err := http.NewRequest("POST", fmt.Sprintf(endpointAccountOrders, hashValue), bytes.NewBuffer(orderJson))
 	check(err)
-	req.Header.Set("Content-Type", "application/json")
-	_, err := agent.Handler(req)
+	req.Header.Set("Content-Type", "application/json") //error: https://github.com/samjtro/schwab/issues/58
+	_, err = agent.Handler(req)
 	check(err)
 	return nil
 }
@@ -418,6 +426,7 @@ func (agent *Agent) GetAccount(id string) (Account, error) {
 // Get all transactions for the user logged in
 //func (agent *Agent) GetTransactions() ([]Transaction, error) {}
 
+// Get a transaction for a specific account id
 func (agent *Agent) GetTransaction(accountNumber, transactionId string) (Transaction, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointTransaction, accountNumber, transactionId), nil)
 	check(err)
