@@ -15,4 +15,4 @@
 # vendor/
 
 # CUSTOM
-.APIKEY
+*.env
