@@ -1,5 +1,5 @@
 // The fastest unofficial Schwab TraderAPI wrapper
-// Copyright (C) 2024 Samuel Troyer <github.com/samjtro>
+// Copyright (C) 2024 Samuel Troyer <samjtro.com>
 // See the GNU General Public License for more details
 package schwab
 
@@ -39,14 +39,6 @@ type Token struct {
 	Bearer            string
 }
 
-/*func trimFirstJSONElement(s string) string {
-	return s[2 : len(s)-1]
-}
-
-func trimLastJSONElement(s string) string {
-	return s[1 : len(s)-2]
-}*/
-
 // oAuthInit() helper func, parse access token response
 func parseAccessTokenResponse(s string) Token {
 	token := Token{
@@ -65,7 +57,7 @@ func parseAccessTokenResponse(s string) Token {
 	return token
 }
 
-// Read in tokens from JSON db
+// Read in tokens from ~/.trade/bar.json
 func readDB() Token {
 	var tokens Token
 	body, err := os.ReadFile(fmt.Sprintf("%s/.trade/bar.json", homeDir()))
@@ -105,12 +97,14 @@ func openBrowser(url string) {
 	check(err)
 }
 
+// Generic error checking, will be implementing more robust error/exception handling >v0.9.0
 func check(err error) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 }
 
+// Return the current user's platform specific home directory
 func homeDir() string {
 	currentUser, err := user.Current()
 	check(err)
@@ -176,11 +170,10 @@ func trimOneFirstThreeLast(s string) string {
 	return s[1 : len(s)-3]
 }
 
+// Initiate the Schwab oAuth process to retrieve bearer/refresh tokens
 func Initiate() *Agent {
 	agent := Agent{}
-	// check if program has been run before by verifying the existence of /home/{user}/.go-trade
 	if _, err := os.Stat(fmt.Sprintf("%s/.trade", homeDir())); errors.Is(err, os.ErrNotExist) {
-		// Create /home/{user}/.go-trade
 		err := os.Mkdir(fmt.Sprintf("%s/.trade", homeDir()), os.ModePerm)
 		check(err)
 		// oAuth Leg 1 - Authorization Code
@@ -237,56 +230,28 @@ func (agent *Agent) refresh() {
 }
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
-// It performs a GET request after adding the apikey found in the .APIKEY file in the same directory as the program calling the function,
+// It performs a GET request after adding the apikey found in the config.env file in the same directory as the program calling the function,
 // then returns the body of the GET request's return.
 // It takes one parameter:
 // req = a request of type *http.Request
-func (agent *Agent) Handler(req *http.Request) (string, error) {
+func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 	if (&Agent{}) == agent {
 		log.Fatal("[ERR] Empty Agent - Call 'Agent.Initiate' before making any API function calls.")
 	}
-	// check if bearer token is still valid
 	if !time.Now().Before(agent.tokens.BearerExpiration) {
 		agent.refresh()
 	}
-	// Craft, send request
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", agent.tokens.Bearer))
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return resp, err
 	}
-	defer resp.Body.Close()
-	// Grab return body
-	errorCode := resp.StatusCode
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
+	if resp.StatusCode == 401 {
+		log.Fatalf("[ERR] invalid agent - please reinitiate.")
 	}
-	if errorCode == 401 {
-		err = os.RemoveAll(fmt.Sprintf("%s/.trade", homeDir()))
-		check(err)
-		agent = Initiate()
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", agent.tokens.Bearer))
-		resp, err = client.Do(req)
-		if err != nil {
-			return "", err
-		}
-		if resp.StatusCode == 401 {
-			log.Fatalf("[ERR] Invalid Agent. Please remove your ~/.trade directory and reinitiate.")
-		}
-		defer resp.Body.Close()
-		bodyBytes, err = io.ReadAll(resp.Body)
-		if err != nil {
-			return "", err
-		}
-		if resp.StatusCode < 200 || resp.StatusCode > 300 {
-			log.Fatalf("Error %d - %s", resp.StatusCode, string(bodyBytes))
-		}
-		return string(bodyBytes), nil
+	if resp.StatusCode < 200 || resp.StatusCode > 300 {
+		log.Fatalf("[ERR] %d", resp.StatusCode) //WIP: Adding resp.Body
 	}
-	if errorCode < 200 || errorCode > 300 {
-		log.Fatalf("Error %d - %s", errorCode, string(bodyBytes))
-	}
-	return string(bodyBytes), nil
+	return resp, nil
 }

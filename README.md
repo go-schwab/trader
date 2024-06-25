@@ -28,14 +28,13 @@ Built, maintained by [@samjtro](https://github.com/samjtro)
 
 ## What is this?
 
-This project is WIP: The Market Data API is functional, and I am working on Accounts & Trading now.
-
-Go is much faster than Python, has a far more robust standard library, and is compiled. Therefore, it should be the standard for algorithmic trading; yet it is not. This project is my attempt to create a countweight to the primarily Python-based algotrading scene.
+This project is my attempt to create a countweight to the primarily Python-based algotrading scene. This fairly simple implementation is by far the fastest available Schwab TraderAPI hook, and is also (in my opinion) easiest to use. Thus confirming my thesis that Go is indeed superior to Python; at least, for algotrading.
 
 Why should you use this library?
 
-1. It's fast. Really fast. Average request time is ~200ms, while the lighter requests average ~140ms.
-2. Super easy to setup. Plus, both the Bearer Token & Authentication Codes auto-refresh.
+1. It's fast. Really fast.
+2. It's really easy to setup.
+3. It's really simple to use.
 
 If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. All contributions should be tested via `go test` before submission.
 
@@ -113,7 +112,7 @@ orders, err := agent.GetAllOrders("2023-06-12T00:00:00.000Z", "2024-06-12T00:00:
 check(err)
 ```
 
-create an order - trading functionality:
+trading functionality:
 
 ```
 instrument := InstrumentRef{

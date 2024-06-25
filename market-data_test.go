@@ -1,39 +1,46 @@
 package schwab
 
 import (
+	"fmt"
 	"testing"
 )
 
 func TestMarketDataAPI(t *testing.T) {
 	agent := Initiate()
 
-	_, err := agent.GetQuote("AAPL")
+	quote, err := agent.GetQuote("AAPL")
 
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
 
-	_, err = agent.GetPriceHistory("AAPL", "month", "1", "daily", "1", "", "")
+	ph, err := agent.GetPriceHistory("AAPL", "month", "1", "daily", "1", "", "")
 
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
 
-	_, err = agent.SearchInstrumentSimple("AAPL")
+	sis, err := agent.SearchInstrumentSimple("AAPL")
 
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
 
-	_, err = agent.SearchInstrumentFundamental("AAPL")
+	sif, err := agent.SearchInstrumentFundamental("AAPL")
 
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
 
-	_, err = agent.GetMovers("$DJI", "up", "percent")
+	movers, err := agent.GetMovers("$DJI", "up", "percent")
 
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
+
+	fmt.Println(quote)
+	fmt.Println(ph)
+	fmt.Println(sis)
+	fmt.Println(sif)
+	fmt.Println(movers)
 }

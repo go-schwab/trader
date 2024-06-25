@@ -1,5 +1,3 @@
-// fromEnteredTime, toEnteredTime format:
-// yyyy-MM-ddTHH:mm:ss.SSSZ
 package schwab
 
 import (
@@ -36,7 +34,7 @@ func TestAccountsTradingAPI(t *testing.T) {
 	fmt.Println(orders)
 
 	instrument := InstrumentRef{
-		Symbol: "HLTH",
+		Symbol: "BTTX",
 		Type:   "EQUITY",
 	}
 	newMarketOrder := CreateMarketOrder(Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Leg(OrderLeg{

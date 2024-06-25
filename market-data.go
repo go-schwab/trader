@@ -5,6 +5,7 @@ package schwab
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
@@ -204,10 +205,13 @@ func (agent *Agent) GetQuote(symbol string) (Quote, error) {
 	q.Add("symbols", symbol)
 	q.Add("fields", "quote")
 	req.URL.RawQuery = q.Encode()
-	body, err := agent.Handler(req)
+	resp, err := agent.Handler(req)
+	check(err)
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 	check(err)
 	var quote Quote
-	err = sonic.Unmarshal([]byte(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), "")[:len(strings.Join(strings.Split(strings.Split(body, fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), ""))-2]), &quote)
+	err = sonic.Unmarshal([]byte(strings.Join(strings.Split(strings.Split(string(body), fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), "")[:len(strings.Join(strings.Split(strings.Split(string(body), fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), ""))-2]), &quote)
 	check(err)
 	return quote, err
 }
@@ -221,10 +225,13 @@ func (agent *Agent) SearchInstrumentSimple(symbols string) (SimpleInstrument, er
 	q.Add("symbol", symbols)
 	q.Add("projection", "symbol-search")
 	req.URL.RawQuery = q.Encode()
-	body, err := agent.Handler(req)
+	resp, err := agent.Handler(req)
+	check(err)
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 	check(err)
 	var instrument SimpleInstrument
-	err = sonic.Unmarshal([]byte(strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2]), &instrument)
+	err = sonic.Unmarshal([]byte(strings.Split(string(body), "[")[1][:len(strings.Split(string(body), "[")[1])-2]), &instrument)
 	check(err)
 	return instrument, nil
 }
@@ -238,10 +245,13 @@ func (agent *Agent) SearchInstrumentFundamental(symbol string) (FundamentalInstr
 	q.Add("symbol", symbol)
 	q.Add("projection", "fundamental")
 	req.URL.RawQuery = q.Encode()
-	body, err := agent.Handler(req)
+	resp, err := agent.Handler(req)
+	check(err)
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 	check(err)
 	var instrument FundamentalInstrument
-	split0 := strings.Split(body, "[{\"fundamental\":")[1]
+	split0 := strings.Split(string(body), "[{\"fundamental\":")[1]
 	split := strings.Split(split0, "}")
 	err = sonic.Unmarshal([]byte(fmt.Sprintf("%s}", strings.Join(split[:2], ""))), &instrument)
 	check(err)
@@ -277,10 +287,13 @@ func (agent *Agent) GetPriceHistory(symbol, periodType, period, frequencyType, f
 	q.Add("startDate", startDate)
 	q.Add("endDate", endDate)
 	req.URL.RawQuery = q.Encode()
-	body, err := agent.Handler(req)
+	resp, err := agent.Handler(req)
+	check(err)
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 	check(err)
 	var candles []Candle
-	err = sonic.Unmarshal([]byte(fmt.Sprintf("[%s]", strings.Split(strings.Split(body, "[")[1], "]")[0])), &candles)
+	err = sonic.Unmarshal([]byte(fmt.Sprintf("[%s]", strings.Split(strings.Split(string(body), "[")[1], "]")[0])), &candles)
 	check(err)
 	return candles, nil
 }
@@ -297,10 +310,13 @@ func (agent *Agent) GetMovers(index, direction, change string) ([]Screener, erro
 	q.Add("direction", direction)
 	q.Add("change", change)
 	req.URL.RawQuery = q.Encode()
-	body, err := agent.Handler(req)
+	resp, err := agent.Handler(req)
+	check(err)
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 	check(err)
 	var movers []Screener
-	stringToParse := fmt.Sprintf("[%s]", strings.Split(body, "[")[1][:len(strings.Split(body, "[")[1])-2])
+	stringToParse := fmt.Sprintf("[%s]", strings.Split(string(body), "[")[1][:len(strings.Split(string(body), "[")[1])-2])
 	err = sonic.Unmarshal([]byte(stringToParse), &movers)
 	check(err)
 	return movers, nil
@@ -332,11 +348,14 @@ func (agent *Agent) Single(ticker, contractType, strikeRange, strikeCount, toDat
 	q.Add("strikeCount", strikeCount)
 	q.Add("toDate", toDate)
 	req.URL.RawQuery = q.Encode()
-	body, err := agent.Handler(req)
+	resp, err := agent.Handler(req)
+	check(err)
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 	check(err)
 	var chain []Contract
 	// WIP
-	err = sonic.Unmarshal([]byte(body), &chain)
+	err = sonic.Unmarshal(body, &chain)
 	check(err)
 	return chain, nil
 }
