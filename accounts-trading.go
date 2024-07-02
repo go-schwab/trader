@@ -344,7 +344,7 @@ func (agent *Agent) Submit(hashValue string, order *Order) error {
 	check(err)
 	req, err := http.NewRequest("POST", fmt.Sprintf(endpointAccountOrders, hashValue), bytes.NewBuffer(orderJson))
 	check(err)
-	req.Header.Set("Content-Type", "application/json") // #58
+	req.Header.Add("Content-Type", "application/json") // #58
 	_, err = agent.Handler(req)
 	check(err)
 	return nil

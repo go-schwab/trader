@@ -39,7 +39,7 @@ type Token struct {
 	Bearer            string
 }
 
-// oAuthInit() helper func, parse access token response
+// Helper: parse access token response
 func parseAccessTokenResponse(s string) Token {
 	token := Token{
 		RefreshExpiration: time.Now().Add(time.Hour * 168),
@@ -100,7 +100,7 @@ func openBrowser(url string) {
 // Generic error checking, will be implementing more robust error/exception handling >v0.9.0
 func check(err error) {
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatalf("[ERR] %s", err.Error())
 	}
 }
 
@@ -236,12 +236,12 @@ func (agent *Agent) refresh() {
 // req = a request of type *http.Request
 func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 	if (&Agent{}) == agent {
-		log.Fatal("[ERR] Empty Agent - Call 'Agent.Initiate' before making any API function calls.")
+		log.Fatal("[ERR] empty agent - call 'Agent.Initiate' before making any API function calls.")
 	}
 	if !time.Now().Before(agent.tokens.BearerExpiration) {
 		agent.refresh()
 	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", agent.tokens.Bearer))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", agent.tokens.Bearer))
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
