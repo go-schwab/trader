@@ -1,5 +1,5 @@
 name: schwab-bug
-description: bugs bugs bugs
+description: report a bug in schwab's code
 title: "schwab-bug@"
 labels: ["schwab-bug"]
 body:
