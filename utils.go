@@ -15,7 +15,6 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
-	"os/user"
 	"runtime"
 	"strings"
 	"time"
@@ -104,24 +103,6 @@ func check(err error) {
 	}
 }
 
-// Return the current user's platform specific home directory
-func homeDir() string {
-	currentUser, err := user.Current()
-	check(err)
-	var homedir string
-	switch runtime.GOOS {
-	case "linux":
-		homedir = "/home/" + currentUser.Username
-	case "windows":
-		homedir = "C:\\Users\\" + currentUser.Username
-	case "darwin":
-		homedir = "/users/" + currentUser.Username
-	default:
-		log.Fatalf("Unsupported platform.")
-	}
-	return homedir
-}
-
 // trim one FIRST character in the string
 func trimOneFirst(s string) string {
 	if len(s) < 1 {
@@ -168,6 +149,13 @@ func trimOneFirstThreeLast(s string) string {
 		return ""
 	}
 	return s[1 : len(s)-3]
+}
+
+// wrapper for os.UserHomeDir()
+func homeDir() string {
+	dir, err := os.UserHomeDir()
+	check(err)
+	return dir
 }
 
 // Initiate the Schwab oAuth process to retrieve bearer/refresh tokens
