@@ -194,6 +194,11 @@ func Initiate() *Agent {
 		check(err)
 	} else {
 		agent.tokens = readDB()
+		if agent.tokens.Bearer == "" {
+			err := os.RemoveAll(fmt.Sprintf("%s/.trade", homeDir()))
+			check(err)
+			log.Fatalf("[err] please reinitiate, something went wrong\n")
+		}
 	}
 	return &agent
 }
@@ -236,7 +241,9 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		return resp, err
 	}
 	if resp.StatusCode == 401 {
-		log.Fatalf("[ERR] invalid agent - please reinitiate.")
+		err := os.Remove(fmt.Sprintf("%s/.trade", homeDir()))
+		check(err)
+		agent = Initiate()
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 300 {
 		log.Fatalf("[ERR] %d", resp.StatusCode) //WIP: Adding resp.Body
