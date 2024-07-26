@@ -5,9 +5,11 @@ package schwab
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/bytedance/sonic"
 )
@@ -290,10 +292,31 @@ type AggregatedBalance struct {
 }
 
 // Helper for order creation
-type OrderComposition func(order *Order)
+type LimitOrderComposition func(order *Order)
+
+type MarketOrder struct {
+	OrderType          string `default:"MARKET" json:"orderType"`
+	Session            string `default:"NORMAL" json:"session"`
+	Duration           string `default:"DAY" json:"duration"`
+	OrderStrategyType  string `default:"SINGLE" json:"orderStrategyType"`
+	OrderLegCollection []MarketOrderLeg
+}
+
+type MarketOrderLeg struct {
+	Instruction string `json:"instruction"`
+	Quantity    int    `json:"quantity"`
+	Instrument  MarketOrderInstrument
+}
+
+type MarketOrderInstrument struct {
+	Symbol    string `json:"symbol"`
+	AssetType string `default:"EQUITY" json:"assetType"`
+}
+
+type MarketOrderComposition func(order *MarketOrder)
 
 // Create a new Limit order
-func CreateLimitOrder(price string, opts ...OrderComposition) *Order {
+func CreateLimitOrder(price string, opts ...LimitOrderComposition) *Order {
 	order := &Order{OrderType: "LIMIT", Price: price}
 	for _, opt := range opts {
 		opt(order)
@@ -302,8 +325,8 @@ func CreateLimitOrder(price string, opts ...OrderComposition) *Order {
 }
 
 // Create a new Market order
-func CreateMarketOrder(opts ...OrderComposition) *Order {
-	order := &Order{OrderType: "MARKET"}
+func CreateMarketOrder(opts ...MarketOrderComposition) *MarketOrder {
+	order := &MarketOrder{OrderType: "MARKET"}
 	for _, opt := range opts {
 		opt(order)
 	}
@@ -311,40 +334,42 @@ func CreateMarketOrder(opts ...OrderComposition) *Order {
 }
 
 // Set Session
-func Session(session string) OrderComposition {
-	return func(order *Order) {
+func MarketSession(session string) MarketOrderComposition {
+	return func(order *MarketOrder) {
 		order.Session = session
 	}
 }
 
 // Set Duration
-func Duration(duration string) OrderComposition {
-	return func(order *Order) {
+func MarketDuration(duration string) MarketOrderComposition {
+	return func(order *MarketOrder) {
 		order.Duration = duration
 	}
 }
 
 // Set OrderStrategyType
-func Strategy(strategy string) OrderComposition {
-	return func(order *Order) {
+func MarketStrategy(strategy string) MarketOrderComposition {
+	return func(order *MarketOrder) {
 		order.OrderStrategyType = strategy
 	}
 }
 
 // Add an OrderLeg to OrderLegCollection
-func Leg(leg OrderLeg) OrderComposition {
-	return func(order *Order) {
+func MarketLeg(leg MarketOrderLeg) MarketOrderComposition {
+	return func(order *MarketOrder) {
 		order.OrderLegCollection = append(order.OrderLegCollection, leg)
 	}
 }
 
 // WIP: Submit order for the specified encrypted account ID
-func (agent *Agent) Submit(hashValue string, order *Order) error {
+func (agent *Agent) SubmitMarketOrder(hashValue string, order *MarketOrder) error {
 	orderJson, err := sonic.Marshal(order)
 	check(err)
-	req, err := http.NewRequest("POST", fmt.Sprintf(endpointAccountOrders, hashValue), bytes.NewBuffer(orderJson))
+	fmt.Println(string(orderJson), base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(hashValue))))
+	req, err := http.NewRequest("POST", fmt.Sprintf(endpointAccountOrders, base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(hashValue)))), bytes.NewBuffer(orderJson))
 	check(err)
-	req.Header.Add("Content-Type", "application/json") // #58
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", agent.tokens.Bearer))
+	req.Header.Set("Content-Type", "application/json") // #58w
 	_, err = agent.Handler(req)
 	check(err)
 	return nil

@@ -243,10 +243,12 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 	if resp.StatusCode == 401 {
 		err := os.Remove(fmt.Sprintf("%s/.trade", homeDir()))
 		check(err)
-		agent = Initiate()
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 300 {
-		log.Fatalf("[ERR] %d", resp.StatusCode) //WIP: Adding resp.Body
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		check(err)
+		log.Fatalf("[ERR] %d, %s", resp.StatusCode, body)
 	}
 	return resp, nil
 }
