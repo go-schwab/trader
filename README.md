@@ -5,21 +5,9 @@
 
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
-## What is this?
-
-This project is my attempt to create a countweight to the primarily Python-based algotrading scene. This fairly simple implementation is by far the fastest available Schwab TraderAPI hook, and is also (in my opinion) easiest to use. Thus confirming my thesis that Go is indeed superior to Python; at least, for algotrading.
-
-Why should you use this library?
-
-1. It's fast.
-2. It's easy to setup.
-3. It's simple to use.
-
 If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. All contributions should be tested via `go test` before submission.
 
-## What can i do with this?
-
-### Quick start
+## Quick start
 
 0. Go to developer.schwab.com, create an account, create an app, get app credentials from https://developer.schwab.com/dashboard/apps
 1. create `config.env` in your project directory, formatted as such:
@@ -28,11 +16,11 @@ APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
-2. `go get github.com/samjtro/schwab@latest`
+2. `go get github.com/samjtro/schwab@v0.5.0`
 
-### Code samples
+## Code samples
 
-#### market-data
+### market-data
 
 ```
 import (
@@ -68,20 +56,9 @@ Output:
 {AAPL 037833100 Apple Inc NASDAQ EQUITY 199.62 164.075 0.51454 1 2024-05-10 00:00:00.0 30.51106 96.708 35.44905 6.98872 23.01545 45.5858 0 26.3058 46.578 0 26.0443 147.2497 22.0738 47.00102 0.87464 1.0371 0 51.3642 140.9682 123.7714 6.41964 9.1372 0 0 -2.8005 -0.9016 0 1.5334082e+16 0 2.9801788367e+12 4.83737 0 0 0 0.25 2024-05-16 00:00:00.0 0 0 0 0 57760123 49229712 61209206 2024-05-02 00:00:00.0 4 6.13 47471445 2024-08-16 00:00:00.0 2024-08-12 00:00:00.0 0}
 ```
 
-#### accounts-trading
+### accounts-trading
 
-submitting a market order for ticker "AAPL" is as easy as:
-
-```
-agent := schwab.Initiate()
-err = agent.SubmitSimpleOrder(an[0].HashValue, CreateSimpleOrder(OrderType("MARKET"), Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Instruction("BUY"), Quantity(1.0), Instrument(SimpleOrderInstrument{
-	Symbol:    "AAPL",
-	AssetType: "EQUITY",
-})))
-check(err)
-```
-
-account functionality:
+#### account functionality:
 
 ```
 agent := Initiate()
@@ -102,23 +79,26 @@ orders, err := agent.GetAllOrders("2023-06-12T00:00:00.000Z", "2024-06-12T00:00:
 check(err)
 ```
 
-## Roadmap to v 1.0.0
+#### trading functionality:
 
-- [x] Current Release: v0.0.1: Migrate working functionality to Schwab
+submitting a market order for ticker "AAPL" is as easy as:
+
+```
+err = agent.SubmitSingleLegOrder(an[0].HashValue, CreateSingleLegOrder(OrderType("MARKET"), Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Instruction("BUY"), Quantity(1.0), Instrument(SimpleOrderInstrument{
+	Symbol:    "AAPL",
+	AssetType: "EQUITY",
+})))
+check(err)
+```
+
+## Roadmap to v1.0.0
+
+- [x] v0.0.1: Migrate working functionality to Schwab
     * [x] oAuth Flow (Retrieve, store tokens; refresh)
     * [x] Endpoints
     * [x] Markets and Data API - Full Access (minus option chains)
-        * [x] movers
-        * [x] data
-        * [x] instrument
-        * [x] pricehistory
-        * [x] realtime
-- [x] v0.5.0: Account and Trading API - Full Access
-    * [x] account
-        * [x] Account Numbers, Account Info
-        * [x] Transaction History
-        * [x] User Info & Prefs
-    * [x] trade
-        * [x] Trading
-- [ ] v0.9.0: Performance testing
-- [ ] v1.0.0: Finish option chains
+- [x] v0.5.0: Account and Trading API - Full Access (minus multi-leg orders)
+- [ ] v0.9.0: Wrap-up
+    * [ ] Option chains
+    * [ ] Multi-leg orders
+- [ ] v1.0.0: Performance testing
