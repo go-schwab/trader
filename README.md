@@ -5,36 +5,15 @@
 
 Built, maintained by [@samjtro](https://github.com/samjtro)
 
-## Roadmap to v 1.0.0
-
-- [x] Current Release: v0.0.1: Migrate working functionality to Schwab
-    * [x] oAuth Flow (Retrieve, store tokens; refresh)
-    * [x] Endpoints
-    * [x] Markets and Data API - Full Access (minus option chains)
-        * [x] movers
-        * [x] data
-        * [x] instrument
-        * [x] pricehistory
-        * [x] realtime
-- [ ] v0.5.0: Account and Trading API - Full Access
-    * [x] account
-        * [x] Account Numbers, Account Info
-        * [x] Transaction History
-        * [x] User Info & Prefs
-    * [ ] trade
-        * [ ] Trading
-- [ ] v0.9.0: Performance testing
-- [ ] v1.0.0: Finish option chains
-
 ## What is this?
 
 This project is my attempt to create a countweight to the primarily Python-based algotrading scene. This fairly simple implementation is by far the fastest available Schwab TraderAPI hook, and is also (in my opinion) easiest to use. Thus confirming my thesis that Go is indeed superior to Python; at least, for algotrading.
 
 Why should you use this library?
 
-1. It's fast. Really fast.
-2. It's really easy to setup.
-3. It's really simple to use.
+1. It's fast.
+2. It's easy to setup.
+3. It's simple to use.
 
 If you want to contribute - go for it! There is no contribution guide, just a simple golden rule: If it ain't broke, don't fix it. All contributions should be tested via `go test` before submission.
 
@@ -49,7 +28,7 @@ APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
-2. `go get github.com/samjtro/schwab@v0.0.1`
+2. `go get github.com/samjtro/schwab@latest`
 
 ### Code samples
 
@@ -91,6 +70,17 @@ Output:
 
 #### accounts-trading
 
+submitting a market order for ticker "AAPL" is as easy as:
+
+```
+agent := schwab.Initiate()
+err = agent.SubmitSimpleOrder(an[0].HashValue, CreateSimpleOrder(OrderType("MARKET"), Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Instruction("BUY"), Quantity(1.0), Instrument(SimpleOrderInstrument{
+	Symbol:    "AAPL",
+	AssetType: "EQUITY",
+})))
+check(err)
+```
+
 account functionality:
 
 ```
@@ -112,19 +102,23 @@ orders, err := agent.GetAllOrders("2023-06-12T00:00:00.000Z", "2024-06-12T00:00:
 check(err)
 ```
 
-trading functionality:
+## Roadmap to v 1.0.0
 
-```
-instrument := InstrumentRef{
-	Symbol: "HLTH",
-	Type:   "EQUITY",
-}
-leg0 := OrderLeg{
-	Instruction: "BUY",
-	Quantity:    1,
-	Instrument:  instrument,
-}
-newMarketOrder := CreateMarketOrder(Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Leg(leg0))
-err = agent.Submit(an[0].HashValue, newMarketOrder)
-check(err)
-```
+- [x] Current Release: v0.0.1: Migrate working functionality to Schwab
+    * [x] oAuth Flow (Retrieve, store tokens; refresh)
+    * [x] Endpoints
+    * [x] Markets and Data API - Full Access (minus option chains)
+        * [x] movers
+        * [x] data
+        * [x] instrument
+        * [x] pricehistory
+        * [x] realtime
+- [x] v0.5.0: Account and Trading API - Full Access
+    * [x] account
+        * [x] Account Numbers, Account Info
+        * [x] Transaction History
+        * [x] User Info & Prefs
+    * [x] trade
+        * [x] Trading
+- [ ] v0.9.0: Performance testing
+- [ ] v1.0.0: Finish option chains

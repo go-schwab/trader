@@ -33,16 +33,10 @@ func TestAccountsTradingAPI(t *testing.T) {
 
 	fmt.Println(orders)
 
-	instrument := MarketOrderInstrument{
-		Symbol:    "BTTX",
+	err = agent.SubmitSingleLegOrder(an[0].HashValue, CreateSingleLegOrder(OrderType("MARKET"), Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Instruction("BUY"), Quantity(1.0), Instrument(SimpleOrderInstrument{
+		Symbol:    "AAPL",
 		AssetType: "EQUITY",
-	}
-	newMarketOrder := CreateMarketOrder(MarketSession("NORMAL"), MarketDuration("DAY"), MarketStrategy("SINGLE"), MarketLeg(MarketOrderLeg{
-		Instruction: "BUY",
-		Quantity:    1,
-		Instrument:  instrument,
-	}))
-	err = agent.SubmitMarketOrder(an[0].HashValue, newMarketOrder)
+	})))
 
 	if err != nil {
 		t.Fatalf(err.Error())

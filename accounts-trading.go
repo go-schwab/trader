@@ -4,12 +4,10 @@
 package schwab
 
 import (
-	"bytes"
-	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
+	"strings"
 
 	"github.com/bytedance/sonic"
 )
@@ -21,84 +19,18 @@ var (
 	endpointAccountNumbers string = accountEndpoint + "/accounts/accountNumbers"
 	endpointAccounts       string = accountEndpoint + "/accounts"
 	endpointAccount        string = accountEndpoint + "/accounts/%s"
-	endpointUserPreference string = accountEndpoint + "/userPreference"
+	//endpointUserPreference string = accountEndpoint + "/userPreference"
 
 	// Orders
 	endpointOrders        string = accountEndpoint + "/orders"
 	endpointAccountOrders string = accountEndpoint + "/accounts/%s/orders"
 	endpointAccountOrder  string = accountEndpoint + "/accounts/%s/orders/%s"
-	endpointPreviewOrder  string = accountEndpoint + "/accounts/%s/previewOrder"
+	//endpointPreviewOrder  string = accountEndpoint + "/accounts/%s/previewOrder"
 
 	// Transactions
-	endpointTransactions string = accountEndpoint + "/accounts/%s/transactions"
-	endpointTransaction  string = accountEndpoint + "/accounts/%s/transactions/%s"
+	//endpointTransactions string = accountEndpoint + "/accounts/%s/transactions"
+	endpointTransaction string = accountEndpoint + "/accounts/%s/transactions/%s"
 )
-
-type Order struct {
-	Session                  string
-	Duration                 string
-	OrderType                string
-	CancelTime               string
-	ComplexOrderStrategyType string
-	Quantity                 int
-	FilledQuantity           int
-	RemainingQuantity        int
-	RequestedDestination     string
-	DestinationLinkName      string
-	ReleaseTime              string
-	StopPrice                int
-	StopPriceLinkBasis       string
-	StopPriceLinkType        string
-	StopPriceOffset          int
-	StopType                 string
-	Price                    string
-	TaxLotMethod             string
-	OrderLegCollection       []OrderLeg
-	ActivationPrice          int
-	SpecialInstruction       string
-	OrderStrategyType        string
-	OrderId                  int
-	Cancelable               bool
-	Editable                 bool
-	Status                   string
-	EnteredTime              string
-	CloseTime                string
-	Tag                      string
-	AccountNumber            int
-	OrderActivityCollection  []OrderActivity
-	ReplacingOrderCollection string
-	ChildOrderStrategies     string
-	StatusDescription        string
-}
-
-type OrderActivity struct {
-	ActivityType           string
-	ExecutionType          string
-	Quantity               int
-	OrderRemainingQuantity int
-	ExecutionLegs          []ExecutionLeg
-}
-
-type ExecutionLeg struct {
-	LegId             int
-	Price             int
-	Quantity          int
-	MismarkedQuantity int
-	InstrumentId      int
-	Time              string
-}
-
-type OrderLeg struct {
-	OrderLegType   string
-	LegId          int
-	Instrument     InstrumentRef
-	Instruction    string
-	PositionEffect string
-	Quantity       int
-	QuantityType   string
-	DivCapGains    string
-	ToSymbol       string
-}
 
 type Transaction struct {
 	ActivityID     int `json:"ActivityId"`
@@ -291,97 +223,203 @@ type AggregatedBalance struct {
 	LiquidationValue        float64
 }
 
-// Helper for order creation
-type LimitOrderComposition func(order *Order)
-
-type MarketOrder struct {
-	OrderType          string `default:"MARKET" json:"orderType"`
-	Session            string `default:"NORMAL" json:"session"`
-	Duration           string `default:"DAY" json:"duration"`
-	OrderStrategyType  string `default:"SINGLE" json:"orderStrategyType"`
-	OrderLegCollection []MarketOrderLeg
+type FullOrder struct {
+	Session                  string
+	Duration                 string
+	OrderType                string
+	CancelTime               string
+	ComplexOrderStrategyType string
+	Quantity                 int
+	FilledQuantity           int
+	RemainingQuantity        int
+	RequestedDestination     string
+	DestinationLinkName      string
+	ReleaseTime              string
+	StopPrice                int
+	StopPriceLinkBasis       string
+	StopPriceLinkType        string
+	StopPriceOffset          int
+	StopType                 string
+	Price                    string
+	TaxLotMethod             string
+	OrderLegCollection       []FullOrderLeg
+	ActivationPrice          int
+	SpecialInstruction       string
+	OrderStrategyType        string
+	OrderId                  int
+	Cancelable               bool
+	Editable                 bool
+	Status                   string
+	EnteredTime              string
+	CloseTime                string
+	Tag                      string
+	AccountNumber            int
+	OrderActivityCollection  []FullOrderActivity
+	ReplacingOrderCollection string
+	ChildOrderStrategies     string
+	StatusDescription        string
 }
 
-type MarketOrderLeg struct {
-	Instruction string `json:"instruction"`
-	Quantity    int    `json:"quantity"`
-	Instrument  MarketOrderInstrument
+type FullOrderActivity struct {
+	ActivityType           string
+	ExecutionType          string
+	Quantity               int
+	OrderRemainingQuantity int
+	ExecutionLegs          []FullExecutionLeg
 }
 
-type MarketOrderInstrument struct {
-	Symbol    string `json:"symbol"`
-	AssetType string `default:"EQUITY" json:"assetType"`
+type FullExecutionLeg struct {
+	LegId             int
+	Price             int
+	Quantity          int
+	MismarkedQuantity int
+	InstrumentId      int
+	Time              string
 }
 
-type MarketOrderComposition func(order *MarketOrder)
-
-// Create a new Limit order
-func CreateLimitOrder(price string, opts ...LimitOrderComposition) *Order {
-	order := &Order{OrderType: "LIMIT", Price: price}
-	for _, opt := range opts {
-		opt(order)
-	}
-	return order
+type FullOrderLeg struct {
+	OrderLegType   string
+	LegId          int
+	Instrument     InstrumentRef
+	Instruction    string
+	PositionEffect string
+	Quantity       int
+	QuantityType   string
+	DivCapGains    string
+	ToSymbol       string
 }
+
+type SingleLegOrder struct {
+	OrderType   string `default:"MARKET"`
+	Session     string `default:"NORMAL"`
+	Duration    string `default:"DAY"`
+	Strategy    string `default:"SINGLE"`
+	Instruction string
+	Quantity    float32
+	Instrument  SimpleOrderInstrument
+}
+
+type MultiLegOrder struct {
+	OrderType          string // LIMIT, MARKET
+	Session            string // NORMAL
+	Duration           string // DAY
+	Strategy           string // SINGLE
+	OrderLegCollection []SimpleOrderLeg
+}
+
+type SimpleOrderLeg struct {
+	Instruction string
+	Quantity    float32
+	Instrument  SimpleOrderInstrument
+}
+
+type SimpleOrderInstrument struct {
+	Symbol    string
+	AssetType string // EQUITY
+}
+
+type SingleLegOrderComposition func(order *SingleLegOrder)
+type MultiLegSimpleOrderComposition func(order *MultiLegOrder)
 
 // Create a new Market order
-func CreateMarketOrder(opts ...MarketOrderComposition) *MarketOrder {
-	order := &MarketOrder{OrderType: "MARKET"}
+func CreateSingleLegOrder(opts ...SingleLegOrderComposition) *SingleLegOrder {
+	order := &SingleLegOrder{OrderType: "MARKET"}
 	for _, opt := range opts {
 		opt(order)
 	}
 	return order
 }
 
-// Set Session
-func MarketSession(session string) MarketOrderComposition {
-	return func(order *MarketOrder) {
+// Set SingleLegOrder.OrderType
+func OrderType(t string) SingleLegOrderComposition {
+	return func(order *SingleLegOrder) {
+		order.OrderType = t
+	}
+}
+
+// Set SingleLegOrder.Session
+func Session(session string) SingleLegOrderComposition {
+	return func(order *SingleLegOrder) {
 		order.Session = session
 	}
 }
 
-// Set Duration
-func MarketDuration(duration string) MarketOrderComposition {
-	return func(order *MarketOrder) {
+// Set SingleLegOrder.Duration
+func Duration(duration string) SingleLegOrderComposition {
+	return func(order *SingleLegOrder) {
 		order.Duration = duration
 	}
 }
 
-// Set OrderStrategyType
-func MarketStrategy(strategy string) MarketOrderComposition {
-	return func(order *MarketOrder) {
-		order.OrderStrategyType = strategy
+// Set SingleLegOrder.Strategy
+func Strategy(strategy string) SingleLegOrderComposition {
+	return func(order *SingleLegOrder) {
+		order.Strategy = strategy
 	}
 }
 
-// Add an OrderLeg to OrderLegCollection
-func MarketLeg(leg MarketOrderLeg) MarketOrderComposition {
-	return func(order *MarketOrder) {
-		order.OrderLegCollection = append(order.OrderLegCollection, leg)
+// Set SingleLegOrder.Instruction
+func Instruction(instruction string) SingleLegOrderComposition {
+	return func(order *SingleLegOrder) {
+		order.Instruction = instruction
 	}
 }
 
-// WIP: Submit order for the specified encrypted account ID
-func (agent *Agent) SubmitMarketOrder(hashValue string, order *MarketOrder) error {
-	orderJson, err := sonic.Marshal(order)
+// Set SingleLegOrder.Quantity
+func Quantity(quantity float32) SingleLegOrderComposition {
+	return func(order *SingleLegOrder) {
+		order.Quantity = quantity
+	}
+}
+
+// Set SingleLegOrder.Instrument
+func Instrument(instrument SimpleOrderInstrument) SingleLegOrderComposition {
+	return func(order *SingleLegOrder) {
+		order.Instrument = instrument
+	}
+}
+
+var SingleLegOrderTemplate = `
+{
+  "orderType": "%s",
+  "session": "%s",
+  "duration": "%s",
+  "orderStrategyType": "%s",
+  "orderLegCollection": [
+    {
+      "instruction": "%s",
+      "quantity": %f,
+      "instrument": {
+        "symbol": "%s",
+        "assetType": "%s"
+      }
+    }
+  ]
+}
+`
+
+func marshalSingleLegOrder(order *SingleLegOrder) string {
+	return fmt.Sprintf(SingleLegOrderTemplate, order.OrderType, order.Session, order.Duration, order.Strategy, order.Instruction, order.Quantity, order.Instrument.Symbol, order.Instrument.AssetType)
+}
+
+// Submit a single-leg order for the specified encrypted account ID
+func (agent *Agent) SubmitSingleLegOrder(hashValue string, order *SingleLegOrder) error {
+	orderJson := marshalSingleLegOrder(order)
+	req, err := http.NewRequest("POST", fmt.Sprintf(endpointAccountOrders, hashValue), strings.NewReader(orderJson))
 	check(err)
-	fmt.Println(string(orderJson), base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(hashValue))))
-	req, err := http.NewRequest("POST", fmt.Sprintf(endpointAccountOrders, base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(hashValue)))), bytes.NewBuffer(orderJson))
-	check(err)
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", agent.tokens.Bearer))
-	req.Header.Set("Content-Type", "application/json") // #58w
+	req.Header.Set("Content-Type", "application/json")
 	_, err = agent.Handler(req)
 	check(err)
 	return nil
 }
 
 // Get a specific order by account number & order ID
-func (agent *Agent) GetOrder(accountNumber, orderID string) (Order, error) {
+func (agent *Agent) GetOrder(accountNumber, orderID string) (FullOrder, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointAccountOrder, accountNumber, orderID), nil)
 	check(err)
 	resp, err := agent.Handler(req)
 	check(err)
-	var order Order
+	var order FullOrder
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	check(err)
@@ -392,7 +430,7 @@ func (agent *Agent) GetOrder(accountNumber, orderID string) (Order, error) {
 
 // fromEnteredTime, toEnteredTime format:
 // yyyy-MM-ddTHH:mm:ss.SSSZ
-func (agent *Agent) GetAccountOrders(accountNumber, fromEnteredTime, toEnteredTime string) ([]Order, error) {
+func (agent *Agent) GetAccountOrders(accountNumber, fromEnteredTime, toEnteredTime string) ([]FullOrder, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointAccountOrders, accountNumber), nil)
 	check(err)
 	q := req.URL.Query()
@@ -401,7 +439,7 @@ func (agent *Agent) GetAccountOrders(accountNumber, fromEnteredTime, toEnteredTi
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
 	check(err)
-	var orders []Order
+	var orders []FullOrder
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	check(err)
@@ -413,7 +451,7 @@ func (agent *Agent) GetAccountOrders(accountNumber, fromEnteredTime, toEnteredTi
 // WIP:
 // fromEnteredTime, toEnteredTime format:
 // yyyy-MM-ddTHH:mm:ss.SSSZ
-func (agent *Agent) GetAllOrders(fromEnteredTime, toEnteredTime string) ([]Order, error) {
+func (agent *Agent) GetAllOrders(fromEnteredTime, toEnteredTime string) ([]FullOrder, error) {
 	req, err := http.NewRequest("GET", endpointOrders, nil)
 	check(err)
 	q := req.URL.Query()
@@ -425,7 +463,7 @@ func (agent *Agent) GetAllOrders(fromEnteredTime, toEnteredTime string) ([]Order
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	check(err)
-	var orders []Order
+	var orders []FullOrder
 	/*err = sonic.Unmarshal(body, &orders)
 	check(err)*/
 	fmt.Println(body)
