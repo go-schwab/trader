@@ -1,0 +1,10 @@
+name: enhancement
+description: propose a new feature or enhancement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: what would you like to see (describe affect rather than mechanism, if possible)?
+    validations:
+      required: true
