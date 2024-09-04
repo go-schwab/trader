@@ -1,4 +1,4 @@
-module github.com/samjtro/schwab
+module github.com/go-schwab/trader
 
 go 1.22.4
 

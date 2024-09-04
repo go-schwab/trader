@@ -24,7 +24,7 @@ APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
-2. `go get github.com/samjtro/schwab@v0.5.0`
+2. `go get github.com/go-schwab/trader`
 
 ### 0.1 agent
 
@@ -32,10 +32,10 @@ requests in this library are made through a `Handler()`, facilitated by an `Agen
 
 ```
 import (
-    "github.com/samjtro/schwab"
+    "github.com/go-schwab/trader"
 )
 
-agent := schwab.Initiate()
+agent := trader.Initiate()
 ```
 
 ### 1.0 accessing market data
@@ -173,7 +173,7 @@ Instrument:
 ## WIP: DO NOT CROSS, DANGER DANGER
 #### 2.2.0 accessing account data
 
-##### 2.2.1.0 
+##### 2.2.1.0
 
 ```
 an, err := agent.GetAccountNumbers()
