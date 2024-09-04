@@ -1,7 +1,4 @@
-// The fastest unofficial Schwab TraderAPI wrapper
-// Copyright (C) 2024 Samuel Troyer <samjtro.com>
-// See the GNU General Public License for more details
-package schwab
+package trader
 
 import (
 	"fmt"

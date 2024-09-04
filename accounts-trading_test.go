@@ -1,4 +1,4 @@
-package schwab
+package trader
 
 import (
 	"fmt"
