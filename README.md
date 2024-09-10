@@ -1,9 +1,9 @@
-# schwab
+# go wrapper for schwab's trader-api
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/schwab.svg)](https://pkg.go.dev/github.com/samjtro/schwab)
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab)](https://goreportcard.com/report/github.com/samjtro/schwab)
 [![License](https://img.shields.io/badge/License-GPLv2-green)](LICENSE)
 
-built, maintained by [@samjtro](https://github.com/samjtro)
+built by [@samjtro](https://github.com/samjtro)
 
 if you want to contribute - go for it! there is no contribution guide, just a simple golden rule: if it ain't broke, don't fix it:
 **all** contributions should be tested via `go test` before submission.
@@ -24,7 +24,7 @@ APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
-2. `go get github.com/go-schwab/trader`
+2. `go get github.com/go-schwab/trader@v0.5.1`
 
 ### 0.1 agent
 
