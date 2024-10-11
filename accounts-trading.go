@@ -30,7 +30,7 @@ var (
 )
 
 type Transaction struct {
-	ActivityID     int `json:"ActivityId"`
+	ActivityId     int
 	Time           string
 	User           User
 	Description    string
@@ -376,27 +376,55 @@ func Instrument(instrument SimpleOrderInstrument) SingleLegOrderComposition {
 	}
 }
 
-var SingleLegOrderTemplate = `
+var OrderTemplate = `
 {
   "orderType": "%s",
   "session": "%s",
   "duration": "%s",
   "orderStrategyType": "%s",
   "orderLegCollection": [
-    {
-      "instruction": "%s",
-      "quantity": %f,
-      "instrument": {
-        "symbol": "%s",
-        "assetType": "%s"
-      }
-    }
+    %s
   ]
 }
 `
 
+var LegTemplate = `
+{
+  "instruction": "%s",
+  "quantity": %f,
+  "instrument": {
+    "symbol": "%s",
+    "assetType": "%s"
+  }
+},
+`
+
+var LegTemplateLast = `
+{
+  "instruction": "%s",
+  "quantity": %f,
+  "instrument": {
+    "symbol": "%s",
+    "assetType": "%s"
+  }
+},
+`
+
 func marshalSingleLegOrder(order *SingleLegOrder) string {
-	return fmt.Sprintf(SingleLegOrderTemplate, order.OrderType, order.Session, order.Duration, order.Strategy, order.Instruction, order.Quantity, order.Instrument.Symbol, order.Instrument.AssetType)
+	return fmt.Sprintf(OrderTemplate, order.OrderType, order.Session, order.Duration, order.Strategy, fmt.Sprintf(LegTemplate, order.Instruction, order.Quantity, order.Instrument.Symbol, order.Instrument.AssetType))
+}
+
+func marshalMultiLegOrder(order *MultiLegOrder) string {
+	var legs string
+	// UNTESTED
+	for i, leg := range order.OrderLegCollection {
+		if i != order.OrderLegCollection.length-1 {
+			legs += fmt.Sprintf(LegTemplate, order.Instruction, order.Quantity, order.Instrument.Symbol, order.Instrument.AssetType)
+		} else {
+			legs += fmt.Sprintf(LegTemplateLast, order.Instruction, order.Quantity, order.Instrument.Symbol, order.Instrument.AssetType)
+		}
+	}
+	return fmt.Sprintf(OrderTemplate)
 }
 
 // Submit a single-leg order for the specified encrypted account ID
