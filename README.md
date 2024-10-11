@@ -6,6 +6,8 @@
 
 built by [@samjtro](https://github.com/samjtro)
 
+---
+
 if you want to contribute - go for it! there is no contribution guide, just a simple golden rule: if it ain't broke, don't fix it:
 **all** contributions should be tested via `go test` before submission.
 
@@ -14,6 +16,8 @@ why should you use this project?
 - lightning fast
 - return structs are easily indexable
 - easy to setup, easy to use (personal preference, i know - but trust me!)
+
+---
 
 ## docs
 
