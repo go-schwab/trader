@@ -1,29 +1,37 @@
 # go wrapper for schwab's trader-api
+
 [![Go Reference](https://pkg.go.dev/badge/github.com/samjtro/schwab.svg)](https://pkg.go.dev/github.com/samjtro/schwab)
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab)](https://goreportcard.com/report/github.com/samjtro/schwab)
 [![License](https://img.shields.io/badge/License-GPLv2-green)](LICENSE)
 
 built by [@samjtro](https://github.com/samjtro)
 
+---
+
 if you want to contribute - go for it! there is no contribution guide, just a simple golden rule: if it ain't broke, don't fix it:
 **all** contributions should be tested via `go test` before submission.
 
 why should you use this project?
+
 - lightning fast
 - return structs are easily indexable
 - easy to setup, easy to use (personal preference, i know - but trust me!)
+
+---
 
 ## docs
 
 ### 0.0 quick start
 
-0. go to https://developer.schwab.com, create an account, create an app, get app credentials from https://developer.schwab.com/dashboard/apps
+0. go to <https://developer.schwab.com>, create an account, create an app, get app credentials from <https://developer.schwab.com/dashboard/apps>
 1. create `config.env` in your project directory, formatted as such:
+
 ```
 APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
+
 2. `go get github.com/go-schwab/trader@v0.5.1`
 
 ### 0.1 agent
@@ -44,7 +52,7 @@ agent := trader.Initiate()
 
 code samples:
 
-```
+```go
 df, err := agent.GetPriceHistory("AAPL", "month", "1", "daily", "1", "", "")
 check(err)
 ```
@@ -62,7 +70,7 @@ return:
 
 code samples:
 
-```
+```go
 quote, err := agent.GetQuote("AAPL")
 check(err)
 ```
@@ -76,14 +84,13 @@ return:
 {EQUITY COE NBBO true 1973757747 AAPL 199.62 164.075 EDGX 195.75 5 1717687921950 XNAS 195.74 4 1717687920970 195.87 196.5 XADF 195.745 100 195.21 195.745 -0.125 -0.06381784 -0.125 -0.06381784 0 0 0 1717687921950 Normal 14237020 1717687921574}
 ```
 
-
 #### 1.3.0 instruments
 
 ##### 1.3.1 simple
 
 code samples:
 
-```
+```go
 simple, err := agent.SearchInstrumentSimple("AAPL")
 check(err)
 ```
@@ -101,7 +108,7 @@ return:
 
 code samples:
 
-```
+```go
 fundamental, err := agent.SearchInstrumentFundamental("AAPL")
 check(err)
 ```
@@ -119,7 +126,7 @@ return:
 
 code samples:
 
-```
+```go
 movers, err := agent.GetMovers("$DJI", "up", "percent")
 check(err)
 ```
@@ -139,7 +146,7 @@ return:
 
 to submit any trades in this library, one must use your encrypted account id. this as accessed by using the `agent.GetAccountNumbers()` function, which is then passed to the submission function. this is because there are use cases where you might want to change between multiple accounts while trading the same session.
 
-```
+```go
 an, err := agent.GetAccountNumbers()
 check(err)
 ```
@@ -150,15 +157,15 @@ the rest of the docs assume you want to use the first element of the `[]AccountN
 
 suppose we wanted to submit a single-leg market order for the symbol "AAPL". this is as easy as:
 
-```
+```go
 err = agent.SubmitSingleLegOrder(an[0].HashValue, CreateSingleLegOrder(OrderType("MARKET"), Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Instruction("BUY"), Quantity(1.0), Instrument(SimpleOrderInstrument{
-	Symbol:    "AAPL",
-	AssetType: "EQUITY",
+    Symbol:    "AAPL",
+    AssetType: "EQUITY",
 })))
 check(err)
 ```
 
-let's break this down, although it's fairly straight forward. `CreateSingleLegOrder` returns a `SingleLegOrder`, passed to `agent.SubmitSingleLegOrder` after the hash value of your encrypted id. `CreateSingleOrder` accepts an unknown amount of parameters setting the various required elements for the order:
+let's break this down, although it's fairly straight forward. `CreateSingleLegOrder` returns a `SingleLegOrder`, passed to `agent.SubmitSingleLegOrder` after the hash value of your encrypted id. `CreateSingleOrder` accepts an unknown amount of parameters setting the various elements for the order:
 
 ```
 OrderType:
@@ -170,12 +177,32 @@ Quantity:
 Instrument:
 ```
 
+the default behavior of CreateSingleLegOrder() assumes you are submitting an order with the following parameters:
+
+```
+OrderType: MARKET
+Session: NORMAL
+Duration: DAY
+Strategy: SINGLE
+```
+
+meaning only `INSTRUCTION`, `QUANTITY` & `INSTRUMENT` are the only required directives. the above example can be simplified thusly:
+
+```go
+err = agent.SubmitSingleLegOrder(an[0].HashValue, CreateSingleLegOrder(Instruction("BUY"), Quantity(1.0), Instrument(SimpleOrderInstrument{
+    Symbol:    "AAPL",
+    AssetType: "EQUITY",
+})))
+check(err)
+```
+
 ## WIP: DO NOT CROSS, DANGER DANGER
+
 #### 2.2.0 accessing account data
 
 ##### 2.2.1.0
 
-```
+```go
 an, err := agent.GetAccountNumbers()
 check(err)
 fmt.Println(an)
