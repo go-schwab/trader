@@ -9,6 +9,10 @@ import (
 	"github.com/bytedance/sonic"
 )
 
+/* TODO:
+[ ] http.NewRequest -> agent.client
+*/
+
 var (
 	endpoint string = "https://api.schwabapi.com/marketdata/v1"
 
@@ -197,19 +201,19 @@ type Contract struct {
 // ticker = "AAPL", etc.
 func (agent *Agent) GetQuote(symbol string) (Quote, error) {
 	req, err := http.NewRequest("GET", endpointQuotes, nil)
-	check(err)
+	isErrNil(err)
 	q := req.URL.Query()
 	q.Add("symbols", symbol)
 	q.Add("fields", "quote")
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	check(err)
+	isErrNil(err)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	check(err)
+	isErrNil(err)
 	var quote Quote
 	err = sonic.Unmarshal([]byte(strings.Join(strings.Split(strings.Split(string(body), fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), "")[:len(strings.Join(strings.Split(strings.Split(string(body), fmt.Sprintf("\"%s\":", symbol))[1], "\"quote\":{"), ""))-2]), &quote)
-	check(err)
+	isErrNil(err)
 	return quote, err
 }
 
@@ -217,19 +221,19 @@ func (agent *Agent) GetQuote(symbol string) (Quote, error) {
 // It takes one param:
 func (agent *Agent) SearchInstrumentSimple(symbols string) (SimpleInstrument, error) {
 	req, err := http.NewRequest("GET", endpointSearchInstrument, nil)
-	check(err)
+	isErrNil(err)
 	q := req.URL.Query()
 	q.Add("symbol", symbols)
 	q.Add("projection", "symbol-search")
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	check(err)
+	isErrNil(err)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	check(err)
+	isErrNil(err)
 	var instrument SimpleInstrument
 	err = sonic.Unmarshal([]byte(strings.Split(string(body), "[")[1][:len(strings.Split(string(body), "[")[1])-2]), &instrument)
-	check(err)
+	isErrNil(err)
 	return instrument, nil
 }
 
@@ -237,21 +241,21 @@ func (agent *Agent) SearchInstrumentSimple(symbols string) (SimpleInstrument, er
 // It takes one param:
 func (agent *Agent) SearchInstrumentFundamental(symbol string) (FundamentalInstrument, error) {
 	req, err := http.NewRequest("GET", endpointSearchInstrument, nil)
-	check(err)
+	isErrNil(err)
 	q := req.URL.Query()
 	q.Add("symbol", symbol)
 	q.Add("projection", "fundamental")
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	check(err)
+	isErrNil(err)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	check(err)
+	isErrNil(err)
 	var instrument FundamentalInstrument
 	split0 := strings.Split(string(body), "[{\"fundamental\":")[1]
 	split := strings.Split(split0, "}")
 	err = sonic.Unmarshal([]byte(fmt.Sprintf("%s}", strings.Join(split[:2], ""))), &instrument)
-	check(err)
+	isErrNil(err)
 	return instrument, nil
 }
 
@@ -274,7 +278,7 @@ func (agent *Agent) SearchInstrumentFundamental(symbol string) (FundamentalInstr
 // endDate =
 func (agent *Agent) GetPriceHistory(symbol, periodType, period, frequencyType, frequency, startDate, endDate string) ([]Candle, error) {
 	req, err := http.NewRequest("GET", endpointPriceHistory, nil)
-	check(err)
+	isErrNil(err)
 	q := req.URL.Query()
 	q.Add("symbol", symbol)
 	q.Add("periodType", periodType)
@@ -285,13 +289,13 @@ func (agent *Agent) GetPriceHistory(symbol, periodType, period, frequencyType, f
 	q.Add("endDate", endDate)
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	check(err)
+	isErrNil(err)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	check(err)
+	isErrNil(err)
 	var candles []Candle
 	err = sonic.Unmarshal([]byte(fmt.Sprintf("[%s]", strings.Split(strings.Split(string(body), "[")[1], "]")[0])), &candles)
-	check(err)
+	isErrNil(err)
 	return candles, nil
 }
 
@@ -302,20 +306,20 @@ func (agent *Agent) GetPriceHistory(symbol, periodType, period, frequencyType, f
 // change = "percent" or "value"
 func (agent *Agent) GetMovers(index, direction, change string) ([]Screener, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointMovers, index), nil)
-	check(err)
+	isErrNil(err)
 	q := req.URL.Query()
 	q.Add("direction", direction)
 	q.Add("change", change)
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	check(err)
+	isErrNil(err)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	check(err)
+	isErrNil(err)
 	var movers []Screener
 	stringToParse := fmt.Sprintf("[%s]", strings.Split(string(body), "[")[1][:len(strings.Split(string(body), "[")[1])-2])
 	err = sonic.Unmarshal([]byte(stringToParse), &movers)
-	check(err)
+	isErrNil(err)
 	return movers, nil
 }
 
@@ -337,7 +341,7 @@ func (agent *Agent) GetMovers(index, direction, change string) ([]Screener, erro
 // This returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the status of the contract ("ALL"), expiring before 2022-07-01
 func (agent *Agent) Single(ticker, contractType, strikeRange, strikeCount, toDate string) ([]Contract, error) {
 	req, err := http.NewRequest("GET", endpointOptions, nil)
-	check(err)
+	isErrNil(err)
 	q := req.URL.Query()
 	q.Add("symbol", ticker)
 	q.Add("contractType", contractType)
@@ -346,14 +350,14 @@ func (agent *Agent) Single(ticker, contractType, strikeRange, strikeCount, toDat
 	q.Add("toDate", toDate)
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	check(err)
+	isErrNil(err)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	check(err)
+	isErrNil(err)
 	var chain []Contract
 	// WIP
 	err = sonic.Unmarshal(body, &chain)
-	check(err)
+	isErrNil(err)
 	return chain, nil
 }
 
