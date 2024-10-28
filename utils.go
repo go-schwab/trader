@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/bytedance/sonic"
-	"github.com/go-schwab/oauth2ns"
 	o "github.com/go-schwab/oauth2ns"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
@@ -31,35 +30,22 @@ type DB struct {
 var Tokens DB
 
 func init() {
-	err := godotenv.Load("*.env")
+	err := godotenv.Load()
 	isErrNil(err)
 }
 
-// Read in tokens from ~/.trade/bar.json
-func readDB() *oauth2ns.AuthorizedClient {
-	body, err := os.ReadFile(fmt.Sprintf("%s/.trade/bar.json", homeDir()))
-	isErrNil(err)
-	var ctx context.Context
-	err = sonic.Unmarshal(body, &Tokens)
-	isErrNil(err)
-	token := new(oauth2.Token)
-	token.AccessToken = Tokens.AccessToken
-	token.RefreshToken = Tokens.RefreshToken
-	token.TokenType = Tokens.TokenType
-	token.Expiry = Tokens.Expiry
-	token.ExpiresIn = Tokens.ExpiresIn
-	c := &oauth2.Config{
-		ClientID:     os.Getenv("APPKEY"),
-		ClientSecret: os.Getenv("SECRET"),
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  "https://api.schwabapi.com/v1/oauth/authorize",
-			TokenURL: "https://api.schwabapi.com/v1/oauth/token",
-		},
+// is the err nil?
+func isErrNil(err error) {
+	if err != nil {
+		log.Fatalf("[err] %s", err.Error())
 	}
-	return &o.AuthorizedClient{
-		c.Client(ctx, token),
-		token,
-	}
+}
+
+// wrapper for os.UserHomeDir()
+func homeDir() string {
+	dir, err := os.UserHomeDir()
+	isErrNil(err)
+	return dir
 }
 
 // Credit: https://go.dev/play/p/C2sZRYC15XN
@@ -74,13 +60,6 @@ func getStringInBetween(str string, start string, end string) (result string) {
 		return
 	}
 	return str[s : s+e]
-}
-
-// is the err nil?
-func isErrNil(err error) {
-	if err != nil {
-		log.Fatalf("[ERR] %s", err.Error())
-	}
 }
 
 // trim one FIRST character in the string
@@ -131,19 +110,44 @@ func trimOneFirstThreeLast(s string) string {
 	return s[1 : len(s)-3]
 }
 
-// wrapper for os.UserHomeDir()
-func homeDir() string {
-	dir, err := os.UserHomeDir()
+// Read in tokens from ~/.trade/bar.json
+func readDB() *o.AuthorizedClient {
+	body, err := os.ReadFile(fmt.Sprintf("%s/.trade/bar.json", homeDir()))
 	isErrNil(err)
-	return dir
+	var ctx context.Context
+	err = sonic.Unmarshal(body, &Tokens)
+	isErrNil(err)
+	token := new(oauth2.Token)
+	token.AccessToken = Tokens.AccessToken
+	token.RefreshToken = Tokens.RefreshToken
+	token.TokenType = Tokens.TokenType
+	token.Expiry = Tokens.Expiry
+	token.ExpiresIn = Tokens.ExpiresIn
+	c := &oauth2.Config{
+		ClientID:     os.Getenv("APPKEY"),
+		ClientSecret: os.Getenv("SECRET"),
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  "https://api.schwabapi.com/v1/oauth/authorize",
+			TokenURL: "https://api.schwabapi.com/v1/oauth/token",
+		},
+	}
+	return &o.AuthorizedClient{
+		c.Client(ctx, token),
+		token,
+	}
 }
 
 func Initiate() *Agent {
 	var agent Agent
-	if _, err := os.Stat(fmt.Sprintf("%s/.trade", homeDir())); errors.Is(err, os.ErrNotExist) {
+	// TODO: test this block, this is to attempt to resolve the error described in #67
+	if _, err := os.Stat(fmt.Sprintf("%s/.trade/bar.json", homeDir())); errors.Is(err, os.ErrNotExist) {
+		if _, err := os.Stat(fmt.Sprintf("%s/.trade", homeDir())); !errors.Is(err, os.ErrNotExist) {
+			err = os.RemoveAll(fmt.Sprintf("%s/.trade", homeDir()))
+			isErrNil(err)
+		}
 		err = os.Mkdir(fmt.Sprintf("%s/.trade", homeDir()), os.ModePerm)
 		isErrNil(err)
-		agent.client, err = o.Run()
+		agent.client, err = o.Initiate(os.Getenv("APPKEY"), os.Getenv("SECRET"), os.Getenv("CBURL"))
 		isErrNil(err)
 		Tokens.AccessToken = agent.client.Token.AccessToken
 		Tokens.RefreshToken = agent.client.Token.RefreshToken
@@ -175,7 +179,9 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		log.Fatalf("[err] no access token found, please reinitiate with 'Initiate'")
 	}
 	if ((&Agent{}) == agent) || ((&o.AuthorizedClient{}) == agent.client) {
-		agent.client, err = o.Run()
+		// TODO: this theoretically works but results in an error for the oauth implrementation
+		// going to do some testing now, but pushing as it is in what is a theoretically working state
+		agent.client, err = o.Initiate(os.Getenv("APPKEY"), os.Getenv("SECRET"), os.Getenv("CBURL"))
 		isErrNil(err)
 		Tokens.AccessToken = agent.client.Token.AccessToken
 		Tokens.RefreshToken = agent.client.Token.RefreshToken
@@ -183,9 +189,7 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		Tokens.Expiry = agent.client.Token.Expiry
 		Tokens.ExpiresIn = agent.client.Token.ExpiresIn
 	}
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", agent.client.Token.AccessToken))
-	client := http.Client{}
-	resp, err := client.Do(req)
+	resp, err := agent.client.Do(req)
 	if err != nil {
 		return resp, err
 	}

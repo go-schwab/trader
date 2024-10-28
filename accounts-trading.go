@@ -9,10 +9,6 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-/* TODO:
-[ ] http.NewRequest -> agent.client
-*/
-
 var (
 	accountEndpoint string = "https://api.schwabapi.com/trader/v1"
 
@@ -424,10 +420,10 @@ func marshalMultiLegOrder(order *MultiLegOrder) string {
 	var legs string
 	// UNTESTED
 	for i, leg := range order.OrderLegCollection {
-		if i != order.OrderLegCollection.length-1 {
-			legs += fmt.Sprintf(LegTemplate, order.Instruction, order.Quantity, order.Instrument.Symbol, order.Instrument.AssetType)
+		if i != len(order.OrderLegCollection)-1 {
+			legs += fmt.Sprintf(LegTemplate, leg.Instruction, leg.Quantity, leg.Instrument.Symbol, leg.Instrument.AssetType)
 		} else {
-			legs += fmt.Sprintf(LegTemplateLast, order.Instruction, order.Quantity, order.Instrument.Symbol, order.Instrument.AssetType)
+			legs += fmt.Sprintf(LegTemplateLast, leg.Instruction, leg.Quantity, leg.Instrument.Symbol, leg.Instrument.AssetType)
 		}
 	}
 	return fmt.Sprintf(OrderTemplate)
