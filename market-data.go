@@ -9,10 +9,6 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-/* TODO:
-[ ] http.NewRequest -> agent.client
-*/
-
 var (
 	endpoint string = "https://api.schwabapi.com/marketdata/v1"
 

@@ -10,7 +10,7 @@ require (
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/fatih/color v1.17.0 // indirect
-	github.com/go-schwab/oauth2ns v0.0.0-20241015193425-e8abfd05a439 // indirect
+	github.com/go-schwab/oauth2ns v0.0.0-20241027015119-9e1292705f91 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
