@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/bytedance/sonic"
 	o "github.com/go-schwab/oauth2ns"
@@ -21,15 +20,7 @@ import (
 
 type Agent struct{ client *o.AuthorizedClient }
 
-type DB struct {
-	AccessToken  string
-	RefreshToken string
-	TokenType    string
-	Expiry       time.Time
-	ExpiresIn    int64
-}
-
-var Tokens DB
+var TOKENS oauth2.Token
 
 func init() {
 	err := godotenv.Load(findAllEnvFiles()...)
@@ -39,7 +30,7 @@ func init() {
 // is the err nil?
 func isErrNil(err error) {
 	if err != nil {
-		log.Fatalf("[err] %s", err.Error())
+		log.Fatalf("[fatal] %s", err.Error())
 	}
 }
 
@@ -136,14 +127,8 @@ func readDB() *o.AuthorizedClient {
 	body, err := os.ReadFile(fmt.Sprintf("%s/.trade/bar.json", homeDir()))
 	isErrNil(err)
 	var ctx context.Context
-	err = sonic.Unmarshal(body, &Tokens)
+	err = sonic.Unmarshal(body, &TOKENS)
 	isErrNil(err)
-	token := new(oauth2.Token)
-	token.AccessToken = Tokens.AccessToken
-	token.RefreshToken = Tokens.RefreshToken
-	token.TokenType = Tokens.TokenType
-	token.Expiry = Tokens.Expiry
-	token.ExpiresIn = Tokens.ExpiresIn
 	c := &oauth2.Config{
 		ClientID:     os.Getenv("APPKEY"),
 		ClientSecret: os.Getenv("SECRET"),
@@ -153,8 +138,8 @@ func readDB() *o.AuthorizedClient {
 		},
 	}
 	return &o.AuthorizedClient{
-		c.Client(ctx, token),
-		token,
+		c.Client(ctx, &TOKENS),
+		&TOKENS,
 	}
 }
 
@@ -170,17 +155,13 @@ func Initiate() *Agent {
 		isErrNil(err)
 		agent.client, err = o.Initiate(os.Getenv("APPKEY"), os.Getenv("SECRET"), os.Getenv("CBURL"))
 		isErrNil(err)
-		Tokens.AccessToken = agent.client.Token.AccessToken
-		Tokens.RefreshToken = agent.client.Token.RefreshToken
-		Tokens.TokenType = agent.client.Token.TokenType
-		Tokens.Expiry = agent.client.Token.Expiry
-		Tokens.ExpiresIn = agent.client.Token.ExpiresIn
-		bytes, err := sonic.Marshal(Tokens)
+		TOKENS = *agent.client.Token
+		bytes, err := sonic.Marshal(TOKENS)
 		err = os.WriteFile(fmt.Sprintf("%s/.trade/bar.json", homeDir()), bytes, 0777)
 		isErrNil(err)
 	} else {
 		agent.client = readDB()
-		if Tokens.AccessToken == "" {
+		if TOKENS.AccessToken == "" {
 			err := os.RemoveAll(fmt.Sprintf("%s/.trade", homeDir()))
 			isErrNil(err)
 			log.Fatalf("[err] something went wrong - please reinitiate with 'Initiate'")
@@ -196,19 +177,15 @@ func Initiate() *Agent {
 // req = a request of type *http.Request
 func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 	var err error
-	if Tokens.AccessToken == "" {
+	if TOKENS.AccessToken == "" {
 		log.Fatalf("[err] no access token found, please reinitiate with 'Initiate'")
 	}
 	if ((&Agent{}) == agent) || ((&o.AuthorizedClient{}) == agent.client) {
-		// TODO: this theoretically works but results in an error for the oauth implrementation
+		// TODO: this theoretically works but results in an error for the oauth implementation
 		// going to do some testing now, but pushing as it is in what is a theoretically working state
 		agent.client, err = o.Initiate(os.Getenv("APPKEY"), os.Getenv("SECRET"), os.Getenv("CBURL"))
 		isErrNil(err)
-		Tokens.AccessToken = agent.client.Token.AccessToken
-		Tokens.RefreshToken = agent.client.Token.RefreshToken
-		Tokens.TokenType = agent.client.Token.TokenType
-		Tokens.Expiry = agent.client.Token.Expiry
-		Tokens.ExpiresIn = agent.client.Token.ExpiresIn
+		TOKENS = *agent.client.Token
 	}
 	resp, err := agent.client.Do(req)
 	if err != nil {
