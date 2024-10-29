@@ -5,9 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -30,7 +32,7 @@ type DB struct {
 var Tokens DB
 
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load(findAllEnvFiles()...)
 	isErrNil(err)
 }
 
@@ -39,6 +41,25 @@ func isErrNil(err error) {
 	if err != nil {
 		log.Fatalf("[err] %s", err.Error())
 	}
+}
+
+// find all env files
+func findAllEnvFiles() []string {
+	var files []string
+	err := filepath.WalkDir(".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		split := strings.Split(d.Name(), ".")
+		if len(split) > 1 {
+			if split[1] == "env" {
+				files = append(files, d.Name())
+			}
+		}
+		return err
+	})
+	isErrNil(err)
+	return files
 }
 
 // wrapper for os.UserHomeDir()
