@@ -4,7 +4,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab)](https://goreportcard.com/report/github.com/samjtro/schwab)
 [![License](https://img.shields.io/badge/License-GPLv2-green)](LICENSE)
 
-built by [@samjtro](https://github.com/samjtro)
+built by: [@samjtro](https://github.com/samjtro)
+
 see: [CONTRIBUTING.md](https://github.com/go-schwab/trader/blob/main/CONTRIBUTING.md)
 
 ---
