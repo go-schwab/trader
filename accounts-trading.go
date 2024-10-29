@@ -433,25 +433,37 @@ func marshalMultiLegOrder(order *MultiLegOrder) string {
 func (agent *Agent) SubmitSingleLegOrder(hashValue string, order *SingleLegOrder) error {
 	orderJson := marshalSingleLegOrder(order)
 	req, err := http.NewRequest("POST", fmt.Sprintf(endpointAccountOrders, hashValue), strings.NewReader(orderJson))
-	isErrNil(err)
+	if err != nil {
+		return err
+	}
 	req.Header.Set("Content-Type", "application/json")
 	_, err = agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // Get a specific order by account number & order ID
 func (agent *Agent) GetOrder(accountNumber, orderID string) (FullOrder, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointAccountOrder, accountNumber, orderID), nil)
-	isErrNil(err)
+	if err != nil {
+		return FullOrder{}, err
+	}
 	resp, err := agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return FullOrder{}, err
+	}
 	var order FullOrder
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	isErrNil(err)
+	if err != nil {
+		return FullOrder{}, err
+	}
 	err = sonic.Unmarshal(body, &order)
-	isErrNil(err)
+	if err != nil {
+		return FullOrder{}, err
+	}
 	return order, nil
 }
 
@@ -459,19 +471,27 @@ func (agent *Agent) GetOrder(accountNumber, orderID string) (FullOrder, error) {
 // yyyy-MM-ddTHH:mm:ss.SSSZ
 func (agent *Agent) GetAccountOrders(accountNumber, fromEnteredTime, toEnteredTime string) ([]FullOrder, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointAccountOrders, accountNumber), nil)
-	isErrNil(err)
+	if err != nil {
+		return []FullOrder{}, err
+	}
 	q := req.URL.Query()
 	q.Add("fromEnteredTime", fromEnteredTime)
 	q.Add("toEnteredTime", toEnteredTime)
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return []FullOrder{}, err
+	}
 	var orders []FullOrder
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	isErrNil(err)
+	if err != nil {
+		return []FullOrder{}, err
+	}
 	err = sonic.Unmarshal(body, &orders)
-	isErrNil(err)
+	if err != nil {
+		return []FullOrder{}, err
+	}
 	return orders, nil
 }
 
@@ -480,18 +500,25 @@ func (agent *Agent) GetAccountOrders(accountNumber, fromEnteredTime, toEnteredTi
 // yyyy-MM-ddTHH:mm:ss.SSSZ
 func (agent *Agent) GetAllOrders(fromEnteredTime, toEnteredTime string) ([]FullOrder, error) {
 	req, err := http.NewRequest("GET", endpointOrders, nil)
-	isErrNil(err)
+	if err != nil {
+		return []FullOrder{}, err
+	}
 	q := req.URL.Query()
 	q.Add("fromEnteredTime", fromEnteredTime)
 	q.Add("toEnteredTime", toEnteredTime)
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return []FullOrder{}, err
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	isErrNil(err)
+	if err != nil {
+		return []FullOrder{}, err
+	}
 	var orders []FullOrder
-	/*err = sonic.Unmarshal(body, &orders)
+	/* TODO:
+	err = sonic.Unmarshal(body, &orders)
 	isErrNil(err)*/
 	fmt.Println(body)
 	return orders, nil
@@ -500,45 +527,69 @@ func (agent *Agent) GetAllOrders(fromEnteredTime, toEnteredTime string) ([]FullO
 // Get encrypted account numbers for trading
 func (agent *Agent) GetAccountNumbers() ([]AccountNumbers, error) {
 	req, err := http.NewRequest("GET", endpointAccountNumbers, nil)
-	isErrNil(err)
+	if err != nil {
+		return []AccountNumbers{}, err
+	}
 	resp, err := agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return []AccountNumbers{}, err
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	isErrNil(err)
+	if err != nil {
+		return []AccountNumbers{}, err
+	}
 	var accountNumbers []AccountNumbers
 	err = sonic.Unmarshal(body, &accountNumbers)
-	isErrNil(err)
+	if err != nil {
+		return []AccountNumbers{}, err
+	}
 	return accountNumbers, nil
 }
 
 // Get all accounts associated with the user logged in
 func (agent *Agent) GetAccounts() ([]Account, error) {
 	req, err := http.NewRequest("GET", endpointAccounts, nil)
-	isErrNil(err)
+	if err != nil {
+		return []Account{}, err
+	}
 	resp, err := agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return []Account{}, err
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	isErrNil(err)
+	if err != nil {
+		return []Account{}, err
+	}
 	var accounts []Account
 	err = sonic.Unmarshal(body, &accounts)
-	isErrNil(err)
+	if err != nil {
+		return []Account{}, err
+	}
 	return accounts, nil
 }
 
 // Get account by encrypted account id
 func (agent *Agent) GetAccount(id string) (Account, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointAccount, id), nil)
-	isErrNil(err)
+	if err != nil {
+		return Account{}, err
+	}
 	resp, err := agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return Account{}, err
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	isErrNil(err)
+	if err != nil {
+		return Account{}, err
+	}
 	var account Account
 	err = sonic.Unmarshal(body, &account)
-	isErrNil(err)
+	if err != nil {
+		return Account{}, err
+	}
 	return account, nil
 }
 
@@ -548,14 +599,22 @@ func (agent *Agent) GetAccount(id string) (Account, error) {
 // Get a transaction for a specific account id
 func (agent *Agent) GetTransaction(accountNumber, transactionId string) (Transaction, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointTransaction, accountNumber, transactionId), nil)
-	isErrNil(err)
+	if err != nil {
+		return Transaction{}, err
+	}
 	resp, err := agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return Transaction{}, err
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	isErrNil(err)
+	if err != nil {
+		return Transaction{}, err
+	}
 	var transaction Transaction
 	err = sonic.Unmarshal(body, &transaction)
-	isErrNil(err)
+	if err != nil {
+		return Transaction{}, err
+	}
 	return transaction, nil
 }
