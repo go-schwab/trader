@@ -5,11 +5,9 @@
 [![License](https://img.shields.io/badge/License-GPLv2-green)](LICENSE)
 
 built by [@samjtro](https://github.com/samjtro)
+see: [CONTRIBUTING.md](https://github.com/go-schwab/trader/blob/main/CONTRIBUTING.md)
 
 ---
-
-if you want to contribute - go for it! there is no contribution guide, just a simple golden rule: if it ain't broke, don't fix it:
-**all** contributions should be tested via `go test` before submission.
 
 why should you use this project?
 
@@ -24,7 +22,7 @@ why should you use this project?
 ### 0.0 quick start
 
 0. go to <https://developer.schwab.com>, create an account, create an app, get app credentials from <https://developer.schwab.com/dashboard/apps>
-1. create `config.env` in your project directory, formatted as such:
+1. create any file with the `.env` extension in your project directory (can also have multiple, if necessary), formatted as such:
 
 ```
 APPKEY=KEY0 // App Key
@@ -32,7 +30,7 @@ SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
 
-2. `go get github.com/go-schwab/trader@v0.5.1`
+2. `go get github.com/go-schwab/trader@v0.9.0`
 
 ### 0.1 agent
 
