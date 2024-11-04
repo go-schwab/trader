@@ -29,14 +29,14 @@ SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
 
-2. we use tls for the oauth handshake between your local machine & schwab to ensure secure transmission of your bearer token. run the following command to generate ssl certs:
+2. run the following command in your cwd to generate ssl certs for secure tls transmission of your bearer token:
 
 ```
 openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <( \
 printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 ```
 
-2. `go get github.com/go-schwab/trader@v0.9.0`
+3. `go get github.com/go-schwab/trader@v0.9.0`
 
 ### 0.1 agent
 
