@@ -16,8 +16,6 @@ why should you use this project?
 - return structs are easily indexable
 - easy to setup, easy to use (personal preference, i know - but trust me!)
 
----
-
 ## docs
 
 ### 0.0 quick start
@@ -29,6 +27,13 @@ why should you use this project?
 APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
+```
+
+2. we use tls for the oauth handshake between your local machine & schwab to ensure secure transmission of your bearer token. run the following command to generate ssl certs:
+
+```
+openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <( \
+printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 ```
 
 2. `go get github.com/go-schwab/trader@v0.9.0`

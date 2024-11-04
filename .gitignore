@@ -16,3 +16,6 @@
 
 # CUSTOM
 *.env
+*.json
+*.crt
+*.key
