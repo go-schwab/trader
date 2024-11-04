@@ -7,13 +7,11 @@ body:
     id: what-happened
     attributes:
       label: what happened?
-      placeholder: i got my...
     validations:
       required: true
   - type: textarea
     id: what-did-you-expect
     attributes:
       label: what did you expect to happen?
-      placeholder: in a jar of...
     validations:
       required: true
