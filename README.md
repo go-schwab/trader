@@ -57,24 +57,12 @@ CBURL=https://127.0.0.1 // App Callback URL
 
 requests in this library are made through a `Handler()`, facilitated by an `Agent{}`. from here on out, the documentation assumes you have included the following code prior to making any requests:
 
-#### mac & windows
-
 ```
 import (
     "github.com/go-schwab/trader"
 )
 
 agent := trader.Initiate()
-```
-
-#### linux
-
-```
-import (
-    "github.com/go-schwab/trader"
-)
-
-agent := trader.InitiateLinux()
 ```
 
 ### 1.0 accessing market data
