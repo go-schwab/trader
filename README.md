@@ -20,6 +20,8 @@ why should you use this project?
 
 ### 0.0 quick start
 
+#### mac & windows
+
 0. go to <https://developer.schwab.com>, create an account, create an app, get app credentials from <https://developer.schwab.com/dashboard/apps>
 1. create any file with the `.env` extension in your project directory (can also have multiple, if necessary), formatted as such:
 
@@ -36,11 +38,26 @@ openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -n
 printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 ```
 
-3. `go get github.com/go-schwab/trader@v0.9.0`
+3. `go get github.com/go-schwab/trader@v0.9.1`
+
+#### linux
+
+0. go to <https://developer.schwab.com>, create an account, create an app, get app credentials from <https://developer.schwab.com/dashboard/apps>
+1. create any file with the `.env` extension in your project directory (can also have multiple, if necessary), formatted as such:
+
+```
+APPKEY=KEY0 // App Key
+SECRET=KEY1 // App Secret
+CBURL=https://127.0.0.1 // App Callback URL
+```
+
+2. `go get github.com/go-schwab/trader@v0.9.1`
 
 ### 0.1 agent
 
-requests in this library are made through a `Handler()`, facilitated by an `Agent{}` created by calling: `agent := schwab.Initiate()`. from here on out, the documentation assumes you have included the following code prior to making any requests:
+requests in this library are made through a `Handler()`, facilitated by an `Agent{}`. from here on out, the documentation assumes you have included the following code prior to making any requests:
+
+#### mac & windows
 
 ```
 import (
@@ -48,6 +65,16 @@ import (
 )
 
 agent := trader.Initiate()
+```
+
+#### linux
+
+```
+import (
+    "github.com/go-schwab/trader"
+)
+
+agent := trader.InitiateLinux()
 ```
 
 ### 1.0 accessing market data
