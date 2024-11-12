@@ -193,8 +193,6 @@ func Initiate() *Agent {
 	switch runtime.GOOS {
 	case "linux":
 		linux = true
-	default:
-		log.Fatalf("Unsupported platform.")
 	}
 	isErrNil(err)
 	if linux {
