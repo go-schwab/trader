@@ -159,11 +159,9 @@ type Screener struct {
 	NetPercentChange float64
 }
 
-// WIP: type Underlying struct{}
-// WIP:
-type Contract struct {
-	TYPE                   string
-	SYMBOL                 string
+/*
+
+Legacy:
 	STRIKE                 float64
 	EXCHANGE               string
 	EXPIRATION             float64
@@ -188,6 +186,107 @@ type Contract struct {
 	MARK_PERCENT_CHANGE    float64
 	INTRINSIC_VALUE        float64
 	IN_THE_MONEY           bool
+
+*/
+
+type Chain struct {
+	Symbol           string
+	Status           string
+	Underlying       Underlying
+	Strategy         string
+	Interval         float64
+	IsDelayed        bool
+	IsIndex          bool
+	DaysToExpiration float64
+	InterestRate     float64
+	UnderlyingPrice  float64
+	Volatility       float64
+	CallExpDateMap   map[string]map[string][]OptionContract
+	PutExpDateMap    map[string]map[string][]OptionContract
+}
+
+type Underlying struct {
+	Ask               float64
+	AskSize           float64
+	Bid               float64
+	BidSize           float64
+	Change            float64
+	Close             float64
+	Delayed           bool
+	Description       string
+	ExchangeName      string
+	Hi52              float64 `json:"fiftyTwoWeekHigh"fiftyTwoWeekHigh"`
+	Lo52              float64 `json:"fiftyTwoWeekHigh"fiftyTwoWeekLow"`
+	HiPrice           float64 `json:"highPrice"`
+	LoPrice           float64 `json:"lowPrice"`
+	Mark              float64
+	MarkPercentChange float64
+	OpenPrice         float64
+	PercentChange     float64
+	QuoteTime         int64
+	Symbol            string
+	TotalVolume       int64
+	TradeTime         int64
+}
+
+type OptionContract struct {
+	PutCall                string
+	Symbol                 string
+	Description            string
+	ExchangeName           string
+	Bid                    float64
+	Ask                    float64
+	Last                   float64
+	Mark                   float64
+	BidSize                int64
+	AskSize                int64
+	LastSize               int64
+	HighPrice              float64
+	LowPrice               float64
+	OpenPrice              float64
+	ClosePrice             float64
+	TotalVolume            int64
+	QuoteTimeInLong        int64
+	TradeTimeInLong        int64
+	NetChange              float64
+	Volatility             float64
+	Delta                  float64
+	Gamma                  float64
+	Theta                  float64
+	Vega                   float64
+	RHO                    float64
+	OpenInterest           float64
+	TimeValue              float64
+	InTheMoney             bool
+	TheoreticalOptionValue float64
+	TheoreticalVolatility  float64
+	Mini                   bool
+	NonStandard            bool
+	OptionDeliverablesList []OptionDeliverables
+	StrikePrice            float64
+	ExpirationDate         string
+	DaysToExpiration       int64
+	ExpirationType         string
+	LastTradingDay         int64
+	Multiplier             float64
+	SettlementType         string
+	DeliverableNote        string
+	PercentChange          float64
+	MarkChange             float64
+	MarkPercentChange      float64
+	PennyPilot             bool
+	IntrinsicValue         float64
+	ExtrinsicValue         float64
+	OptionRoot             string
+	ExerciseType           string
+	Hi52                   float64 `json:"high52Week"`
+	Lo52                   float64 `json:"low52Week"`
+}
+
+type OptionDeliverables struct {
+	Symbol           string
+	AssetType        string
+	DeliverableUnits float64
 }
 
 // WIP: func GetQuotes(symbols string) Quote, error) {}
@@ -360,27 +459,27 @@ func (agent *Agent) GetMovers(index, direction, change string) ([]Screener, erro
 }
 
 // get all option chains for a ticker
-func (agent *Agent) GetChains(symbol string) ([]Contract, error) {
+func (agent *Agent) GetChains(symbol string) (Chain, error) {
 	req, err := http.NewRequest("GET", endpointOptions, nil)
 	if err != nil {
-		return []Contract{}, err
+		return Chain{}, err
 	}
 	q := req.URL.Query()
 	q.Add("symbol", symbol)
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
 	if err != nil {
-		return []Contract{}, err
+		return Chain{}, err
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return []Contract{}, err
+		return Chain{}, err
 	}
-	var chain []Contract
+	var chain Chain
 	err = sonic.Unmarshal(body, &chain)
 	if err != nil {
-		return []Contract{}, err
+		return Chain{}, err
 	}
 	return chain, nil
 }
@@ -401,7 +500,7 @@ func (agent *Agent) GetChains(symbol string) ([]Contract, error) {
 // toDate = Only return expirations before this date. Valid ISO-8601 formats are: yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ssz.
 // Lets examine a sample call of Single: Single("AAPL","CALL","ALL","5","2022-07-01").
 // This returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the status of the contract ("ALL"), expiring before 2022-07-01
-func (agent *Agent) Single(symbol, contractType, strikeRange, strikeCount, toDate string) ([]Contract, error) {
+func (agent *Agent) Single(symbol, contractType, strikeRange, strikeCount, toDate string) (Chain, error) {
 	req, err := http.NewRequest("GET", endpointOptions, nil)
 	isErrNil(err)
 	q := req.URL.Query()
@@ -416,7 +515,7 @@ func (agent *Agent) Single(symbol, contractType, strikeRange, strikeCount, toDat
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	isErrNil(err)
-	var chain []Contract
+	var chain Chain
 	// WIP
 	err = sonic.Unmarshal(body, &chain)
 	isErrNil(err)

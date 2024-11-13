@@ -185,17 +185,8 @@ func readDB() Agent {
 }
 
 func Initiate() *Agent {
-	var (
-		err   error
-		agent Agent
-		linux bool
-	)
-	switch runtime.GOOS {
-	case "linux":
-		linux = true
-	}
-	isErrNil(err)
-	if linux {
+	var agent Agent
+	if runtime.GOOS == "linux" {
 		if _, err := os.Stat(".json"); errors.Is(err, os.ErrNotExist) {
 			// oAuth Leg 1 - Authorization Code
 			openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", os.Getenv("APPKEY"), os.Getenv("CBURL")))
@@ -233,6 +224,7 @@ func Initiate() *Agent {
 				log.Fatalf("[err] please reinitiate, something went wrong\n")
 			}
 		}
+		agent.Linux = true
 	} else {
 		if _, err := os.Stat(".json"); errors.Is(err, os.ErrNotExist) {
 			//execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
@@ -245,7 +237,6 @@ func Initiate() *Agent {
 			agent = readDB()
 		}
 	}
-	agent.Linux = linux
 	return &agent
 }
 
