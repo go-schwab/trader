@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -37,16 +36,6 @@ type Token struct {
 	Refresh           string
 	BearerExpiration  time.Time
 	Bearer            string
-}
-
-type SchwabErrors struct {
-	Errors []SchwabError
-}
-
-type SchwabError struct {
-	Id     string
-	Status int64
-	Title  string
 }
 
 var (
@@ -161,13 +150,13 @@ func readLinuxDB() Token {
 	var tokens Token
 	body, err := os.ReadFile(".json")
 	isErrNil(err)
-	err = json.Unmarshal(body, &tokens)
+	err = sonic.Unmarshal(body, &tokens)
 	isErrNil(err)
 	return tokens
 }
 
 // Read in tokens from .json
-func readDB() *Agent {
+func readDB() Agent {
 	var tok *oauth2.Token
 	body, err := os.ReadFile(".json")
 	isErrNil(err)
@@ -186,7 +175,7 @@ func readDB() *Agent {
 	}
 	sslcli := &http.Client{Transport: tr}
 	ctx := context.WithValue(context.Background(), oauth2.HTTPClient, sslcli)
-	return &Agent{
+	return Agent{
 		Client: &o.AuthorizedClient{
 			conf.Client(ctx, tok),
 			tok,
@@ -194,8 +183,8 @@ func readDB() *Agent {
 	}
 }
 
-func initiateLinux() *Agent {
-	var agent *Agent
+func initiateLinux() Agent {
+	var agent Agent
 	// oAuth Leg 1 - Authorization Code
 	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", os.Getenv("APPKEY"), os.Getenv("CBURL")))
 	fmt.Printf("Log into your Schwab brokerage account. Copy Error404 URL and paste it here: ")
@@ -227,10 +216,10 @@ func initiateLinux() *Agent {
 	return agent
 }
 
-func initiateMacWindows() *Agent {
-	var agent *Agent
+func initiateMacWindows() Agent {
+	var agent Agent
 	//execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
-	agent = &Agent{Client: o.Initiate(APPKEY, SECRET)}
+	agent = Agent{Client: o.Initiate(APPKEY, SECRET)}
 	bytes, err := sonic.Marshal(agent.Client.Token)
 	isErrNil(err)
 	err = os.WriteFile(".json", bytes, 0777)
@@ -239,7 +228,7 @@ func initiateMacWindows() *Agent {
 }
 
 func Initiate() *Agent {
-	var agent *Agent
+	var agent Agent
 	if runtime.GOOS == "linux" {
 		if _, err := os.Stat(".json"); errors.Is(err, os.ErrNotExist) {
 			agent = initiateLinux()
@@ -254,10 +243,11 @@ func Initiate() *Agent {
 			agent = readDB()
 		}
 	}
-	return agent
+	return &agent
 }
 
-func (agent *Agent) Reinitiate() {
+func Reinitiate() *Agent {
+	var agent Agent
 	if _, err := os.Stat(".json"); !errors.Is(err, os.ErrNotExist) {
 		err := os.Remove(".json")
 		isErrNil(err)
@@ -267,6 +257,7 @@ func (agent *Agent) Reinitiate() {
 	} else {
 		agent = initiateMacWindows()
 	}
+	return &agent
 }
 
 // Use refresh token to generate a new bearer token for authentication
@@ -306,12 +297,12 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		client := http.Client{}
 		resp, err = client.Do(req)
 		if err != nil {
-			agent.Reinitiate()
+			agent = Reinitiate()
 		}
 	} else {
 		resp, err = agent.Client.Do(req)
 		if err != nil {
-			agent.Reinitiate()
+			agent = Reinitiate()
 		}
 	}
 	switch true {
@@ -325,7 +316,7 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 			return resp, nil
 		}
 		log.Println("[err] something went wrong - reinitiating ...")
-		agent.Reinitiate()
+		agent = Reinitiate()
 	}
 	return resp, nil
 }
