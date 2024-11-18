@@ -39,6 +39,16 @@ type Token struct {
 	Bearer            string
 }
 
+type SchwabErrors struct {
+	Errors []SchwabError
+}
+
+type SchwabError struct {
+	Id     string
+	Status int64
+	Title  string
+}
+
 var (
 	APPKEY string
 	SECRET string
@@ -157,7 +167,7 @@ func readLinuxDB() Token {
 }
 
 // Read in tokens from .json
-func readDB() Agent {
+func readDB() *Agent {
 	var tok *oauth2.Token
 	body, err := os.ReadFile(".json")
 	isErrNil(err)
@@ -176,7 +186,7 @@ func readDB() Agent {
 	}
 	sslcli := &http.Client{Transport: tr}
 	ctx := context.WithValue(context.Background(), oauth2.HTTPClient, sslcli)
-	return Agent{
+	return &Agent{
 		Client: &o.AuthorizedClient{
 			conf.Client(ctx, tok),
 			tok,
@@ -184,64 +194,83 @@ func readDB() Agent {
 	}
 }
 
+func initiateLinux() *Agent {
+	var agent *Agent
+	// oAuth Leg 1 - Authorization Code
+	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", os.Getenv("APPKEY"), os.Getenv("CBURL")))
+	fmt.Printf("Log into your Schwab brokerage account. Copy Error404 URL and paste it here: ")
+	var urlInput string
+	fmt.Scanln(&urlInput)
+	authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
+	authCode, err := url.QueryUnescape(authCodeEncoded)
+	isErrNil(err)
+	// oAuth Leg 2 - Refresh, Bearer Tokens
+	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", os.Getenv("APPKEY"), os.Getenv("SECRET")))))
+	client := http.Client{}
+	payload := fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", string(authCode), os.Getenv("CBURL"))
+	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(payload)))
+	isErrNil(err)
+	req.Header = http.Header{
+		"Authorization": {authStringLegTwo},
+		"Content-Type":  {"application/x-www-form-urlencoded"},
+	}
+	res, err := client.Do(req)
+	isErrNil(err)
+	defer res.Body.Close()
+	bodyBytes, err := io.ReadAll(res.Body)
+	isErrNil(err)
+	agent.Tokens = parseAccessTokenResponse(string(bodyBytes))
+	bytes, err := sonic.Marshal(agent.Tokens)
+	isErrNil(err)
+	err = os.WriteFile(".json", bytes, 0777)
+	isErrNil(err)
+	return agent
+}
+
+func initiateMacWindows() *Agent {
+	var agent *Agent
+	//execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
+	agent = &Agent{Client: o.Initiate(APPKEY, SECRET)}
+	bytes, err := sonic.Marshal(agent.Client.Token)
+	isErrNil(err)
+	err = os.WriteFile(".json", bytes, 0777)
+	isErrNil(err)
+	return agent
+}
+
 func Initiate() *Agent {
-	var agent Agent
+	var agent *Agent
 	if runtime.GOOS == "linux" {
 		if _, err := os.Stat(".json"); errors.Is(err, os.ErrNotExist) {
-			// oAuth Leg 1 - Authorization Code
-			openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", os.Getenv("APPKEY"), os.Getenv("CBURL")))
-			fmt.Printf("Log into your Schwab brokerage account. Copy Error404 URL and paste it here: ")
-			var urlInput string
-			fmt.Scanln(&urlInput)
-			authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
-			authCode, err := url.QueryUnescape(authCodeEncoded)
-			isErrNil(err)
-			// oAuth Leg 2 - Refresh, Bearer Tokens
-			authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", os.Getenv("APPKEY"), os.Getenv("SECRET")))))
-			client := http.Client{}
-			payload := fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", string(authCode), os.Getenv("CBURL"))
-			req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(payload)))
-			isErrNil(err)
-			req.Header = http.Header{
-				"Authorization": {authStringLegTwo},
-				"Content-Type":  {"application/x-www-form-urlencoded"},
-			}
-			res, err := client.Do(req)
-			isErrNil(err)
-			defer res.Body.Close()
-			bodyBytes, err := io.ReadAll(res.Body)
-			isErrNil(err)
-			agent.Tokens = parseAccessTokenResponse(string(bodyBytes))
-			bytes, err := sonic.Marshal(agent.Tokens)
-			isErrNil(err)
-			err = os.WriteFile(".json", bytes, 0777)
-			isErrNil(err)
+			agent = initiateLinux()
 		} else {
 			agent.Tokens = readLinuxDB()
-			if agent.Tokens.Bearer == "" {
-				err := os.Remove(".json")
-				isErrNil(err)
-				log.Fatalf("[err] please reinitiate, something went wrong\n")
-			}
 		}
 		agent.Linux = true
 	} else {
 		if _, err := os.Stat(".json"); errors.Is(err, os.ErrNotExist) {
-			//execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
-			agent = Agent{Client: o.Initiate(APPKEY, SECRET)}
-			bytes, err := sonic.Marshal(agent.Client.Token)
-			isErrNil(err)
-			err = os.WriteFile(".json", bytes, 0777)
-			isErrNil(err)
+			agent = initiateMacWindows()
 		} else {
 			agent = readDB()
 		}
 	}
-	return &agent
+	return agent
+}
+
+func (agent *Agent) Reinitiate() {
+	if _, err := os.Stat(".json"); !errors.Is(err, os.ErrNotExist) {
+		err := os.Remove(".json")
+		isErrNil(err)
+	}
+	if agent.Linux {
+		agent = initiateLinux()
+	} else {
+		agent = initiateMacWindows()
+	}
 }
 
 // Use refresh token to generate a new bearer token for authentication
-func (agent *Agent) refresh() {
+func (agent *Agent) Refresh() {
 	oldTokens := readLinuxDB()
 	authStringRefresh := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", os.Getenv("APPKEY"), os.Getenv("SECRET")))))
 	client := http.Client{}
@@ -270,38 +299,33 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		err  error
 	)
 	if agent.Linux {
-		if (&Agent{}) == agent {
-			log.Fatal("[fatal] empty agent - call 'Agent.Initiate' before making any API function calls.")
-			// TODO: auto reinitiate?
-		}
 		if !time.Now().Before(agent.Tokens.BearerExpiration) {
-			agent.refresh()
+			agent.Refresh()
 		}
 		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", agent.Tokens.Bearer))
 		client := http.Client{}
 		resp, err = client.Do(req)
-		isErrNil(err)
-	} else {
-		if agent.Client.Token.AccessToken == "" {
-			log.Fatal("[fatal] no access token found, please reinitiate with 'Initiate'")
-			// TODO: auto reinitiate?
+		if err != nil {
+			agent.Reinitiate()
 		}
+	} else {
 		resp, err = agent.Client.Do(req)
 		if err != nil {
-			return resp, err
+			agent.Reinitiate()
 		}
 	}
 	switch true {
 	case resp.StatusCode == 200:
 		return resp, nil
-	case resp.StatusCode == 401:
-		log.Fatal("[fatal] invalid token - please reinitiate with 'Initiate'")
-		// TODO: auto reinitiate?
-	case resp.StatusCode < 201, resp.StatusCode > 300:
-		defer resp.Body.Close()
+	case resp.StatusCode == 400, resp.StatusCode == 401:
 		body, err := io.ReadAll(resp.Body)
 		isErrNil(err)
-		log.Println("[err] ", string(body))
+		if strings.Contains(string(body), "\"status\": 500") {
+			log.Println("[err] internal schwab error")
+			return resp, nil
+		}
+		log.Println("[err] something went wrong - reinitiating ...")
+		agent.Reinitiate()
 	}
 	return resp, nil
 }

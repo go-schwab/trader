@@ -502,7 +502,9 @@ func (agent *Agent) GetChains(symbol string) (Chain, error) {
 // This returns 5 AAPL CALL contracts both above and below the at the money price, with no preference as to the status of the contract ("ALL"), expiring before 2022-07-01
 func (agent *Agent) Single(symbol, contractType, strikeRange, strikeCount, toDate string) (Chain, error) {
 	req, err := http.NewRequest("GET", endpointOptions, nil)
-	isErrNil(err)
+	if err != nil {
+		return Chain{}, nil
+	}
 	q := req.URL.Query()
 	q.Add("symbol", symbol)
 	q.Add("contractType", contractType)
@@ -511,14 +513,20 @@ func (agent *Agent) Single(symbol, contractType, strikeRange, strikeCount, toDat
 	q.Add("toDate", toDate)
 	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
-	isErrNil(err)
+	if err != nil {
+		return Chain{}, nil
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	isErrNil(err)
+	if err != nil {
+		return Chain{}, nil
+	}
 	var chain Chain
 	// WIP
 	err = sonic.Unmarshal(body, &chain)
-	isErrNil(err)
+	if err != nil {
+		return Chain{}, nil
+	}
 	return chain, nil
 }
 
