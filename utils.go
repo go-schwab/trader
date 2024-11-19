@@ -28,7 +28,6 @@ import (
 type Agent struct {
 	Client *o.AuthorizedClient
 	Tokens Token
-	Linux  bool
 }
 
 type Token struct {
@@ -235,7 +234,6 @@ func Initiate() *Agent {
 		} else {
 			agent.Tokens = readLinuxDB()
 		}
-		agent.Linux = true
 	} else {
 		if _, err := os.Stat(".json"); errors.Is(err, os.ErrNotExist) {
 			agent = initiateMacWindows()
@@ -252,7 +250,7 @@ func Reinitiate() *Agent {
 		err := os.Remove(".json")
 		isErrNil(err)
 	}
-	if agent.Linux {
+	if runtime.GOOS == "linux" {
 		agent = initiateLinux()
 	} else {
 		agent = initiateMacWindows()
@@ -289,7 +287,7 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		resp *http.Response
 		err  error
 	)
-	if agent.Linux {
+	if runtime.GOOS == "linux" {
 		if !time.Now().Before(agent.Tokens.BearerExpiration) {
 			agent.Refresh()
 		}
