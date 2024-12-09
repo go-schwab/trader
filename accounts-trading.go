@@ -82,6 +82,11 @@ type AccountNumbers struct {
 }
 
 type Account struct {
+	SecuritiesAccount       SecuritiesAccount
+	AggregatedBalance       AggregatedBalance
+}
+
+type SecuritiesAccount struct {
 	Type                    string
 	AccountNumber           string
 	RoundTrips              int
@@ -92,38 +97,38 @@ type Account struct {
 	InitialBalances         InitialBalance
 	CurrentBalances         CurrentBalance
 	ProjectedBalances       ProjectedBalance
-	AggregatedBalance       AggregatedBalance
 }
 
 type Position struct {
-	ShortQuantity                int
-	AveragePrice                 float64
-	CurrentDayProfitLoss         float64
-	LongQuantity                 int
-	SettledLongQuantity          int
-	SettledShortQuantity         int
-	AgedQuantity                 int
-	Instrument                   AccountInstrument
-	MarketValue                  float64
-	MaintenanceRequirement       float64
-	AverageLongPrice             float64
-	AverageShortPrice            float64
-	TaxLotAverageLongPrice       float64
-	TaxLotAverageShortPrice      float64
-	LongOpenProfitLoss           float64
-	ShortOpenProfitLoss          float64
-	PreviousSessionLongQuantity  int
-	PreviousSessionShortQuantity int
-	CurrentDayCost               float64
+	ShortQuantity                  float64
+	AveragePrice                   float64
+	CurrentDayProfitLoss           float64
+	CurrentDayProfitLossPercentage float64
+	LongQuantity                   float64
+	SettledLongQuantity            float64
+	SettledShortQuantity           float64
+	AgedQuantity                   int
+	Instrument                     AccountInstrument
+	MarketValue                    float64
+	MaintenanceRequirement         float64
+	AverageLongPrice               float64
+	AverageShortPrice              float64
+	TaxLotAverageLongPrice         float64
+	TaxLotAverageShortPrice        float64
+	LongOpenProfitLoss             float64
+	ShortOpenProfitLoss            float64
+	PreviousSessionLongQuantity    float64
+	PreviousSessionShortQuantity   float64
+	CurrentDayCost                 float64
 }
 
 type AccountInstrument struct {
+	AssetType    string
 	Cusip        string
 	Symbol       string
 	Description  string
 	InstrumentID int
 	NetChange    float64
-	Type         string
 }
 
 type InitialBalance struct {
@@ -154,7 +159,7 @@ type InitialBalance struct {
 	ShortOptionMarketValue           float64
 	ShortStockValue                  float64
 	TotalCash                        float64
-	IsInCall                         float64
+	IsInCall                         bool
 	UnsettledCash                    float64
 	PendingDeposits                  float64
 	MarginBalance                    float64
@@ -184,13 +189,36 @@ type InitialBalance struct {
 	OptionBuyingPower                float64
 }*/
 
+
 type CurrentBalance struct {
-	AccruedInterest       float64
-	CashBalance           float64
-	CashReceipts          float64
-	LongOptionMarketValue float64
-	LiquidationValue      float64
-	SMA                   float64
+	AccruedInterest                  float64
+	CashBalance                      float64
+	CashReceipts                     float64
+	LongOptionMarketValue            float64
+	LiquidationValue                 float64
+	LongMarketValue                  float64
+	MoneyMarketFund                  float64
+	Savings                          float64
+	ShortMarketValue                 float64
+	PendingDeposits                  float64
+	MutualFundValues                 float64
+	BondValue                        float64
+	ShortOptionMarketValue           float64
+	AvailableFunds                   float64
+	AvailableFundsNonMarginableTrade float64
+	BuyingPower                      float64
+	BuyingPowerNonMarginableTrade    float64
+	DayTradingBuyingPower            float64
+	Equity                           float64
+	EquityPercentage                 float64
+	LongMarginValue                  float64
+	MaintenanceCall                  float64
+	MaintenanceRequirement           float64
+	MarginBalance                    float64
+	RegTCall                         float64
+	ShortBalance                     float64
+	ShortMarginValue                 float64
+	SMA                              float64
 }
 
 type ProjectedBalance struct {
@@ -210,7 +238,7 @@ type ProjectedBalance struct {
 	ShortBalance                     float64
 	ShortMarginValue                 float64
 	SMA                              float64
-	IsInCall                         float64
+	IsInCall                         bool
 	StockBuyingPower                 float64
 	OptionBuyingPower                float64
 }
@@ -548,11 +576,16 @@ func (agent *Agent) GetAccountNumbers() ([]AccountNumbers, error) {
 }
 
 // Get all accounts associated with the user logged in
-func (agent *Agent) GetAccounts() ([]Account, error) {
+func (agent *Agent) GetAccounts(fields ...string) ([]Account, error) {
+	var fieldsRequest string = strings.Join(fields, ",")
+
 	req, err := http.NewRequest("GET", endpointAccounts, nil)
 	if err != nil {
 		return []Account{}, err
 	}
+	q := req.URL.Query()
+	q.Add("fields", fieldsRequest)
+	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
 	if err != nil {
 		return []Account{}, err
@@ -571,11 +604,16 @@ func (agent *Agent) GetAccounts() ([]Account, error) {
 }
 
 // Get account by encrypted account id
-func (agent *Agent) GetAccount(id string) (Account, error) {
+func (agent *Agent) GetAccount(id string, fields ...string) (Account, error) {
+	var fieldsRequest string = strings.Join(fields, ",")
+
 	req, err := http.NewRequest("GET", fmt.Sprintf(endpointAccount, id), nil)
 	if err != nil {
 		return Account{}, err
 	}
+	q := req.URL.Query()
+	q.Add("fields", fieldsRequest)
+	req.URL.RawQuery = q.Encode()
 	resp, err := agent.Handler(req)
 	if err != nil {
 		return Account{}, err
