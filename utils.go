@@ -37,6 +37,11 @@ type Token struct {
 	Bearer            string
 }
 
+type ErrorMessage struct {
+	Message string
+	Errors []string
+}
+
 var (
 	APPKEY string
 	SECRET string
@@ -306,15 +311,12 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 	switch true {
 	case resp.StatusCode == 200:
 		return resp, nil
-	case resp.StatusCode == 400, resp.StatusCode == 401:
+	default:
 		body, err := io.ReadAll(resp.Body)
 		isErrNil(err)
-		if strings.Contains(string(body), "\"status\": 500") {
-			log.Println("[err] internal schwab error")
-			return resp, nil
-		}
-		log.Println("[err] something went wrong - reinitiating ...")
-		agent = Reinitiate()
+		var errorMessage ErrorMessage
+		err = sonic.Unmarshal(body, &errorMessage)
+		isErrNil(err)
+		return nil, fmt.Errorf("server Response: %d: %s", resp.StatusCode, errorMessage.Message)
 	}
-	return resp, nil
 }
