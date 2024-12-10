@@ -107,7 +107,7 @@ type Position struct {
 	LongQuantity                   float64
 	SettledLongQuantity            float64
 	SettledShortQuantity           float64
-	AgedQuantity                   int
+	AgedQuantity                   float64
 	Instrument                     AccountInstrument
 	MarketValue                    float64
 	MaintenanceRequirement         float64
