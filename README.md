@@ -38,7 +38,7 @@ openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -n
 printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 ```
 
-3. `go get github.com/go-schwab/trader@v0.9.1`
+3. `go get github.com/go-schwab/trader@v0.9.2`
 
 #### linux
 
@@ -51,7 +51,7 @@ SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
 
-2. `go get github.com/go-schwab/trader@v0.9.1`
+2. `go get github.com/go-schwab/trader@v0.9.2`
 
 ### 0.1 agent
 

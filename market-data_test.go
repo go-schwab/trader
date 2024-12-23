@@ -38,9 +38,16 @@ func TestMarketDataAPI(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
+	chains, err := agent.GetChains("AAPL")
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
 	fmt.Println(quote)
 	fmt.Println(ph)
 	fmt.Println(sis)
 	fmt.Println(sif)
 	fmt.Println(movers)
+	fmt.Println(chains)
 }
