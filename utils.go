@@ -1,3 +1,21 @@
+/*
+Copyright (C) 2025 github.com/go-schwab
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, see
+<https://www.gnu.org/licenses/>.
+*/
+
 package trader
 
 import (
@@ -8,20 +26,17 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
 
 	"github.com/bytedance/sonic"
 	o "github.com/go-schwab/utils/oauth"
-	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 )
 
@@ -37,30 +52,20 @@ type Token struct {
 	Bearer            string
 }
 
-type ErrorMessage struct {
-	Message string
-	Errors []string
-}
-
 var (
 	APPKEY string
 	SECRET string
 	CBURL  string
+	PATH   string
 )
 
 func init() {
-	err := godotenv.Load(findAllEnvFiles()...)
+	APPKEY = os.Getenv("SCHWAB_APPKEY")
+	SECRET = os.Getenv("SCHWAB_SECRETKEY")
+	CBURL = os.Getenv("SCHWAB_CBURL")
+	homedir, err := os.UserHomeDir()
 	isErrNil(err)
-	APPKEY = os.Getenv("APPKEY")
-	SECRET = os.Getenv("SECRET")
-	CBURL = os.Getenv("CBURL")
-}
-
-// is the err nil?
-func isErrNil(err error) {
-	if err != nil {
-		log.Fatalf("[fatal] %s", err.Error())
-	}
+	PATH = homedir + "/.config/go-schwab/.json"
 }
 
 // trim one FIRST & one LAST character in the string
@@ -87,25 +92,6 @@ func parseAccessTokenResponse(s string) Token {
 		}
 	}
 	return token
-}
-
-// find all env files
-func findAllEnvFiles() []string {
-	var files []string
-	err := filepath.WalkDir(".", func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		split := strings.Split(d.Name(), ".")
-		if len(split) > 1 {
-			if split[1] == "env" {
-				files = append(files, d.Name())
-			}
-		}
-		return err
-	})
-	isErrNil(err)
-	return files
 }
 
 // Credit: https://gist.github.com/hyg/9c4afcd91fe24316cbf0
@@ -152,7 +138,7 @@ func getStringInBetween(str string, start string, end string) (result string) {
 // Read in tokens from .json
 func readLinuxDB() Token {
 	var tokens Token
-	body, err := os.ReadFile(".json")
+	body, err := os.ReadFile(PATH)
 	isErrNil(err)
 	err = sonic.Unmarshal(body, &tokens)
 	isErrNil(err)
@@ -162,7 +148,7 @@ func readLinuxDB() Token {
 // Read in tokens from .json
 func readDB() Agent {
 	var tok *oauth2.Token
-	body, err := os.ReadFile(".json")
+	body, err := os.ReadFile(PATH)
 	isErrNil(err)
 	err = sonic.Unmarshal(body, &tok)
 	isErrNil(err)
@@ -215,7 +201,7 @@ func initiateLinux() Agent {
 	agent.Tokens = parseAccessTokenResponse(string(bodyBytes))
 	bytes, err := sonic.Marshal(agent.Tokens)
 	isErrNil(err)
-	err = os.WriteFile(".json", bytes, 0777)
+	err = os.WriteFile(PATH, bytes, 0777)
 	isErrNil(err)
 	return agent
 }
@@ -226,7 +212,7 @@ func initiateMacWindows() Agent {
 	agent = Agent{Client: o.Initiate(APPKEY, SECRET)}
 	bytes, err := sonic.Marshal(agent.Client.Token)
 	isErrNil(err)
-	err = os.WriteFile(".json", bytes, 0777)
+	err = os.WriteFile(PATH, bytes, 0777)
 	isErrNil(err)
 	return agent
 }
@@ -234,13 +220,13 @@ func initiateMacWindows() Agent {
 func Initiate() *Agent {
 	var agent Agent
 	if runtime.GOOS == "linux" {
-		if _, err := os.Stat(".json"); errors.Is(err, os.ErrNotExist) {
+		if _, err := os.Stat(PATH); errors.Is(err, os.ErrNotExist) {
 			agent = initiateLinux()
 		} else {
 			agent.Tokens = readLinuxDB()
 		}
 	} else {
-		if _, err := os.Stat(".json"); errors.Is(err, os.ErrNotExist) {
+		if _, err := os.Stat(PATH); errors.Is(err, os.ErrNotExist) {
 			agent = initiateMacWindows()
 		} else {
 			agent = readDB()
@@ -251,8 +237,8 @@ func Initiate() *Agent {
 
 func Reinitiate() *Agent {
 	var agent Agent
-	if _, err := os.Stat(".json"); !errors.Is(err, os.ErrNotExist) {
-		err := os.Remove(".json")
+	if _, err := os.Stat(PATH); !errors.Is(err, os.ErrNotExist) {
+		err := os.Remove(PATH)
 		isErrNil(err)
 	}
 	if runtime.GOOS == "linux" {
@@ -310,13 +296,29 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 	}
 	switch true {
 	case resp.StatusCode == 200:
-		return resp, nil
+		return resp, WrapTraderError(nil, nil)
+	case resp.StatusCode == 401:
+		return nil, WrapTraderError(ErrNeedReAuthorization, resp)
+	case resp.StatusCode == 403:
+		return nil, WrapTraderError(ErrForbidden, resp)
+	case resp.StatusCode == 404:
+		return nil, WrapTraderError(ErrNotFound, resp)
+	case resp.StatusCode == 500:
+		return nil, WrapTraderError(ErrUnexpectedServer, resp)
+	case resp.StatusCode == 503:
+		return nil, WrapTraderError(ErrTemporaryServer, resp)
+	case resp.StatusCode == 400:
+		// if io.ReadAll() fails:
+		//     return nil, WrapTraderError(err, StatusCode, "could not read response", nil)
+		// if sonic.Unmarshall() fails
+		//     return nil, WrapTraderError(err, StatusCode, "could not unmarshall", nil)
+		// Note: The two above situations would wrap the errors generated by io or sonic
+
+		// otherwise okay but the API was unhappy with our request:
+		// At this point we could populate an ErrorMessage struct based on Schwab definition
+		//   which contains Message string; Error []string
+		return nil, WrapTraderError(ErrValidation, resp)
 	default:
-		body, err := io.ReadAll(resp.Body)
-		isErrNil(err)
-		var errorMessage ErrorMessage
-		err = sonic.Unmarshal(body, &errorMessage)
-		isErrNil(err)
-		return nil, fmt.Errorf("server Response: %d: %s", resp.StatusCode, errorMessage.Message)
+		return nil, WrapTraderError(fmt.Errorf("error not defined by API!"), resp)
 	}
 }

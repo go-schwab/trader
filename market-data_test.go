@@ -3,7 +3,14 @@ package trader
 import (
 	"fmt"
 	"testing"
+
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	err := godotenv.Load(findAllEnvFiles()...)
+	isErrNil(err)
+}
 
 func TestMarketDataAPI(t *testing.T) {
 	agent := Initiate()

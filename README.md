@@ -4,9 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/samjtro/schwab)](https://goreportcard.com/report/github.com/samjtro/schwab)
 [![License](https://img.shields.io/badge/License-GPLv2-green)](LICENSE)
 
-built by: [@samjtro](https://github.com/samjtro)
-
-see: [CONTRIBUTING.md](https://github.com/go-schwab/trader/blob/main/CONTRIBUTING.md)
+built by: [@samjtro](https://github.com/samjtro) + other amazing ppl :)
 
 ---
 
@@ -20,9 +18,22 @@ why should you use this project?
 
 ### 0.0 quick start
 
-#### mac & windows
-
 0. go to <https://developer.schwab.com>, create an account, create an app, get app credentials from <https://developer.schwab.com/dashboard/apps>
+
+-----
+
+#### v > 0.9.2
+
+1. set the following environment variables:
+
+```
+SCHWAB_APPKEY=KEY0 // App Key
+SCHWAB_SECRET=KEY1 // App Secret
+SCHWAB_CBURL=https://127.0.0.1 // App Callback URL
+```
+
+#### v <= 0.9.2
+
 1. create any file with the `.env` extension in your project directory (can also have multiple, if necessary), formatted as such:
 
 ```
@@ -30,6 +41,10 @@ APPKEY=KEY0 // App Key
 SECRET=KEY1 // App Secret
 CBURL=https://127.0.0.1 // App Callback URL
 ```
+
+-----
+
+#### mac & windows
 
 2. run the following command in your cwd to generate ssl certs for secure tls transmission of your bearer token:
 
@@ -38,20 +53,9 @@ openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -n
 printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 ```
 
-3. `go get github.com/go-schwab/trader@v0.9.2`
+-----
 
-#### linux
-
-0. go to <https://developer.schwab.com>, create an account, create an app, get app credentials from <https://developer.schwab.com/dashboard/apps>
-1. create any file with the `.env` extension in your project directory (can also have multiple, if necessary), formatted as such:
-
-```
-APPKEY=KEY0 // App Key
-SECRET=KEY1 // App Secret
-CBURL=https://127.0.0.1 // App Callback URL
-```
-
-2. `go get github.com/go-schwab/trader@v0.9.2`
+`go get github.com/go-schwab/trader@v0.9.2`
 
 ### 0.1 agent
 
@@ -215,8 +219,6 @@ err = agent.SubmitSingleLegOrder(an[0].HashValue, CreateSingleLegOrder(Instructi
 check(err)
 ```
 
-## WIP: DO NOT CROSS, DANGER DANGER
-
 #### 2.2.0 accessing account data
 
 ##### 2.2.1.0
@@ -225,15 +227,21 @@ check(err)
 an, err := agent.GetAccountNumbers()
 check(err)
 fmt.Println(an)
+```
 
+```go
 aca, err := agent.GetAccounts()
 check(err)
 fmt.Println(aca)
+```
 
+```go
 ac, err := agent.GetAccount(an[0].HashValue)
 check(err)
 fmt.Println(ac)
+```
 
+```go
 orders, err := agent.GetAllOrders("2023-06-12T00:00:00.000Z", "2024-06-12T00:00:00.000Z")
 check(err)
 ```
