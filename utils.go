@@ -37,8 +37,7 @@ import (
 
 	"github.com/bytedance/sonic"
 	o "github.com/go-schwab/utils/oauth"
-	// For Testing:
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 )
 
@@ -62,12 +61,11 @@ var (
 )
 
 func init() {
-	// For Testing:
-	// err := godotenv.Load(findAllEnvFiles()...)
-	// isErrNil(err)
-	APPKEY = os.Getenv("SCHWAB_APPKEY")
-	SECRET = os.Getenv("SCHWAB_SECRET")
-	CBURL = os.Getenv("SCHWAB_CBURL")
+	err := godotenv.Load(findAllEnvFiles()...)
+	isErrNil(err)
+	APPKEY = os.Getenv("APPKEY")
+	SECRET = os.Getenv("SECRET")
+	CBURL = os.Getenv("CBURL")
 	homedir, err := os.UserHomeDir()
 	isErrNil(err)
 	PATH = homedir + "/.config/go-schwab/.json"

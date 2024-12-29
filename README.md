@@ -24,18 +24,6 @@ why should you use this project?
 
 -----
 
-#### v > 0.9.2
-
-1. set the following environment variables:
-
-```
-SCHWAB_APPKEY=KEY0 // App Key
-SCHWAB_SECRET=KEY1 // App Secret
-SCHWAB_CBURL=https://127.0.0.1 // App Callback URL
-```
-
-#### v <= 0.9.2
-
 1. create any file with the `.env` extension in your project directory (can also have multiple, if necessary), formatted as such:
 
 ```
