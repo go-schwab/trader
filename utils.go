@@ -37,6 +37,8 @@ import (
 
 	"github.com/bytedance/sonic"
 	o "github.com/go-schwab/utils/oauth"
+	// For Testing:
+	// "github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 )
 
@@ -60,12 +62,19 @@ var (
 )
 
 func init() {
+	// For Testing:
+	// err := godotenv.Load(findAllEnvFiles()...)
+	// isErrNil(err)
 	APPKEY = os.Getenv("SCHWAB_APPKEY")
-	SECRET = os.Getenv("SCHWAB_SECRETKEY")
+	SECRET = os.Getenv("SCHWAB_SECRET")
 	CBURL = os.Getenv("SCHWAB_CBURL")
 	homedir, err := os.UserHomeDir()
 	isErrNil(err)
 	PATH = homedir + "/.config/go-schwab/.json"
+	if _, err := os.Stat(homedir + "/.config/go-schwab"); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(homedir+"/.config/go-schwab", 0750)
+		isErrNil(err)
+	}
 }
 
 // trim one FIRST & one LAST character in the string
@@ -105,7 +114,7 @@ func openBrowser(url string) {
 	case "darwin":
 		err = exec.Command("open", url).Start()
 	default:
-		log.Fatalf("Unsupported platform.")
+		log.Fatal("Unsupported platform.")
 	}
 	isErrNil(err)
 }
@@ -117,7 +126,7 @@ func execCommand(cmd *exec.Cmd) {
 	err := cmd.Run()
 
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 	}
 }
 
@@ -201,7 +210,7 @@ func initiateLinux() Agent {
 	agent.Tokens = parseAccessTokenResponse(string(bodyBytes))
 	bytes, err := sonic.Marshal(agent.Tokens)
 	isErrNil(err)
-	err = os.WriteFile(PATH, bytes, 0777)
+	err = os.WriteFile(PATH, bytes, 0750)
 	isErrNil(err)
 	return agent
 }
@@ -212,7 +221,7 @@ func initiateMacWindows() Agent {
 	agent = Agent{Client: o.Initiate(APPKEY, SECRET)}
 	bytes, err := sonic.Marshal(agent.Client.Token)
 	isErrNil(err)
-	err = os.WriteFile(PATH, bytes, 0777)
+	err = os.WriteFile(PATH, bytes, 0750)
 	isErrNil(err)
 	return agent
 }
@@ -296,18 +305,28 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 	}
 	switch true {
 	case resp.StatusCode == 200:
-		return resp, WrapTraderError(nil, nil)
+		return resp, nil
 	case resp.StatusCode == 401:
-		return nil, WrapTraderError(ErrNeedReAuthorization, resp)
+		body, err := io.ReadAll(resp.Body)
+		isErrNil(err)
+		if strings.Contains(string(body), "\"status\": 500") {
+			return nil, ErrUnexpectedServer
+		}
+		return nil, ErrNeedReAuthorization
 	case resp.StatusCode == 403:
-		return nil, WrapTraderError(ErrForbidden, resp)
+		return nil, ErrForbidden
 	case resp.StatusCode == 404:
-		return nil, WrapTraderError(ErrNotFound, resp)
+		return nil, ErrNotFound
 	case resp.StatusCode == 500:
-		return nil, WrapTraderError(ErrUnexpectedServer, resp)
+		return nil, ErrUnexpectedServer
 	case resp.StatusCode == 503:
-		return nil, WrapTraderError(ErrTemporaryServer, resp)
+		return nil, ErrTemporaryServer
 	case resp.StatusCode == 400:
+		body, err := io.ReadAll(resp.Body)
+		isErrNil(err)
+		if strings.Contains(string(body), "\"status\": 500") {
+			return nil, ErrUnexpectedServer
+		}
 		// if io.ReadAll() fails:
 		//     return nil, WrapTraderError(err, StatusCode, "could not read response", nil)
 		// if sonic.Unmarshall() fails
@@ -317,8 +336,8 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		// otherwise okay but the API was unhappy with our request:
 		// At this point we could populate an ErrorMessage struct based on Schwab definition
 		//   which contains Message string; Error []string
-		return nil, WrapTraderError(ErrValidation, resp)
+		return nil, ErrValidation
 	default:
-		return nil, WrapTraderError(fmt.Errorf("error not defined by API!"), resp)
+		return nil, fmt.Errorf("error not defined by API!")
 	}
 }
