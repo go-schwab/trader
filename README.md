@@ -6,6 +6,8 @@
 
 built by: [@samjtro](https://github.com/samjtro) + [other amazing ppl :)](https://github.com/go-schwab/trader/graphs/contributors)
 
+see: [CONTRIBUTING](https://github.com/go-schwab/trader/blob/main/CONTRIBUTING.md)
+
 ---
 
 why should you use this project?
@@ -55,7 +57,7 @@ printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltNam
 
 -----
 
-`go get github.com/go-schwab/trader@v0.9.2`
+`go get github.com/go-schwab/trader@v0.9.3`
 
 ### 0.1 agent
 
