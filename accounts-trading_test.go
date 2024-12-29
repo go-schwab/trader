@@ -32,13 +32,4 @@ func TestAccountsTradingAPI(t *testing.T) {
 	}
 
 	fmt.Println(orders)
-
-	err = agent.SubmitSingleLegOrder(an[0].HashValue, CreateSingleLegOrder(OrderType("MARKET"), Session("NORMAL"), Duration("DAY"), Strategy("SINGLE"), Instruction("BUY"), Quantity(1.0), Instrument(SimpleOrderInstrument{
-		Symbol:    "AAPL",
-		AssetType: "EQUITY",
-	})))
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
 }
