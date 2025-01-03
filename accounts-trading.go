@@ -216,7 +216,7 @@ func (agent *Agent) GetAccountOrders(accountNumber, fromEnteredTime, toEnteredTi
 	return orders, nil
 }
 
-// WIP:
+// WIP: do not use
 // fromEnteredTime, toEnteredTime format:
 // yyyy-MM-ddTHH:mm:ss.SSSZ
 func (agent *Agent) GetAllOrders(fromEnteredTime, toEnteredTime string) ([]FullOrder, error) {
@@ -238,10 +238,11 @@ func (agent *Agent) GetAllOrders(fromEnteredTime, toEnteredTime string) ([]FullO
 		return []FullOrder{}, err
 	}
 	var orders []FullOrder
-	/* TODO:
 	err = sonic.Unmarshal(body, &orders)
-	isErrNil(err)*/
-	fmt.Println(body)
+	if err != nil {
+		fmt.Println(body)
+		return []FullOrder{}, err
+	}
 	return orders, nil
 }
 
