@@ -20,7 +20,10 @@ package trader
 
 import (
 	"errors"
+	"fmt"
+	"io"
 	"log"
+	"net/http"
 )
 
 // Thanks to @jazzboME for their work on the errors portion of this package!
@@ -33,7 +36,6 @@ var (
 	ErrTemporaryServer     = errors.New("server is taking a tylenol, brb")
 )
 
-/*
 // Custom Error Struct
 type TraderError struct {
 	Err      error
@@ -69,7 +71,7 @@ func GetMessage(e interface{}) string {
 // Returns resonse status code
 func GetStatusCode(e interface{}) int {
 	return e.(*TraderError).Response.StatusCode
-}*/
+}
 
 // is the err nil?
 func isErrNil(err error) {

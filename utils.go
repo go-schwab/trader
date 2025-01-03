@@ -60,6 +60,7 @@ var (
 	PATH   string
 )
 
+// load env variables, check if you've run the program before
 func init() {
 	err := godotenv.Load(findAllEnvFiles()...)
 	isErrNil(err)
@@ -83,7 +84,7 @@ func trimOneFirstOneLast(s string) string {
 	return s[1 : len(s)-1]
 }
 
-// Helper: parse access token response
+// parse access token response
 func parseAccessTokenResponse(s string) Token {
 	token := Token{
 		RefreshExpiration: time.Now().Add(time.Hour * 168),
@@ -142,7 +143,7 @@ func getStringInBetween(str string, start string, end string) (result string) {
 	return str[s : s+e]
 }
 
-// Read in tokens from .json
+// read in tokens from PATH - linux
 func readLinuxDB() Token {
 	var tokens Token
 	body, err := os.ReadFile(PATH)
@@ -152,7 +153,7 @@ func readLinuxDB() Token {
 	return tokens
 }
 
-// Read in tokens from .json
+// read in tokens from PATH - mac & windows
 func readDB() Agent {
 	var tok *oauth2.Token
 	body, err := os.ReadFile(PATH)
@@ -180,6 +181,7 @@ func readDB() Agent {
 	}
 }
 
+// create Agent - linux
 func initiateLinux() Agent {
 	var agent Agent
 	// oAuth Leg 1 - Authorization Code
@@ -224,6 +226,7 @@ func initiateMacWindows() Agent {
 	return agent
 }
 
+// create Agent - mac & windows
 func Initiate() *Agent {
 	var agent Agent
 	if runtime.GOOS == "linux" {
@@ -256,7 +259,7 @@ func Reinitiate() *Agent {
 	return &agent
 }
 
-// Use refresh token to generate a new bearer token for authentication
+// use refresh to generate a new bearer token for authentication
 func (agent *Agent) Refresh() {
 	oldTokens := readLinuxDB()
 	authStringRefresh := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", os.Getenv("APPKEY"), os.Getenv("SECRET")))))
