@@ -19,6 +19,10 @@ why should you use this project?
 ## docs
 
 [0.0 quick start](https://github.com/go-schwab/trader/wiki/0.0-quick-start)
+
 [0.1 agents](https://github.com/go-schwab/trader/wiki/0.1-agents)
+
 [1.0 accessing market data](https://github.com/go-schwab/trader/wiki/1.accessing-market-data)
+
 [2.0 trading, accessing account data](https://github.com/go-schwab/trader/wiki/2.0-trading,-accessing-account-data)
+
