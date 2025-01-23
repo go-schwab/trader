@@ -144,7 +144,6 @@ func execCommand(cmd *exec.Cmd) {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	err := cmd.Run()
-
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -238,7 +237,7 @@ func initiateLinux() Agent {
 
 func initiateMacWindows() Agent {
 	var agent Agent
-	//execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
+	// execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
 	agent = Agent{Client: o.Initiate(APPKEY, SECRET)}
 	bytes, err := sonic.Marshal(agent.Client.Token)
 	isErrNil(err)
@@ -332,22 +331,22 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		body, err := io.ReadAll(resp.Body)
 		isErrNil(err)
 		if strings.Contains(string(body), "\"status\": 500") {
-			return nil, ErrUnexpectedServer
+			return nil, WrapTraderError(ErrUnexpectedServer, resp)
 		}
-		return nil, ErrNeedReAuthorization
+		return nil, WrapTraderError(ErrNeedReAuthorization, resp)
 	case resp.StatusCode == 403:
-		return nil, ErrForbidden
+		return nil, WrapTraderError(ErrForbidden, resp)
 	case resp.StatusCode == 404:
-		return nil, ErrNotFound
+		return nil, WrapTraderError(ErrNotFound, resp)
 	case resp.StatusCode == 500:
-		return nil, ErrUnexpectedServer
+		return nil, WrapTraderError(ErrUnexpectedServer, resp)
 	case resp.StatusCode == 503:
-		return nil, ErrTemporaryServer
+		return nil, WrapTraderError(ErrTemporaryServer, resp)
 	case resp.StatusCode == 400:
 		body, err := io.ReadAll(resp.Body)
 		isErrNil(err)
 		if strings.Contains(string(body), "\"status\": 500") {
-			return nil, ErrUnexpectedServer
+			return nil, WrapTraderError(ErrUnexpectedServer, resp)
 		}
 		// if io.ReadAll() fails:
 		//     return nil, WrapTraderError(err, StatusCode, "could not read response", nil)
@@ -358,8 +357,8 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		// otherwise okay but the API was unhappy with our request:
 		// At this point we could populate an ErrorMessage struct based on Schwab definition
 		//   which contains Message string; Error []string
-		return nil, ErrValidation
+		return nil, WrapTraderError(ErrValidation, resp)
 	default:
-		return nil, fmt.Errorf("error not defined by API!")
+		return nil, errors.New("error not defined")
 	}
 }
