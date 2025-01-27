@@ -201,19 +201,7 @@ func readDB() Agent {
 	}
 }
 
-// create Agent - linux
-func initiateLinux() Agent {
-	var agent Agent
-	//execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
-	agent = Agent{Client: o.Initiate(APPKEY, SECRET, CBURL)}
-	bytes, err := sonic.Marshal(agent.Client.Token)
-	isErrNil(err)
-	err = os.WriteFile(PATH, bytes, 0750)
-	isErrNil(err)
-	return agent
-}
-
-func initiateMacWindows() Agent {
+func initiate() Agent {
 	var agent Agent
 	//execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
 	agent = Agent{Client: o.Initiate(APPKEY, SECRET, CBURL)}
@@ -227,18 +215,10 @@ func initiateMacWindows() Agent {
 // create Agent - mac & windows
 func Initiate() *Agent {
 	var agent Agent
-	if runtime.GOOS == "linux" {
-		if _, err := os.Stat(PATH); errors.Is(err, os.ErrNotExist) {
-			agent = initiateLinux()
-		} else {
-			agent = readDB()
-		}
+	if _, err := os.Stat(PATH); errors.Is(err, os.ErrNotExist) {
+		agent = initiate()
 	} else {
-		if _, err := os.Stat(PATH); errors.Is(err, os.ErrNotExist) {
-			agent = initiateMacWindows()
-		} else {
-			agent = readDB()
-		}
+		agent = readDB()
 	}
 	return &agent
 }
@@ -249,11 +229,7 @@ func Reinitiate() *Agent {
 		err := os.Remove(PATH)
 		isErrNil(err)
 	}
-	if runtime.GOOS == "linux" {
-		agent = initiateLinux()
-	} else {
-		agent = initiateMacWindows()
-	}
+	agent = initiate()
 	return &agent
 }
 
