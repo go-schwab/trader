@@ -29,7 +29,6 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -45,7 +44,7 @@ import (
 
 type Agent struct {
 	Client *o.AuthorizedClient
-	Tokens Token
+	Token  Token
 }
 
 type Token struct {
@@ -163,22 +162,12 @@ func getStringInBetween(str string, start string, end string) (result string) {
 	return str[s : s+e]
 }
 
-// read in tokens from PATH - linux
-func readLinuxDB() Token {
-	var tokens Token
-	body, err := os.ReadFile(PATH)
-	isErrNil(err)
-	err = sonic.Unmarshal(body, &tokens)
-	isErrNil(err)
-	return tokens
-}
-
 // read in tokens from PATH - mac & windows
-func readDB() Agent {
-	var tok *oauth2.Token
+func readDB() *Agent {
+	var token *oauth2.Token
 	body, err := os.ReadFile(PATH)
 	isErrNil(err)
-	err = sonic.Unmarshal(body, &tok)
+	err = sonic.Unmarshal(body, &token)
 	isErrNil(err)
 	conf := &oauth2.Config{
 		ClientID:     APPKEY, // Schwab App Key
@@ -193,95 +182,49 @@ func readDB() Agent {
 	}
 	sslcli := &http.Client{Transport: tr}
 	ctx := context.WithValue(context.Background(), oauth2.HTTPClient, sslcli)
-	return Agent{
+	return &Agent{
 		Client: &o.AuthorizedClient{
-			conf.Client(ctx, tok),
-			tok,
+			conf.Client(ctx, token),
+			token,
 		},
 	}
 }
 
-// create Agent - linux
-func initiateLinux() Agent {
+func initiate() *Agent {
 	var agent Agent
-	// oAuth Leg 1 - Authorization Code
-	openBrowser(fmt.Sprintf("https://api.schwabapi.com/v1/oauth/authorize?client_id=%s&redirect_uri=%s", os.Getenv("APPKEY"), os.Getenv("CBURL")))
-	fmt.Printf("Log into your Schwab brokerage account. Copy Error404 URL and paste it here: ")
-	var urlInput string
-	fmt.Scanln(&urlInput)
-	authCodeEncoded := getStringInBetween(urlInput, "?code=", "&session=")
-	authCode, err := url.QueryUnescape(authCodeEncoded)
-	isErrNil(err)
-	// oAuth Leg 2 - Refresh, Bearer Tokens
-	authStringLegTwo := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", os.Getenv("APPKEY"), os.Getenv("SECRET")))))
-	client := http.Client{}
-	payload := fmt.Sprintf("grant_type=authorization_code&code=%s&redirect_uri=%s", string(authCode), os.Getenv("CBURL"))
-	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(payload)))
-	isErrNil(err)
-	req.Header = http.Header{
-		"Authorization": {authStringLegTwo},
-		"Content-Type":  {"application/x-www-form-urlencoded"},
-	}
-	res, err := client.Do(req)
-	isErrNil(err)
-	defer res.Body.Close()
-	bodyBytes, err := io.ReadAll(res.Body)
-	isErrNil(err)
-	agent.Tokens = parseAccessTokenResponse(string(bodyBytes))
-	bytes, err := sonic.Marshal(agent.Tokens)
-	isErrNil(err)
-	err = os.WriteFile(PATH, bytes, 0750)
-	isErrNil(err)
-	return agent
-}
-
-func initiateMacWindows() Agent {
-	var agent Agent
-	// execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
-	agent = Agent{Client: o.Initiate(APPKEY, SECRET)}
+	//execCommand("openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(;printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS.1:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")")
+	agent = Agent{Client: o.Initiate(APPKEY, SECRET, CBURL)}
 	bytes, err := sonic.Marshal(agent.Client.Token)
 	isErrNil(err)
 	err = os.WriteFile(PATH, bytes, 0750)
 	isErrNil(err)
-	return agent
+	return &agent
 }
 
 // create Agent - mac & windows
 func Initiate() *Agent {
-	var agent Agent
-	if runtime.GOOS == "linux" {
-		if _, err := os.Stat(PATH); errors.Is(err, os.ErrNotExist) {
-			agent = initiateLinux()
-		} else {
-			agent.Tokens = readLinuxDB()
-		}
+	var agent *Agent
+	if _, err := os.Stat(PATH); errors.Is(err, os.ErrNotExist) {
+		agent = initiate()
 	} else {
-		if _, err := os.Stat(PATH); errors.Is(err, os.ErrNotExist) {
-			agent = initiateMacWindows()
-		} else {
-			agent = readDB()
-		}
+		agent = readDB()
 	}
-	return &agent
+	return agent
 }
 
 func Reinitiate() *Agent {
-	var agent Agent
+	var agent *Agent
 	if _, err := os.Stat(PATH); !errors.Is(err, os.ErrNotExist) {
 		err := os.Remove(PATH)
 		isErrNil(err)
 	}
-	if runtime.GOOS == "linux" {
-		agent = initiateLinux()
-	} else {
-		agent = initiateMacWindows()
-	}
-	return &agent
+	agent = initiate()
+	return agent
 }
 
 // use refresh to generate a new bearer token for authentication
 func (agent *Agent) Refresh() {
-	oldTokens := readLinuxDB()
+	oldTokens := readDB().Token
 	authStringRefresh := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", os.Getenv("APPKEY"), os.Getenv("SECRET")))))
 	client := http.Client{}
 	req, err := http.NewRequest("POST", "https://api.schwabapi.com/v1/oauth/token", bytes.NewBuffer([]byte(fmt.Sprintf("grant_type=refresh_token&refresh_token=%s", oldTokens.Refresh))))
@@ -295,7 +238,7 @@ func (agent *Agent) Refresh() {
 	defer res.Body.Close()
 	bodyBytes, err := io.ReadAll(res.Body)
 	isErrNil(err)
-	agent.Tokens = parseAccessTokenResponse(string(bodyBytes))
+	agent.Token = parseAccessTokenResponse(string(bodyBytes))
 }
 
 // Handler is the general purpose request function for the td-ameritrade api, all functions will be routed through this handler function, which does all of the API calling work
@@ -308,21 +251,9 @@ func (agent *Agent) Handler(req *http.Request) (*http.Response, error) {
 		resp *http.Response
 		err  error
 	)
-	if runtime.GOOS == "linux" {
-		if !time.Now().Before(agent.Tokens.BearerExpiration) {
-			agent.Refresh()
-		}
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", agent.Tokens.Bearer))
-		client := http.Client{}
-		resp, err = client.Do(req)
-		if err != nil {
-			agent = Reinitiate()
-		}
-	} else {
-		resp, err = agent.Client.Do(req)
-		if err != nil {
-			agent = Reinitiate()
-		}
+	resp, err = agent.Client.Do(req)
+	if err != nil {
+		agent = Reinitiate()
 	}
 	switch true {
 	case resp.StatusCode == 200:
